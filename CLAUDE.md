@@ -4,6 +4,8 @@ You are working on the **llm-energy-framework** project — a rigorous framework
 
 **Read `RESEARCH_PLAN.md` for the full research plan. This file tells you HOW to execute it.**
 
+**Read `PRIOR_WORK.md` for reference data from three prior repos.** It contains exact numbers (J/tok, scaling exponents, quantisation multipliers), reusable code patterns, Irish grid carbon data, and specific comparisons the analysis should make against prior results.
+
 ## Environment
 
 - **Hardware:** NVIDIA A100 80GB GPU, accessed via SLURM
@@ -280,12 +282,46 @@ Create `src/analyze.py` that:
 3. **Exports `results/combined_results.csv`**
 4. **Generates all 7 figures** listed in RESEARCH_PLAN.md (save to `paper/figures/`)
 5. **Generates the summary table** (save to `paper/tables/`)
+6. **Generates prior work comparison figures** (see below)
 
 Use `matplotlib` for figures. Style requirements:
 - Font size: 12pt minimum for axis labels
 - Figure size: appropriate for single-column (3.5 inch) or double-column (7 inch) IEEE format
 - Save as both PNG (300 DPI for preview) and PDF (for paper)
 - Use colourblind-friendly palettes (e.g., matplotlib's "tab10" or seaborn's "colorblind")
+
+#### Using Prior Work Data
+
+**IMPORTANT:** The `prior_work/` directory contains CSV results from the earlier energy-bench project (808 measurements on the same A100 hardware). The `data/carbon_cache/` directory contains real Irish grid carbon data. Use both during analysis.
+
+**Prior work CSVs (in `prior_work/`):**
+- `energy_bench_pythia_combined.csv` — 280 rows, Pythia scaling law (70M-12B)
+- `energy_bench_quant_fp16.csv` — 32 rows, Mistral-7B FP16 baseline
+- `energy_bench_quant_int8.csv` — 32 rows, Mistral-7B INT8
+- `energy_bench_quant_nf4.csv` — 32 rows, Mistral-7B NF4
+- `energy_bench_batch_saturation.csv` — 40 rows, batch size sweep (1-128)
+- `energy_bench_mistral_7b_standard.csv` — 91 rows, Mistral-7B full benchmark
+- CSV columns: `model_id, model_params_est, dtype, quantization_mode, batch_size, context_len, prompt_id, run_id, input_tokens, output_tokens, elapsed_s, tokens_per_s, avg_watts, joules_total, joules_per_token, gpu_name, driver_version, torch_version, transformers_version, error`
+
+**Carbon intensity data (in `data/carbon_cache/`):**
+- `roi_sample_7day.csv` — 672 rows, Irish grid, Jan 15-21 2026, 15-min resolution
+- Columns: `timestamp, gco2_per_kwh`
+- Range: 119-348 gCO2/kWh (mean ~230)
+
+**Reference code:** `prior_work/energy_bench_power_logger.py` is the battle-tested NVML power logger from energy-bench. Use it as a reference when implementing `hardware.py` — it includes SLURM GPU mapping, trapezoidal integration, and phase markers.
+
+**Required comparisons against prior work (generate these figures/tables):**
+
+1. **Scaling law overlay:** Plot the new framework's J/tok vs model size alongside energy-bench's Pythia scaling law (alpha=0.8). Fit a new power law across architectures and compare exponents.
+
+2. **Quantisation comparison:** If Llama-3.1-8B is tested at fp16/int8/int4, compare the energy penalty multipliers to energy-bench's Mistral-7B values (INT8: 2.88x, NF4: 3.72x). Note any changes from updated software versions.
+
+3. **Batch saturation overlay:** Compare the new framework's batch size curve to energy-bench's Pythia-6.9B data. Does the 80% efficiency at bs=32 hold for different models?
+
+4. **Carbon variation figure:** Using `data/carbon_cache/roi_sample_7day.csv`, compute gCO2eq/tok for each model at min (119), mean (230), and max (348) grid intensity. Show as a bar chart with error bars representing the carbon range.
+   - Formula: `gCO2eq_per_token = (J_per_token / 3_600_000) * carbon_intensity`
+
+5. **Cross-study summary table:** A comparison table showing key metrics from both energy-bench and the new framework, highlighting what's confirmed and what's new.
 
 Commit all figures and analysis output.
 
@@ -357,7 +393,8 @@ You are done when ALL of these are true:
 - [ ] Validation run passes all checks
 - [ ] All 13 models benchmarked (or documented why a model was skipped)
 - [ ] Llama-3.1-8B quantisation study complete (fp16, int8, int4)
-- [ ] All 7 figures generated in `paper/figures/`
+- [ ] All 7 primary figures generated in `paper/figures/`
+- [ ] Prior work comparison figures generated (scaling law overlay, quantisation comparison, batch saturation overlay, carbon variation, cross-study table)
 - [ ] Summary table generated in `paper/tables/`
 - [ ] Combined CSV at `results/combined_results.csv`
 - [ ] Unit tests pass
