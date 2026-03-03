@@ -8,6 +8,7 @@ baseline measurement and baseline subtraction for net inference energy.
 from __future__ import annotations
 
 import logging
+import os
 import threading
 import time
 from dataclasses import dataclass, field
@@ -31,20 +32,113 @@ class EnergyMeasurement:
     samples: list[tuple[float, float]] = field(default_factory=list)  # (timestamp, watts)
 
 
+def _resolve_nvml_index(cuda_index: int = 0) -> int:
+    """Map CUDA device index to physical NVML index under SLURM.
+
+    When SLURM sets CUDA_VISIBLE_DEVICES (e.g. "3" or a GPU UUID),
+    CUDA sees it as device 0 but NVML still uses the physical index.
+    This resolves the physical index for correct NVML power queries.
+    """
+    cvd = os.environ.get("CUDA_VISIBLE_DEVICES")
+    if not cvd:
+        return cuda_index
+
+    entries = [e.strip() for e in cvd.split(",") if e.strip()]
+    if cuda_index >= len(entries):
+        return cuda_index
+
+    entry = entries[cuda_index]
+
+    # Integer index — direct physical mapping
+    try:
+        return int(entry)
+    except ValueError:
+        pass
+
+    # UUID/MIG format — resolve via NVML
+    try:
+        pynvml.nvmlInit()
+        try:
+            for i in range(pynvml.nvmlDeviceGetCount()):
+                handle = pynvml.nvmlDeviceGetHandleByIndex(i)
+                dev_uuid = pynvml.nvmlDeviceGetUUID(handle)
+                if isinstance(dev_uuid, bytes):
+                    dev_uuid = dev_uuid.decode()
+                if entry in dev_uuid or dev_uuid in entry:
+                    return i
+        finally:
+            pynvml.nvmlShutdown()
+    except pynvml.NVMLError:
+        pass
+
+    return cuda_index
+
+
 def measure_idle_baseline(gpu_index: int = 0, duration_seconds: float = 30.0,
                           interval_seconds: float = 0.1) -> float:
     """Measure mean idle GPU power draw over a given duration.
 
+    Samples power at the given interval, computes mean and checks stability
+    (std < 10% of mean). If unstable, extends sampling to 60 seconds.
+
     Args:
-        gpu_index: NVML device index.
+        gpu_index: CUDA device index (will be resolved to physical NVML index).
         duration_seconds: How long to sample idle power.
         interval_seconds: Sampling interval in seconds.
 
     Returns:
         Mean idle power in watts.
     """
-    # TODO: Implement NVML idle baseline sampling
-    raise NotImplementedError("To be implemented on GPU machine")
+    nvml_index = _resolve_nvml_index(gpu_index)
+
+    pynvml.nvmlInit()
+    try:
+        handle = pynvml.nvmlDeviceGetHandleByIndex(nvml_index)
+
+        def _sample(duration: float) -> list[float]:
+            samples = []
+            end_time = time.monotonic() + duration
+            while time.monotonic() < end_time:
+                try:
+                    power_mw = pynvml.nvmlDeviceGetPowerUsage(handle)
+                    samples.append(power_mw / 1000.0)
+                except pynvml.NVMLError:
+                    pass
+                time.sleep(interval_seconds)
+            return samples
+
+        # First pass: 30 seconds
+        logger.info("Measuring idle baseline for %.0fs...", duration_seconds)
+        samples = _sample(duration_seconds)
+
+        if not samples:
+            raise RuntimeError("No power samples collected during idle baseline")
+
+        mean_watts = sum(samples) / len(samples)
+        variance = sum((s - mean_watts) ** 2 for s in samples) / (len(samples) - 1) if len(samples) > 1 else 0.0
+        std_watts = variance ** 0.5
+
+        # Check stability
+        if mean_watts > 0 and std_watts / mean_watts > 0.10:
+            logger.warning(
+                "Baseline unstable (std=%.1fW, mean=%.1fW, CV=%.1f%%). "
+                "Extending to 60s...",
+                std_watts, mean_watts, 100 * std_watts / mean_watts,
+            )
+            extended_samples = _sample(60.0)
+            if extended_samples:
+                samples = extended_samples
+                mean_watts = sum(samples) / len(samples)
+                variance = sum((s - mean_watts) ** 2 for s in samples) / (len(samples) - 1)
+                std_watts = variance ** 0.5
+
+        logger.info(
+            "Idle baseline: %.1fW (std=%.1fW, %d samples)",
+            mean_watts, std_watts, len(samples),
+        )
+        return mean_watts
+    finally:
+        pynvml.nvmlShutdown()
 
 
 class PowerSampler:
@@ -65,16 +159,70 @@ class PowerSampler:
         self._samples: list[tuple[float, float]] = []
         self._running = False
         self._thread: threading.Thread | None = None
+        self._handle = None
 
     def __enter__(self) -> PowerSampler:
-        # TODO: Start background sampling thread
-        raise NotImplementedError("To be implemented on GPU machine")
+        nvml_index = _resolve_nvml_index(self._gpu_index)
+        pynvml.nvmlInit()
+        self._handle = pynvml.nvmlDeviceGetHandleByIndex(nvml_index)
+        self._samples = []
+        self._running = True
+        self._thread = threading.Thread(target=self._sample_loop, daemon=True)
+        self._thread.start()
+        return self
+
+    def _sample_loop(self) -> None:
+        """Background sampling loop — appends (timestamp, watts) tuples."""
+        while self._running:
+            try:
+                power_mw = pynvml.nvmlDeviceGetPowerUsage(self._handle)
+                self._samples.append((time.monotonic(), power_mw / 1000.0))
+            except pynvml.NVMLError:
+                pass
+            time.sleep(self._interval)
 
     def __exit__(self, *exc) -> None:
-        # TODO: Stop sampling thread
-        raise NotImplementedError("To be implemented on GPU machine")
+        self._running = False
+        if self._thread is not None:
+            self._thread.join(timeout=5.0)
+        try:
+            pynvml.nvmlShutdown()
+        except pynvml.NVMLError:
+            pass
 
     def get_results(self) -> EnergyMeasurement:
         """Compute energy from collected power samples using trapezoidal integration."""
-        # TODO: Implement trapezoidal integration over self._samples
-        raise NotImplementedError("To be implemented on GPU machine")
+        if len(self._samples) < 2:
+            return EnergyMeasurement(
+                total_energy_joules=0.0,
+                net_energy_joules=0.0,
+                baseline_watts=self._baseline,
+                mean_inference_watts=0.0,
+                peak_watts=0.0,
+                duration_seconds=0.0,
+                sample_count=len(self._samples),
+                samples=list(self._samples),
+            )
+
+        # Trapezoidal integration
+        total_energy = sum(
+            (self._samples[i][1] + self._samples[i - 1][1]) / 2.0
+            * (self._samples[i][0] - self._samples[i - 1][0])
+            for i in range(1, len(self._samples))
+        )
+
+        duration = self._samples[-1][0] - self._samples[0][0]
+        net_energy = total_energy - (self._baseline * duration)
+        mean_watts = sum(s[1] for s in self._samples) / len(self._samples)
+        peak_watts = max(s[1] for s in self._samples)
+
+        return EnergyMeasurement(
+            total_energy_joules=total_energy,
+            net_energy_joules=net_energy,
+            baseline_watts=self._baseline,
+            mean_inference_watts=mean_watts,
+            peak_watts=peak_watts,
+            duration_seconds=duration,
+            sample_count=len(self._samples),
+            samples=list(self._samples),
+        )

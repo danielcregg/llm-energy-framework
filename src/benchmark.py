@@ -8,6 +8,7 @@ output structured JSON reports.
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import logging
 import platform
@@ -17,7 +18,7 @@ from pathlib import Path
 
 import torch
 
-from .hardware import measure_idle_baseline, PowerSampler
+from .hardware import measure_idle_baseline, PowerSampler, _resolve_nvml_index
 from .inference import load_model, load_prompts, run_inference
 from .metrics import compute_metrics, aggregate_runs
 
@@ -31,7 +32,6 @@ DEFAULT_MAX_NEW_TOKENS = 200
 
 def _get_hardware_info() -> dict:
     """Collect hardware environment information."""
-    # TODO: Populate with nvidia-smi and system info on GPU machine
     info = {
         "gpu_name": "unknown",
         "gpu_memory_gb": 0,
@@ -42,12 +42,15 @@ def _get_hardware_info() -> dict:
     }
     try:
         import pynvml
+        nvml_index = _resolve_nvml_index(0)
         pynvml.nvmlInit()
-        handle = pynvml.nvmlDeviceGetHandleByIndex(0)
-        info["gpu_name"] = pynvml.nvmlDeviceGetName(handle)
+        handle = pynvml.nvmlDeviceGetHandleByIndex(nvml_index)
+        name = pynvml.nvmlDeviceGetName(handle)
+        info["gpu_name"] = name.decode() if isinstance(name, bytes) else name
         mem = pynvml.nvmlDeviceGetMemoryInfo(handle)
         info["gpu_memory_gb"] = round(mem.total / (1024 ** 3), 1)
-        info["driver_version"] = pynvml.nvmlSystemGetDriverVersion()
+        driver = pynvml.nvmlSystemGetDriverVersion()
+        info["driver_version"] = driver.decode() if isinstance(driver, bytes) else driver
         pynvml.nvmlShutdown()
     except Exception:
         logger.warning("Could not query NVML for GPU info")
@@ -104,36 +107,59 @@ def run_benchmark(model_name: str, precision: str = "fp16",
 
     # Run benchmarks
     all_results = []
+    errors_log = Path(output_dir) / "errors.log"
     for prompt_info in prompts:
         for batch_size in batch_sizes:
             config_label = f"{prompt_info['id']}/bs={batch_size}"
 
-            # Warmup
+            # Warmup — skip config on OOM
             logger.info("Warmup (%d runs): %s", WARMUP_RUNS, config_label)
+            oom = False
             for _ in range(WARMUP_RUNS):
-                run_inference(model, tokenizer, prompt_info["prompt"],
-                              max_new_tokens=max_new_tokens, batch_size=batch_size)
+                try:
+                    run_inference(model, tokenizer, prompt_info["prompt"],
+                                  max_new_tokens=max_new_tokens, batch_size=batch_size)
+                except torch.cuda.OutOfMemoryError:
+                    msg = f"OOM during warmup: {config_label}"
+                    logger.error(msg)
+                    with open(errors_log, "a") as ef:
+                        ef.write(f"{datetime.now(timezone.utc).isoformat()} {msg}\n")
+                    torch.cuda.empty_cache()
+                    gc.collect()
+                    oom = True
+                    break
+            if oom:
+                continue
 
             # Measured runs
             logger.info("Measuring (%d runs): %s", n_runs, config_label)
             run_metrics = []
             for i in range(n_runs):
-                with PowerSampler(baseline_watts=baseline_watts) as sampler:
-                    inf_result = run_inference(
-                        model, tokenizer, prompt_info["prompt"],
-                        prompt_id=prompt_info["id"],
-                        task_type=prompt_info["task"],
-                        max_new_tokens=max_new_tokens,
-                        batch_size=batch_size,
-                    )
-                energy = sampler.get_results()
-                metrics = compute_metrics(energy, inf_result, grid_carbon_intensity)
-                run_metrics.append(metrics)
+                try:
+                    with PowerSampler(baseline_watts=baseline_watts) as sampler:
+                        inf_result = run_inference(
+                            model, tokenizer, prompt_info["prompt"],
+                            prompt_id=prompt_info["id"],
+                            task_type=prompt_info["task"],
+                            max_new_tokens=max_new_tokens,
+                            batch_size=batch_size,
+                        )
+                    energy = sampler.get_results()
+                    metrics = compute_metrics(energy, inf_result, grid_carbon_intensity)
+                    run_metrics.append(metrics)
+                except torch.cuda.OutOfMemoryError:
+                    msg = f"OOM during run {i+1}/{n_runs}: {config_label}"
+                    logger.error(msg)
+                    with open(errors_log, "a") as ef:
+                        ef.write(f"{datetime.now(timezone.utc).isoformat()} {msg}\n")
+                    torch.cuda.empty_cache()
+                    gc.collect()
+                    break
 
-            # Aggregate
-            agg = aggregate_runs(run_metrics, prompt_info["id"],
-                                 prompt_info["task"], batch_size)
-            all_results.append(agg)
+            if run_metrics:
+                agg = aggregate_runs(run_metrics, prompt_info["id"],
+                                     prompt_info["task"], batch_size)
+                all_results.append(agg)
 
     # Build report
     report = _build_report(model_name, precision, batch_sizes, n_runs,
