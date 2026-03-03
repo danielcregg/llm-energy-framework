@@ -2,7 +2,7 @@
 # Submit all 13 model benchmark jobs via SLURM.
 # Run from the project root: bash scripts/run_all_models.sh
 
-set -euo pipefail
+set -uo pipefail  # removed -e: don't abort if one sbatch fails
 
 mkdir -p slurm_logs results
 

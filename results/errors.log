@@ -1,0 +1,5 @@
+2026-03-03T18:19:11+00:00 Llama models (3.2-1B, 3.2-3B, 3.1-8B, 3.3-70B) failed: 403 - need license acceptance on HuggingFace
+2026-03-03T18:19:11+00:00 Gated models require visiting model page and accepting license
+2026-03-03T18:40:00+00:00 Jobs 2804 (Llama-3.2-1B), 2807 (Llama-3.2-3B) failed: 403 gated repo (license pending)
+2026-03-03T18:40:00+00:00 All Llama licenses approved. Re-submitted as jobs 2819, 2820.
+2026-03-03T18:40:00+00:00 Original jobs 2810-2818 still pending in queue (were submitted correctly by run_all_models.sh)

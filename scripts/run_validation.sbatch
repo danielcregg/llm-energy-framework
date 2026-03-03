@@ -1,14 +1,19 @@
 #!/bin/bash
 #SBATCH --job-name=llm-energy-validation
-#SBATCH --partition=gpu
+#SBATCH --partition=defq
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=32G
+#SBATCH --mem=0
 #SBATCH --time=01:00:00
 #SBATCH --output=slurm_logs/%j_%x.out
 #SBATCH --error=slurm_logs/%j_%x.err
 
 # Validation run: Llama-3.2-1B-Instruct, fp16, batch sizes 1 & 4, 10 runs
+
+# Activate conda environment with PyTorch
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate camorl
+
 export HF_HOME=$HOME/hf_cache
 mkdir -p slurm_logs
 

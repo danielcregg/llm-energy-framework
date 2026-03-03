@@ -21,13 +21,21 @@ shift 3 2>/dev/null
 BATCH_SIZES="${@:-1 4 8 16}"
 
 export HF_HOME=$HOME/hf_cache
+export HF_TOKEN=$(cat ~/.cache/huggingface/token 2>/dev/null || echo "")
+export NTFY_TOPIC="llm-energy-framework-127"
 mkdir -p slurm_logs
+
+MODEL_SHORT=$(echo "$MODEL" | sed 's|.*/||')
 
 echo "=== Job $SLURM_JOB_ID: $MODEL ($PRECISION) ==="
 echo "Start: $(date)"
 echo "Node: $(hostname)"
 nvidia-smi
 echo "==="
+
+curl -s -H "Title: Benchmark Started" -H "Tags: hourglass" \
+  -d "Job $SLURM_JOB_ID: $MODEL_SHORT ($PRECISION) on $(hostname)" \
+  https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1 &
 
 cd /home/daniel.cregg/llm-energy-framework
 
@@ -38,4 +46,16 @@ python3 -m src.benchmark \
     --n-runs 10 \
     --output-dir "$OUTPUT_DIR"
 
-echo "=== Done: $(date) ==="
+EXIT_CODE=$?
+
+echo "=== Done: $(date) (exit=$EXIT_CODE) ==="
+
+if [ $EXIT_CODE -eq 0 ]; then
+    curl -s -H "Title: Benchmark Complete" -H "Priority: high" -H "Tags: tada" \
+      -d "Job $SLURM_JOB_ID: $MODEL_SHORT ($PRECISION) completed successfully" \
+      https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1
+else
+    curl -s -H "Title: Benchmark FAILED" -H "Priority: urgent" -H "Tags: warning" \
+      -d "Job $SLURM_JOB_ID: $MODEL_SHORT ($PRECISION) failed (exit=$EXIT_CODE)" \
+      https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1
+fi
