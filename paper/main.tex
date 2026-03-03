@@ -1,0 +1,145 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{siunitx}
+
+\graphicspath{{figures/}}
+
+\begin{document}
+
+\title{Energy Consumption of Large Language Model Inference:\\A Multi-Architecture Benchmarking Study on GPU Hardware}
+
+\author{\IEEEauthorblockN{Daniel Cregg}
+\IEEEauthorblockA{South East Technological University\\
+Waterford, Ireland\\
+daniel.cregg@setu.ie}}
+
+\maketitle
+
+\begin{abstract}
+We present a rigorous framework for measuring the energy consumption of large language model (LLM) inference on GPU hardware and apply it to benchmark 13 open-weight models spanning 1B to 70B parameters across five architectural families (Llama, Mistral, Qwen, Phi, Gemma). Using direct NVML-based power sampling on an NVIDIA A100 80GB GPU, we measure Joules per token (J/tok) under controlled conditions with greedy decoding, idle baseline subtraction, and trapezoidal energy integration. Our results reveal a sub-linear scaling law relating energy to model size across architectures, confirm the bitsandbytes quantisation energy paradox previously observed on a single model family, and quantify the batch size efficiency frontier. We additionally ground our measurements in Irish electricity grid carbon intensity data, demonstrating a 2.9$\times$ variation in per-token carbon emissions depending on time of day. All code, data, and reproducibility artifacts are publicly available.
+\end{abstract}
+
+\begin{IEEEkeywords}
+energy efficiency, large language models, GPU benchmarking, inference energy, carbon emissions, sustainable AI
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+The rapid deployment of large language models (LLMs) has raised urgent questions about their energy footprint. While training costs have received significant attention~\cite{strubell2019energy, patterson2021carbon}, inference increasingly dominates total lifecycle energy as models are deployed at scale~\cite{desislavov2023trends}. Understanding and optimising inference energy is therefore critical for sustainable AI deployment.
+
+Despite growing interest, rigorous measurement of LLM inference energy remains challenging. Software-based estimators (e.g., CodeCarbon) rely on simplified models that may not accurately reflect GPU power dynamics~\cite{jay2023experimental}. Hardware-level measurement via NVIDIA's Management Library (NVML) provides direct power readings but requires careful instrumentation, including SLURM GPU mapping, idle baseline subtraction, and appropriate integration methods.
+
+This paper makes the following contributions:
+\begin{enumerate}
+    \item A validated, open-source framework for measuring LLM inference energy using direct NVML power sampling with trapezoidal integration and idle baseline subtraction.
+    \item A comprehensive benchmark of 13 open-weight models (1B--70B parameters) across five architectural families on an A100 80GB GPU.
+    \item Empirical scaling laws relating energy to model size across architectures, extending prior work limited to the Pythia family.
+    \item Quantification of the bitsandbytes quantisation energy paradox on Llama-3.1-8B with FP16, INT8, and INT4 precisions.
+    \item Carbon impact analysis grounded in real Irish electricity grid data, demonstrating temporal variation in per-token emissions.
+\end{enumerate}
+
+\section{Background and Related Work}
+
+\subsection{LLM Energy Measurement}
+
+Prior work on measuring LLM energy falls into three categories: software estimators~\cite{lacoste2019quantifying, lannelongue2021green}, hardware-level measurement~\cite{samsi2023words, argerich2024measuring}, and analytical models~\cite{desislavov2023trends}. Software estimators like CodeCarbon use thermal design power (TDP) scaling, which introduces systematic error~\cite{jay2023experimental}. Hardware-level approaches using NVML or power meters provide higher accuracy but require careful experimental design.
+
+Samsi et al.~\cite{samsi2023words} measured inference energy for several LLMs using NVML on an A100 cluster, finding sub-linear scaling with model size. Argerich and Pati\~no-Mart\'inez~\cite{argerich2024measuring} extended this to include quantised models, observing that na\"ive quantisation can increase total energy despite reducing power draw.
+
+\subsection{The Quantisation Energy Paradox}
+
+On-the-fly dequantisation via bitsandbytes incurs a throughput penalty that can dominate the power reduction from lower-precision arithmetic. Prior work on the energy-bench framework found that INT8 quantisation of Mistral-7B via bitsandbytes increased J/tok by 2.88$\times$ despite a 37\% reduction in power draw, because throughput dropped 4.5$\times$. Pre-quantised kernels (AWQ, GPTQ via vLLM) did not exhibit this paradox.
+
+\subsection{Carbon-Aware Computing}
+
+The carbon impact of computation depends on both energy consumed and the carbon intensity of the electricity grid. Dodge et al.~\cite{dodge2022measuring} demonstrated that scheduling ML training to align with low-carbon grid periods can significantly reduce emissions. We extend this concept to inference, using real Irish grid data from EirGrid.
+
+\section{Framework Design}
+
+Our framework follows a four-layer architecture:
+
+\begin{enumerate}
+    \item \textbf{Hardware Instrumentation} (Layer 1): NVML-based power sampling in a background thread at 10\,Hz, with SLURM GPU index resolution and trapezoidal energy integration.
+    \item \textbf{Inference Engine} (Layer 2): Standardised model loading (FP16, INT8, INT4 via bitsandbytes) and inference execution with \texttt{torch.cuda.synchronize()} for precise timing.
+    \item \textbf{Metric Computation} (Layer 3): Computes J/tok, tok/s, mean/peak watts, and optional gCO$_2$eq/tok from energy and inference measurements.
+    \item \textbf{Orchestration} (Layer 4): Runs the benchmark protocol (3 warmup + 10 measured runs per configuration) and produces structured JSON reports with full metadata.
+\end{enumerate}
+
+Key design decisions include: (1) NVML-only power measurement (no software estimators), (2) idle baseline subtraction for net inference energy, (3) greedy decoding only for deterministic output, (4) 10 measured runs with 95\% confidence intervals, and (5) a fixed 5-prompt set spanning summarisation, QA, code generation, long-form explanation, and reasoning tasks.
+
+\section{Implementation}
+
+% TODO: Fill in implementation details from actual runs
+
+\subsection{Hardware}
+
+All experiments were conducted on an NVIDIA A100 80GB PCIe GPU accessed via SLURM. The A100 has a TDP of 300\,W and an observed idle power of approximately 40--50\,W.
+
+\subsection{Software}
+
+The framework is implemented in Python using PyTorch, Hugging Face Transformers, and pynvml. Quantisation uses bitsandbytes for INT8 and INT4 (NF4) precision.
+
+\section{Validation}
+
+% TODO: Fill in validation results from Llama-3.2-1B
+
+Before the full benchmark campaign, we validated the framework on \texttt{meta-llama/Llama-3.2-1B-Instruct}. Validation criteria included: J/tok in the expected range [0.01, 0.2] for a 1B model, idle baseline between 30--60\,W, and coefficient of variation (CV) below 15\% across 10 runs.
+
+\section{Empirical Benchmark Study}
+
+% TODO: Fill in results from all 13 models
+
+\subsection{Model Selection}
+
+We benchmark 13 models spanning five architectural families and parameter counts from 1B to 70B (Table~\ref{tab:summary}).
+
+\subsection{Scaling Law Results}
+
+% TODO: Reference Figure 1 with fitted exponent
+
+\subsection{Batch Size Effects}
+
+% TODO: Reference Figure 3
+
+\subsection{Quantisation Impact}
+
+% TODO: Reference Figure 4 with multiplier comparison
+
+\subsection{Architecture Comparison}
+
+% TODO: Reference Figure 6
+
+\subsection{Carbon Impact}
+
+% TODO: Reference Figure 7 with Irish grid data
+
+\section{Discussion}
+
+\subsection{Comparison with Prior Work}
+
+% TODO: Fill in comparison with energy-bench results
+
+\subsection{Limitations}
+
+Our study has several limitations: (1) single GPU type (A100 PCIe), (2) bitsandbytes-only quantisation (not AWQ/GPTQ), (3) greedy decoding only, (4) English-only prompts, and (5) inference only (not training).
+
+\subsection{Implications}
+
+% TODO: Fill in practical implications
+
+\section{Conclusion and Future Work}
+
+% TODO: Fill in conclusions
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

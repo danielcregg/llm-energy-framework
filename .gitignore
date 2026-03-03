@@ -1,7 +1,7 @@
-# Results and output
-results/
-*.json
-!prompts/benchmark_prompts.json
+# Results JSON — tracked (benchmark reports must be committed)
+# results/ is NOT ignored so benchmark reports are preserved
+
+# Python
 
 # Python
 __pycache__/

@@ -1,14 +1,19 @@
 #!/bin/bash
 #SBATCH --job-name=llm-energy
-#SBATCH --partition=gpu
+#SBATCH --partition=defq
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=64G
+#SBATCH --mem=0
 #SBATCH --time=04:00:00
 #SBATCH --output=slurm_logs/%j_%x.out
 #SBATCH --error=slurm_logs/%j_%x.err
 
 # Usage: sbatch scripts/run_benchmark.sbatch <model_name> <precision> <output_subdir> [batch_sizes...]
+
+# Activate conda environment with PyTorch
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate camorl
+
 MODEL=${1:?Usage: sbatch run_benchmark.sbatch MODEL PRECISION OUTPUT_DIR [BATCH_SIZES...]}
 PRECISION=${2:-fp16}
 OUTPUT_DIR=${3:-results/$MODEL}

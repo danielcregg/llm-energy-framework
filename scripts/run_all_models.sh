@@ -67,15 +67,15 @@ sbatch --time=06:00:00 "$SCRIPT" \
 # --- Large models (32-70B): 8h time limit ---
 
 echo "13/15: Qwen2.5-32B-Instruct (int8)"
-sbatch --time=08:00:00 --mem=128G "$SCRIPT" \
+sbatch --time=08:00:00 "$SCRIPT" \
     Qwen/Qwen2.5-32B-Instruct int8 results/qwen2.5-32b
 
 echo "14/15: Mixtral-8x7B-Instruct-v0.1 (fp16)"
-sbatch --time=08:00:00 --mem=128G "$SCRIPT" \
+sbatch --time=08:00:00 "$SCRIPT" \
     mistralai/Mixtral-8x7B-Instruct-v0.1 fp16 results/mixtral-8x7b
 
 echo "15/15: Llama-3.3-70B-Instruct (int4)"
-sbatch --time=08:00:00 --mem=128G "$SCRIPT" \
+sbatch --time=08:00:00 "$SCRIPT" \
     meta-llama/Llama-3.3-70B-Instruct int4 results/llama-3.3-70b
 
 echo ""
