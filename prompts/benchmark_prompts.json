@@ -1,0 +1,27 @@
+[
+  {
+    "id": "sum_short",
+    "task": "summarisation",
+    "prompt": "Summarise the following in 3 sentences: The water cycle, also known as the hydrological cycle, describes the continuous movement of water on, above, and below the surface of the Earth. Water evaporates from oceans and other water bodies, rises into the atmosphere, condenses to form clouds, and falls back to Earth as precipitation. This process is driven by solar energy and gravity and is essential for distributing fresh water around the planet."
+  },
+  {
+    "id": "qa_factual",
+    "task": "qa",
+    "prompt": "What is the capital of Ireland and what is its approximate population?"
+  },
+  {
+    "id": "code_simple",
+    "task": "code",
+    "prompt": "Write a Python function that takes a list of integers and returns the second largest unique value. Include error handling for edge cases."
+  },
+  {
+    "id": "longform",
+    "task": "longform",
+    "prompt": "Explain how transformers work in machine learning, covering attention mechanisms, positional encoding, and why they have replaced RNNs for most NLP tasks."
+  },
+  {
+    "id": "reasoning",
+    "task": "reasoning",
+    "prompt": "A train leaves Dublin at 9am travelling at 80km/h towards Cork, 260km away. Another train leaves Cork at 9:30am travelling towards Dublin at 100km/h. At what time do they meet, and how far from Dublin?"
+  }
+]
