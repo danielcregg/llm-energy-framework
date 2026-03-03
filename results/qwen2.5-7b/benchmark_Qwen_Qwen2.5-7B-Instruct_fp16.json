@@ -1,0 +1,801 @@
+{
+  "report_id": "824236be-bd16-423b-87f2-c60d6891790f",
+  "generated_at": "2026-03-03T20:36:16.482375+00:00",
+  "framework_version": "0.1.0",
+  "model": {
+    "name": "Qwen/Qwen2.5-7B-Instruct",
+    "precision": "fp16"
+  },
+  "hardware": {
+    "gpu_name": "NVIDIA A100 80GB PCIe",
+    "gpu_memory_gb": 80.0,
+    "cuda_version": "12.8",
+    "driver_version": "530.30.02",
+    "cpu_model": "x86_64",
+    "ram_gb": 0
+  },
+  "software": {
+    "python_version": "3.11.14",
+    "torch_version": "2.10.0+cu128",
+    "transformers_version": "5.2.0",
+    "os": "Linux 5.14.0-162.6.1.el9_1.x86_64"
+  },
+  "benchmark_config": {
+    "n_runs_per_config": 10,
+    "warmup_runs": 3,
+    "max_new_tokens": 200,
+    "batch_sizes_tested": [
+      1,
+      4,
+      8,
+      16
+    ],
+    "sampling_interval_ms": 100,
+    "idle_baseline_duration_seconds": 30
+  },
+  "results": [
+    {
+      "prompt_id": "sum_short",
+      "task_type": "summarisation",
+      "batch_size": 1,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 2.3195,
+          "std": 0.04,
+          "ci_95_lower": 2.2947,
+          "ci_95_upper": 2.3443
+        },
+        "tokens_per_second": {
+          "mean": 46.0973,
+          "std": 0.0808,
+          "ci_95_lower": 46.0472,
+          "ci_95_upper": 46.1474
+        },
+        "mean_watts": {
+          "mean": 166.8764,
+          "std": 2.134,
+          "ci_95_lower": 165.5537,
+          "ci_95_upper": 168.199
+        },
+        "output_tokens": {
+          "mean": 121.0,
+          "std": 0.0,
+          "ci_95_lower": 121.0,
+          "ci_95_upper": 121.0
+        },
+        "input_tokens": {
+          "mean": 89.0,
+          "std": 0.0,
+          "ci_95_lower": 89.0,
+          "ci_95_upper": 89.0
+        }
+      }
+    },
+    {
+      "prompt_id": "sum_short",
+      "task_type": "summarisation",
+      "batch_size": 4,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.5731,
+          "std": 0.0167,
+          "ci_95_lower": 0.5627,
+          "ci_95_upper": 0.5835
+        },
+        "tokens_per_second": {
+          "mean": 183.1249,
+          "std": 0.1476,
+          "ci_95_lower": 183.0334,
+          "ci_95_upper": 183.2164
+        },
+        "mean_watts": {
+          "mean": 166.688,
+          "std": 3.1517,
+          "ci_95_lower": 164.7345,
+          "ci_95_upper": 168.6414
+        },
+        "output_tokens": {
+          "mean": 484.0,
+          "std": 0.0,
+          "ci_95_lower": 484.0,
+          "ci_95_upper": 484.0
+        },
+        "input_tokens": {
+          "mean": 356.0,
+          "std": 0.0,
+          "ci_95_lower": 356.0,
+          "ci_95_upper": 356.0
+        }
+      }
+    },
+    {
+      "prompt_id": "sum_short",
+      "task_type": "summarisation",
+      "batch_size": 8,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.3111,
+          "std": 0.0139,
+          "ci_95_lower": 0.3025,
+          "ci_95_upper": 0.3198
+        },
+        "tokens_per_second": {
+          "mean": 362.5467,
+          "std": 0.5391,
+          "ci_95_lower": 362.2126,
+          "ci_95_upper": 362.8808
+        },
+        "mean_watts": {
+          "mean": 170.644,
+          "std": 4.9796,
+          "ci_95_lower": 167.5577,
+          "ci_95_upper": 173.7304
+        },
+        "output_tokens": {
+          "mean": 968.0,
+          "std": 0.0,
+          "ci_95_lower": 968.0,
+          "ci_95_upper": 968.0
+        },
+        "input_tokens": {
+          "mean": 712.0,
+          "std": 0.0,
+          "ci_95_lower": 712.0,
+          "ci_95_upper": 712.0
+        }
+      }
+    },
+    {
+      "prompt_id": "sum_short",
+      "task_type": "summarisation",
+      "batch_size": 16,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.1703,
+          "std": 0.0028,
+          "ci_95_lower": 0.1686,
+          "ci_95_upper": 0.172
+        },
+        "tokens_per_second": {
+          "mean": 708.2366,
+          "std": 0.9721,
+          "ci_95_lower": 707.6341,
+          "ci_95_upper": 708.8391
+        },
+        "mean_watts": {
+          "mean": 181.8456,
+          "std": 2.5531,
+          "ci_95_lower": 180.2632,
+          "ci_95_upper": 183.428
+        },
+        "output_tokens": {
+          "mean": 1936.0,
+          "std": 0.0,
+          "ci_95_lower": 1936.0,
+          "ci_95_upper": 1936.0
+        },
+        "input_tokens": {
+          "mean": 1424.0,
+          "std": 0.0,
+          "ci_95_lower": 1424.0,
+          "ci_95_upper": 1424.0
+        }
+      }
+    },
+    {
+      "prompt_id": "qa_factual",
+      "task_type": "qa",
+      "batch_size": 1,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 2.3597,
+          "std": 0.0136,
+          "ci_95_lower": 2.3512,
+          "ci_95_upper": 2.3681
+        },
+        "tokens_per_second": {
+          "mean": 45.7577,
+          "std": 0.0478,
+          "ci_95_lower": 45.728,
+          "ci_95_upper": 45.7873
+        },
+        "mean_watts": {
+          "mean": 168.0065,
+          "std": 0.9433,
+          "ci_95_lower": 167.4218,
+          "ci_95_upper": 168.5911
+        },
+        "output_tokens": {
+          "mean": 200.0,
+          "std": 0.0,
+          "ci_95_lower": 200.0,
+          "ci_95_upper": 200.0
+        },
+        "input_tokens": {
+          "mean": 13.0,
+          "std": 0.0,
+          "ci_95_lower": 13.0,
+          "ci_95_upper": 13.0
+        }
+      }
+    },
+    {
+      "prompt_id": "qa_factual",
+      "task_type": "qa",
+      "batch_size": 4,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.5954,
+          "std": 0.0039,
+          "ci_95_lower": 0.593,
+          "ci_95_upper": 0.5978
+        },
+        "tokens_per_second": {
+          "mean": 184.3438,
+          "std": 0.154,
+          "ci_95_lower": 184.2484,
+          "ci_95_upper": 184.4393
+        },
+        "mean_watts": {
+          "mean": 168.6036,
+          "std": 1.217,
+          "ci_95_lower": 167.8493,
+          "ci_95_upper": 169.3579
+        },
+        "output_tokens": {
+          "mean": 800.0,
+          "std": 0.0,
+          "ci_95_lower": 800.0,
+          "ci_95_upper": 800.0
+        },
+        "input_tokens": {
+          "mean": 52.0,
+          "std": 0.0,
+          "ci_95_lower": 52.0,
+          "ci_95_upper": 52.0
+        }
+      }
+    },
+    {
+      "prompt_id": "qa_factual",
+      "task_type": "qa",
+      "batch_size": 8,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.3029,
+          "std": 0.0035,
+          "ci_95_lower": 0.3008,
+          "ci_95_upper": 0.3051
+        },
+        "tokens_per_second": {
+          "mean": 368.2964,
+          "std": 0.344,
+          "ci_95_lower": 368.0832,
+          "ci_95_upper": 368.5096
+        },
+        "mean_watts": {
+          "mean": 170.7916,
+          "std": 1.6494,
+          "ci_95_lower": 169.7693,
+          "ci_95_upper": 171.8139
+        },
+        "output_tokens": {
+          "mean": 1600.0,
+          "std": 0.0,
+          "ci_95_lower": 1600.0,
+          "ci_95_upper": 1600.0
+        },
+        "input_tokens": {
+          "mean": 104.0,
+          "std": 0.0,
+          "ci_95_lower": 104.0,
+          "ci_95_upper": 104.0
+        }
+      }
+    },
+    {
+      "prompt_id": "qa_factual",
+      "task_type": "qa",
+      "batch_size": 16,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.1609,
+          "std": 0.0017,
+          "ci_95_lower": 0.1599,
+          "ci_95_upper": 0.162
+        },
+        "tokens_per_second": {
+          "mean": 734.3625,
+          "std": 0.4978,
+          "ci_95_lower": 734.0539,
+          "ci_95_upper": 734.671
+        },
+        "mean_watts": {
+          "mean": 177.7166,
+          "std": 1.6676,
+          "ci_95_lower": 176.683,
+          "ci_95_upper": 178.7502
+        },
+        "output_tokens": {
+          "mean": 3200.0,
+          "std": 0.0,
+          "ci_95_lower": 3200.0,
+          "ci_95_upper": 3200.0
+        },
+        "input_tokens": {
+          "mean": 208.0,
+          "std": 0.0,
+          "ci_95_lower": 208.0,
+          "ci_95_upper": 208.0
+        }
+      }
+    },
+    {
+      "prompt_id": "code_simple",
+      "task_type": "code",
+      "batch_size": 1,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 2.375,
+          "std": 0.0129,
+          "ci_95_lower": 2.367,
+          "ci_95_upper": 2.383
+        },
+        "tokens_per_second": {
+          "mean": 45.7219,
+          "std": 0.0537,
+          "ci_95_lower": 45.6886,
+          "ci_95_upper": 45.7552
+        },
+        "mean_watts": {
+          "mean": 168.8765,
+          "std": 0.6029,
+          "ci_95_lower": 168.5028,
+          "ci_95_upper": 169.2502
+        },
+        "output_tokens": {
+          "mean": 200.0,
+          "std": 0.0,
+          "ci_95_lower": 200.0,
+          "ci_95_upper": 200.0
+        },
+        "input_tokens": {
+          "mean": 25.0,
+          "std": 0.0,
+          "ci_95_lower": 25.0,
+          "ci_95_upper": 25.0
+        }
+      }
+    },
+    {
+      "prompt_id": "code_simple",
+      "task_type": "code",
+      "batch_size": 4,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.6002,
+          "std": 0.0046,
+          "ci_95_lower": 0.5973,
+          "ci_95_upper": 0.603
+        },
+        "tokens_per_second": {
+          "mean": 184.0497,
+          "std": 0.2095,
+          "ci_95_lower": 183.9198,
+          "ci_95_upper": 184.1795
+        },
+        "mean_watts": {
+          "mean": 169.6097,
+          "std": 1.341,
+          "ci_95_lower": 168.7785,
+          "ci_95_upper": 170.4409
+        },
+        "output_tokens": {
+          "mean": 800.0,
+          "std": 0.0,
+          "ci_95_lower": 800.0,
+          "ci_95_upper": 800.0
+        },
+        "input_tokens": {
+          "mean": 100.0,
+          "std": 0.0,
+          "ci_95_lower": 100.0,
+          "ci_95_upper": 100.0
+        }
+      }
+    },
+    {
+      "prompt_id": "code_simple",
+      "task_type": "code",
+      "batch_size": 8,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.3052,
+          "std": 0.0044,
+          "ci_95_lower": 0.3024,
+          "ci_95_upper": 0.3079
+        },
+        "tokens_per_second": {
+          "mean": 368.2844,
+          "std": 0.4235,
+          "ci_95_lower": 368.0219,
+          "ci_95_upper": 368.5469
+        },
+        "mean_watts": {
+          "mean": 171.5149,
+          "std": 2.0827,
+          "ci_95_lower": 170.224,
+          "ci_95_upper": 172.8058
+        },
+        "output_tokens": {
+          "mean": 1600.0,
+          "std": 0.0,
+          "ci_95_lower": 1600.0,
+          "ci_95_upper": 1600.0
+        },
+        "input_tokens": {
+          "mean": 200.0,
+          "std": 0.0,
+          "ci_95_lower": 200.0,
+          "ci_95_upper": 200.0
+        }
+      }
+    },
+    {
+      "prompt_id": "code_simple",
+      "task_type": "code",
+      "batch_size": 16,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.1617,
+          "std": 0.0021,
+          "ci_95_lower": 0.1604,
+          "ci_95_upper": 0.163
+        },
+        "tokens_per_second": {
+          "mean": 731.329,
+          "std": 0.9723,
+          "ci_95_lower": 730.7264,
+          "ci_95_upper": 731.9317
+        },
+        "mean_watts": {
+          "mean": 178.5902,
+          "std": 1.9105,
+          "ci_95_lower": 177.4061,
+          "ci_95_upper": 179.7743
+        },
+        "output_tokens": {
+          "mean": 3200.0,
+          "std": 0.0,
+          "ci_95_lower": 3200.0,
+          "ci_95_upper": 3200.0
+        },
+        "input_tokens": {
+          "mean": 400.0,
+          "std": 0.0,
+          "ci_95_lower": 400.0,
+          "ci_95_upper": 400.0
+        }
+      }
+    },
+    {
+      "prompt_id": "longform",
+      "task_type": "longform",
+      "batch_size": 1,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 2.3772,
+          "std": 0.0139,
+          "ci_95_lower": 2.3686,
+          "ci_95_upper": 2.3858
+        },
+        "tokens_per_second": {
+          "mean": 45.7367,
+          "std": 0.0537,
+          "ci_95_lower": 45.7034,
+          "ci_95_upper": 45.77
+        },
+        "mean_watts": {
+          "mean": 168.919,
+          "std": 0.6158,
+          "ci_95_lower": 168.5373,
+          "ci_95_upper": 169.3007
+        },
+        "output_tokens": {
+          "mean": 200.0,
+          "std": 0.0,
+          "ci_95_lower": 200.0,
+          "ci_95_upper": 200.0
+        },
+        "input_tokens": {
+          "mean": 30.0,
+          "std": 0.0,
+          "ci_95_lower": 30.0,
+          "ci_95_upper": 30.0
+        }
+      }
+    },
+    {
+      "prompt_id": "longform",
+      "task_type": "longform",
+      "batch_size": 4,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.6009,
+          "std": 0.006,
+          "ci_95_lower": 0.5972,
+          "ci_95_upper": 0.6046
+        },
+        "tokens_per_second": {
+          "mean": 184.0403,
+          "std": 0.1645,
+          "ci_95_lower": 183.9383,
+          "ci_95_upper": 184.1422
+        },
+        "mean_watts": {
+          "mean": 170.2231,
+          "std": 1.527,
+          "ci_95_lower": 169.2766,
+          "ci_95_upper": 171.1695
+        },
+        "output_tokens": {
+          "mean": 800.0,
+          "std": 0.0,
+          "ci_95_lower": 800.0,
+          "ci_95_upper": 800.0
+        },
+        "input_tokens": {
+          "mean": 120.0,
+          "std": 0.0,
+          "ci_95_lower": 120.0,
+          "ci_95_upper": 120.0
+        }
+      }
+    },
+    {
+      "prompt_id": "longform",
+      "task_type": "longform",
+      "batch_size": 8,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.3066,
+          "std": 0.0045,
+          "ci_95_lower": 0.3038,
+          "ci_95_upper": 0.3094
+        },
+        "tokens_per_second": {
+          "mean": 367.5764,
+          "std": 0.3675,
+          "ci_95_lower": 367.3486,
+          "ci_95_upper": 367.8043
+        },
+        "mean_watts": {
+          "mean": 172.2378,
+          "std": 2.0719,
+          "ci_95_lower": 170.9536,
+          "ci_95_upper": 173.5219
+        },
+        "output_tokens": {
+          "mean": 1600.0,
+          "std": 0.0,
+          "ci_95_lower": 1600.0,
+          "ci_95_upper": 1600.0
+        },
+        "input_tokens": {
+          "mean": 240.0,
+          "std": 0.0,
+          "ci_95_lower": 240.0,
+          "ci_95_upper": 240.0
+        }
+      }
+    },
+    {
+      "prompt_id": "longform",
+      "task_type": "longform",
+      "batch_size": 16,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.1635,
+          "std": 0.003,
+          "ci_95_lower": 0.1616,
+          "ci_95_upper": 0.1653
+        },
+        "tokens_per_second": {
+          "mean": 730.5033,
+          "std": 0.794,
+          "ci_95_lower": 730.0112,
+          "ci_95_upper": 730.9954
+        },
+        "mean_watts": {
+          "mean": 179.8377,
+          "std": 2.1328,
+          "ci_95_lower": 178.5158,
+          "ci_95_upper": 181.1596
+        },
+        "output_tokens": {
+          "mean": 3200.0,
+          "std": 0.0,
+          "ci_95_lower": 3200.0,
+          "ci_95_upper": 3200.0
+        },
+        "input_tokens": {
+          "mean": 480.0,
+          "std": 0.0,
+          "ci_95_lower": 480.0,
+          "ci_95_upper": 480.0
+        }
+      }
+    },
+    {
+      "prompt_id": "reasoning",
+      "task_type": "reasoning",
+      "batch_size": 1,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 2.3865,
+          "std": 0.013,
+          "ci_95_lower": 2.3784,
+          "ci_95_upper": 2.3946
+        },
+        "tokens_per_second": {
+          "mean": 45.6224,
+          "std": 0.0686,
+          "ci_95_lower": 45.5799,
+          "ci_95_upper": 45.665
+        },
+        "mean_watts": {
+          "mean": 169.397,
+          "std": 0.8067,
+          "ci_95_lower": 168.897,
+          "ci_95_upper": 169.897
+        },
+        "output_tokens": {
+          "mean": 200.0,
+          "std": 0.0,
+          "ci_95_lower": 200.0,
+          "ci_95_upper": 200.0
+        },
+        "input_tokens": {
+          "mean": 60.0,
+          "std": 0.0,
+          "ci_95_lower": 60.0,
+          "ci_95_upper": 60.0
+        }
+      }
+    },
+    {
+      "prompt_id": "reasoning",
+      "task_type": "reasoning",
+      "batch_size": 4,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.6025,
+          "std": 0.0079,
+          "ci_95_lower": 0.5976,
+          "ci_95_upper": 0.6074
+        },
+        "tokens_per_second": {
+          "mean": 183.5133,
+          "std": 0.2687,
+          "ci_95_lower": 183.3468,
+          "ci_95_upper": 183.6799
+        },
+        "mean_watts": {
+          "mean": 170.0271,
+          "std": 1.8171,
+          "ci_95_lower": 168.9008,
+          "ci_95_upper": 171.1533
+        },
+        "output_tokens": {
+          "mean": 800.0,
+          "std": 0.0,
+          "ci_95_lower": 800.0,
+          "ci_95_upper": 800.0
+        },
+        "input_tokens": {
+          "mean": 240.0,
+          "std": 0.0,
+          "ci_95_lower": 240.0,
+          "ci_95_upper": 240.0
+        }
+      }
+    },
+    {
+      "prompt_id": "reasoning",
+      "task_type": "reasoning",
+      "batch_size": 8,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.3075,
+          "std": 0.0055,
+          "ci_95_lower": 0.3041,
+          "ci_95_upper": 0.3109
+        },
+        "tokens_per_second": {
+          "mean": 366.1107,
+          "std": 0.3917,
+          "ci_95_lower": 365.8679,
+          "ci_95_upper": 366.3535
+        },
+        "mean_watts": {
+          "mean": 172.5493,
+          "std": 2.3486,
+          "ci_95_lower": 171.0937,
+          "ci_95_upper": 174.005
+        },
+        "output_tokens": {
+          "mean": 1600.0,
+          "std": 0.0,
+          "ci_95_lower": 1600.0,
+          "ci_95_upper": 1600.0
+        },
+        "input_tokens": {
+          "mean": 480.0,
+          "std": 0.0,
+          "ci_95_lower": 480.0,
+          "ci_95_upper": 480.0
+        }
+      }
+    },
+    {
+      "prompt_id": "reasoning",
+      "task_type": "reasoning",
+      "batch_size": 16,
+      "runs": 10,
+      "metrics": {
+        "joules_per_token": {
+          "mean": 0.1672,
+          "std": 0.0027,
+          "ci_95_lower": 0.1655,
+          "ci_95_upper": 0.1688
+        },
+        "tokens_per_second": {
+          "mean": 723.126,
+          "std": 0.9638,
+          "ci_95_lower": 722.5286,
+          "ci_95_upper": 723.7234
+        },
+        "mean_watts": {
+          "mean": 179.2452,
+          "std": 2.4446,
+          "ci_95_lower": 177.73,
+          "ci_95_upper": 180.7604
+        },
+        "output_tokens": {
+          "mean": 3200.0,
+          "std": 0.0,
+          "ci_95_lower": 3200.0,
+          "ci_95_upper": 3200.0
+        },
+        "input_tokens": {
+          "mean": 960.0,
+          "std": 0.0,
+          "ci_95_lower": 960.0,
+          "ci_95_upper": 960.0
+        }
+      }
+    }
+  ],
+  "summary": {
+    "idle_baseline_watts": 58.45023287671207
+  }
+}
