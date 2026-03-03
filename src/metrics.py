@@ -69,6 +69,15 @@ def compute_metrics(energy: EnergyMeasurement, inference: InferenceResult,
     Returns:
         BenchmarkMetrics for this run.
     """
+    if inference.output_tokens <= 0:
+        raise ValueError(
+            f"Cannot compute metrics: output_tokens={inference.output_tokens} "
+            f"(prompt_id={inference.prompt_id}, batch_size={inference.batch_size})"
+        )
+    if inference.generation_time_seconds <= 0:
+        raise ValueError(
+            f"Cannot compute metrics: generation_time={inference.generation_time_seconds}s"
+        )
     joules_per_token = energy.net_energy_joules / inference.output_tokens
     tokens_per_second = inference.output_tokens / inference.generation_time_seconds
 

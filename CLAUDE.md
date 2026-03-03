@@ -22,6 +22,12 @@ You are working on the **llm-energy-framework** project — a rigorous framework
 5. **Use greedy decoding only** (`do_sample=False`). Never use sampling, beam search, or temperature.
 6. **Use `torch.cuda.synchronize()`** before timing measurements to ensure accurate GPU timing.
 7. **Handle OOM gracefully.** If a (model, batch_size) combination causes CUDA OOM, catch the exception, log it, clear GPU memory with `torch.cuda.empty_cache()` and `gc.collect()`, and skip to the next configuration.
+8. **Manage disk space proactively.** The shared filesystem is only 207GB total. HuggingFace model downloads fill disk fast (7B model ≈ 14GB, 70B ≈ 140GB). Follow these rules:
+   - **Check disk before downloading:** Abort if < 20GB free (`df --output=avail -BG $HOME`).
+   - **Clean HF cache after each benchmark:** Delete `$HF_HOME/hub/models--<org>--<model>/` once the JSON report is saved.
+   - **Never run concurrent model downloads:** Use SLURM `--dependency=afterany:<jobid>` chains so only one model is downloaded at a time.
+   - **Prefer int8/int4 for very large models:** Mixtral-8x7B fp16 is 93GB (won't fit). Use int8 instead. Llama-3.3-70B must use int4.
+   - **Monitor disk between jobs:** Run `df -h $HOME` and act if usage exceeds 90%.
 
 ## Step-by-Step Execution
 

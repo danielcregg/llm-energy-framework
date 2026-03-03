@@ -157,6 +157,7 @@ class PowerSampler:
         self._interval = interval_seconds
         self._baseline = baseline_watts
         self._samples: list[tuple[float, float]] = []
+        self._lock = threading.Lock()
         self._running = False
         self._thread: threading.Thread | None = None
         self._handle = None
@@ -176,7 +177,8 @@ class PowerSampler:
         while self._running:
             try:
                 power_mw = pynvml.nvmlDeviceGetPowerUsage(self._handle)
-                self._samples.append((time.monotonic(), power_mw / 1000.0))
+                with self._lock:
+                    self._samples.append((time.monotonic(), power_mw / 1000.0))
             except pynvml.NVMLError:
                 pass
             time.sleep(self._interval)
@@ -192,7 +194,9 @@ class PowerSampler:
 
     def get_results(self) -> EnergyMeasurement:
         """Compute energy from collected power samples using trapezoidal integration."""
-        if len(self._samples) < 2:
+        with self._lock:
+            samples = list(self._samples)
+        if len(samples) < 2:
             return EnergyMeasurement(
                 total_energy_joules=0.0,
                 net_energy_joules=0.0,
@@ -200,21 +204,21 @@ class PowerSampler:
                 mean_inference_watts=0.0,
                 peak_watts=0.0,
                 duration_seconds=0.0,
-                sample_count=len(self._samples),
-                samples=list(self._samples),
+                sample_count=len(samples),
+                samples=samples,
             )
 
         # Trapezoidal integration
         total_energy = sum(
-            (self._samples[i][1] + self._samples[i - 1][1]) / 2.0
-            * (self._samples[i][0] - self._samples[i - 1][0])
-            for i in range(1, len(self._samples))
+            (samples[i][1] + samples[i - 1][1]) / 2.0
+            * (samples[i][0] - samples[i - 1][0])
+            for i in range(1, len(samples))
         )
 
-        duration = self._samples[-1][0] - self._samples[0][0]
+        duration = samples[-1][0] - samples[0][0]
         net_energy = total_energy - (self._baseline * duration)
-        mean_watts = sum(s[1] for s in self._samples) / len(self._samples)
-        peak_watts = max(s[1] for s in self._samples)
+        mean_watts = sum(s[1] for s in samples) / len(samples)
+        peak_watts = max(s[1] for s in samples)
 
         return EnergyMeasurement(
             total_energy_joules=total_energy,
@@ -223,6 +227,6 @@ class PowerSampler:
             mean_inference_watts=mean_watts,
             peak_watts=peak_watts,
             duration_seconds=duration,
-            sample_count=len(self._samples),
-            samples=list(self._samples),
+            sample_count=len(samples),
+            samples=samples,
         )
