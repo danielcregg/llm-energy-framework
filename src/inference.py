@@ -68,6 +68,10 @@ def load_model(model_name: str, precision: str = "fp16"):
             load_in_4bit=True,
             bnb_4bit_compute_dtype=torch.float16,
         )
+    elif precision in ("gptq", "awq"):
+        # Pre-quantized GPTQ/AWQ models — quantization config is embedded
+        # in the model repo, no extra kwargs needed.
+        kwargs["dtype"] = torch.float16
     else:
         raise ValueError(f"Unsupported precision: {precision}")
 

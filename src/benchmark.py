@@ -252,7 +252,8 @@ def _print_summary(report: dict) -> None:
 def main():
     parser = argparse.ArgumentParser(description="LLM Energy Benchmark")
     parser.add_argument("--model", required=True, help="HuggingFace model name")
-    parser.add_argument("--precision", default="fp16", choices=["fp16", "int8", "int4"])
+    parser.add_argument("--precision", default="fp16",
+                        choices=["fp16", "int8", "int4", "gptq", "awq"])
     parser.add_argument("--batch-sizes", nargs="+", type=int, default=[1, 4])
     parser.add_argument("--n-runs", type=int, default=DEFAULT_N_RUNS)
     parser.add_argument("--max-new-tokens", type=int, default=DEFAULT_MAX_NEW_TOKENS)
