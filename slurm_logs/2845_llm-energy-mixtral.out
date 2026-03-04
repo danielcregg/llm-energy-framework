@@ -1,0 +1,59 @@
+=== Job 2845: Mixtral-8x7B GPTQ-Int4 ===
+Start: Wed Mar  4 06:35:23 PM GMT 2026
+Node: hpc-wn-103
+Wed Mar  4 18:35:23 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100 80GB PCIe           On | 00000000:21:00.0 Off |                    0 |
+| N/A   26C    P0               39W / 300W|      0MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+Available disk: 21GB
+Model already cached, skipping disk check
+
+======================================================================
+BENCHMARK REPORT: TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ
+Precision: gptq
+GPU: NVIDIA A100 80GB PCIe
+======================================================================
+Prompt          Batch    J/tok    tok/s    Watts
+----------------------------------------------------------------------
+sum_short           1  65.0582      3.5    283.6
+sum_short           4  16.5028     13.8    286.2
+sum_short           8   8.2769     27.5    286.1
+sum_short          16   4.1606     54.6    285.7
+qa_factual          1  65.9048      3.5    287.1
+qa_factual          4  16.4496     13.8    286.2
+qa_factual          8   8.2441     27.6    286.0
+qa_factual         16   4.1373     54.9    285.6
+code_simple         1  65.9559      3.5    287.2
+code_simple         4  16.4666     13.8    286.1
+code_simple         8   8.2492     27.6    286.2
+code_simple        16   4.1454     54.8    285.6
+longform            1  65.9316      3.5    287.2
+longform            4  16.4546     13.8    285.9
+longform            8   8.2518     27.6    286.1
+longform           16   4.1455     54.8    285.7
+reasoning           1  65.8962      3.5    287.0
+reasoning           4  16.4666     13.8    286.2
+reasoning           8   8.2700     27.5    285.9
+reasoning          16   4.1516     54.7    285.5
+======================================================================
+Idle baseline: 58.4 W
+
+Cleaning cache: /home/daniel.cregg/hf_cache/hub/models--TheBloke--Mixtral-8x7B-Instruct-v0.1-GPTQ
+Disk after cleanup: 43G free
+=== DONE: Wed Mar  4 10:46:20 PM GMT 2026 ===
