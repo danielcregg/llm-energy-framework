@@ -186,9 +186,10 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
                        color=colour, label=f"{family} (GPTQ)", s=80, zorder=5,
                        marker="D", edgecolors="black", linewidth=0.5)
 
-    # Fit power law across all data
-    x = grouped["params_b"].values
-    y = grouped["j_per_tok"].values
+    # Fit power law on fp16 data only (GPTQ has different perf characteristics)
+    fp16_only = grouped[grouped["precision"] == "fp16"]
+    x = fp16_only["params_b"].values
+    y = fp16_only["j_per_tok"].values
     if len(x) >= 3:
         try:
             popt, _ = curve_fit(_power_law, x, y, p0=[0.05, 0.5], maxfev=5000)
@@ -737,9 +738,8 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
 
     # Fill in new framework values if available
     if not df.empty:
-        # Scaling fit — include GPTQ models for wider range
-        best_bs1 = _best_precision_data(df[df["batch_size"] == 1])
-        fp16_bs1 = best_bs1[best_bs1["batch_size"] == 1]
+        # Scaling fit — fp16 only (GPTQ has different perf characteristics)
+        fp16_bs1 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
         if not fp16_bs1.empty:
             new_agg = fp16_bs1.groupby("params_b")["j_per_tok_mean"].mean().reset_index()
             if len(new_agg) >= 3:

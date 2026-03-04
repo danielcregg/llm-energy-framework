@@ -34,7 +34,10 @@ nvidia-smi
 AVAIL_GB=$(df --output=avail -BG $HOME | tail -1 | tr -d ' G')
 echo "Available disk: ${AVAIL_GB}GB"
 
-if [ "$AVAIL_GB" -lt 30 ]; then
+# Check if model is already cached (no download needed)
+if [ -d "$HF_HOME/hub/models--${CACHE_DIR}" ]; then
+    echo "Model already cached, skipping disk check"
+elif [ "$AVAIL_GB" -lt 30 ]; then
     echo "SKIP: Only ${AVAIL_GB}GB free, need 30GB for Mixtral-8x7B"
     curl -s -H "Tags: warning" -d "Mixtral-8x7B skipped: only ${AVAIL_GB}GB free" \
       https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1

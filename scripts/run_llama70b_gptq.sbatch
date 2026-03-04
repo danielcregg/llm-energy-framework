@@ -34,7 +34,10 @@ nvidia-smi
 AVAIL_GB=$(df --output=avail -BG $HOME | tail -1 | tr -d ' G')
 echo "Available disk: ${AVAIL_GB}GB"
 
-if [ "$AVAIL_GB" -lt 42 ]; then
+# Check if model is already cached (no download needed)
+if [ -d "$HF_HOME/hub/models--${CACHE_DIR}" ]; then
+    echo "Model already cached, skipping disk check"
+elif [ "$AVAIL_GB" -lt 42 ]; then
     echo "SKIP: Only ${AVAIL_GB}GB free, need 42GB for Llama-3.3-70B"
     curl -s -H "Tags: warning" -d "Llama-3.3-70B skipped: only ${AVAIL_GB}GB free" \
       https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1
