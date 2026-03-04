@@ -1,0 +1,129 @@
+=== Job 2833: meta-llama/Llama-3.1-8B-Instruct (quant study: fp16, int8, int4) ===
+Start: Tue Mar  3 08:36:20 PM GMT 2026
+Node: hpc-wn-103
+Tue Mar  3 20:36:20 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100 80GB PCIe           On | 00000000:21:00.0 Off |                    0 |
+| N/A   43C    P0               43W / 300W|      0MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+===
+Available disk: 35GB
+
+=== Quantisation: fp16 (Tue Mar  3 08:36:20 PM GMT 2026) ===
+
+======================================================================
+BENCHMARK REPORT: meta-llama/Llama-3.1-8B-Instruct
+Precision: fp16
+GPU: NVIDIA A100 80GB PCIe
+======================================================================
+Prompt          Batch    J/tok    tok/s    Watts
+----------------------------------------------------------------------
+sum_short           1   2.3277     42.6    160.3
+sum_short           4   0.6035    165.7    159.1
+sum_short           8   0.3247    329.8    166.7
+sum_short          16   0.1815    655.3    179.6
+qa_factual          1   2.3916     42.9    162.4
+qa_factual          4   0.6054    166.9    161.7
+qa_factual          8   0.3157    334.3    166.0
+qa_factual         16   0.1703    668.0    174.2
+code_simple         1   2.4001     42.9    162.9
+code_simple         4   0.6062    166.9    162.1
+code_simple         8   0.3192    333.6    167.5
+code_simple        16   0.1723    666.3    176.2
+longform            1   2.3965     42.9    162.8
+longform            4   0.6077    166.9    162.4
+longform            8   0.3184    333.6    167.2
+longform           16   0.1723    666.7    176.1
+reasoning           1   2.3978     42.8    162.9
+reasoning           4   0.6135    166.7    163.0
+reasoning           8   0.3240    332.1    166.5
+reasoning          16   0.1787    662.6    177.6
+======================================================================
+Idle baseline: 59.2 W
+
+OK: fp16
+
+=== Quantisation: int8 (Tue Mar  3 09:00:36 PM GMT 2026) ===
+
+======================================================================
+BENCHMARK REPORT: meta-llama/Llama-3.1-8B-Instruct
+Precision: int8
+GPU: NVIDIA A100 80GB PCIe
+======================================================================
+Prompt          Batch    J/tok    tok/s    Watts
+----------------------------------------------------------------------
+sum_short           1   2.0934     10.1     81.5
+sum_short           4   0.6490     36.8     84.2
+sum_short           8   0.3947     73.4     89.3
+sum_short          16   0.3433    143.3    109.5
+qa_factual          1   2.1376     10.3     82.4
+qa_factual          4   0.6357     36.8     83.7
+qa_factual          8   0.3822     73.5     88.4
+qa_factual         16   0.3613    143.7    112.3
+code_simple         1   2.1621     10.5     83.0
+code_simple         4   0.6364     37.9     84.4
+code_simple         8   0.3823     75.5     89.2
+code_simple        16   0.3607    147.9    113.7
+longform            1   2.1626     10.3     82.6
+longform            4   0.6334     37.3     84.0
+longform            8   0.3837     74.4     88.9
+longform           16   0.3645    145.8    113.5
+reasoning           1   2.1547     10.3     82.5
+reasoning           4   0.6406     37.3     84.2
+reasoning           8   0.3861     74.4     89.1
+reasoning          16   0.3508    145.6    111.5
+======================================================================
+Idle baseline: 60.3 W
+
+OK: int8
+
+=== Quantisation: int4 (Tue Mar  3 10:33:14 PM GMT 2026) ===
+
+======================================================================
+BENCHMARK REPORT: meta-llama/Llama-3.1-8B-Instruct
+Precision: int4
+GPU: NVIDIA A100 80GB PCIe
+======================================================================
+Prompt          Batch    J/tok    tok/s    Watts
+----------------------------------------------------------------------
+sum_short           1   1.8528     25.5    107.7
+sum_short           4   3.5672     57.7    266.4
+sum_short           8   1.8597    114.4    273.7
+sum_short          16   0.9516    224.8    274.1
+qa_factual          1   1.9275     25.6    109.6
+qa_factual          4   3.5890     57.9    269.0
+qa_factual          8   1.8473    115.1    273.8
+qa_factual         16   0.9393    227.5    274.2
+code_simple         1   1.9290     25.6    109.6
+code_simple         4   3.5963     57.9    268.5
+code_simple         8   1.8517    115.0    273.9
+code_simple        16   0.9405    227.0    274.6
+longform            1   1.9205     25.6    109.4
+longform            4   3.5982     57.9    268.5
+longform            8   1.8527    114.9    274.3
+longform           16   0.9401    226.9    274.3
+reasoning           1   1.9292     25.6    109.6
+reasoning           4   3.6035     57.8    268.4
+reasoning           8   1.8582    114.7    273.4
+reasoning          16   0.9460    226.0    274.0
+======================================================================
+Idle baseline: 60.2 W
+
+OK: int4
+Cache cleaned. Disk: 35G free
+=== Done: Tue Mar  3 11:28:03 PM GMT 2026 ===

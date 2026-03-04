@@ -1,0 +1,84 @@
+/home/daniel.cregg/.local/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-04 00:52:37,232 INFO __main__: Loading model: Qwen/Qwen2.5-32B-Instruct (precision: int8)
+2026-03-04 00:52:39,621 INFO src.inference: Loading tokenizer: Qwen/Qwen2.5-32B-Instruct
+2026-03-04 00:52:39,773 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 00:52:39,868 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/config.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:39,983 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/config.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:40,085 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 00:52:40,179 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:40,318 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:40,418 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-04 00:52:40,524 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-04 00:52:40,630 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/vocab.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 00:52:40,732 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/vocab.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:40,837 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/vocab.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:41,193 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/merges.txt "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 00:52:41,285 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/merges.txt "HTTP/1.1 200 OK"
+2026-03-04 00:52:41,394 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/merges.txt "HTTP/1.1 200 OK"
+2026-03-04 00:52:41,654 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 00:52:41,747 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:41,857 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:42,410 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+2026-03-04 00:52:42,503 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
+2026-03-04 00:52:42,609 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-03-04 00:52:43,287 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct "HTTP/1.1 200 OK"
+2026-03-04 00:52:43,290 INFO src.inference: Loading model: Qwen/Qwen2.5-32B-Instruct (precision=int8)
+2026-03-04 00:52:43,386 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 00:52:43,398 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/config.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:46,137 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/model.safetensors "HTTP/1.1 404 Not Found"
+2026-03-04 00:52:46,238 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/main/model.safetensors.index.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 00:52:46,331 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:46,426 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-03-04 00:52:46,536 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/revision/main "HTTP/1.1 200 OK"
+Fetching 17 files:   0%|          | 0/17 [00:00<?, ?it/s]2026-03-04 00:52:46,637 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00001-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:52:46,657 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00005-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:52:46,658 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00002-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:52:46,659 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00004-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:52:46,660 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00008-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:52:46,670 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00007-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:52:46,709 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00006-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:52:46,738 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/xet-read-token/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd "HTTP/1.1 200 OK"
+2026-03-04 00:52:46,761 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/xet-read-token/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd "HTTP/1.1 200 OK"
+2026-03-04 00:52:46,762 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/xet-read-token/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd "HTTP/1.1 200 OK"
+2026-03-04 00:52:46,763 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/xet-read-token/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd "HTTP/1.1 200 OK"
+2026-03-04 00:52:46,764 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/xet-read-token/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd "HTTP/1.1 200 OK"
+2026-03-04 00:52:46,765 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/xet-read-token/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd "HTTP/1.1 200 OK"
+2026-03-04 00:52:46,807 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct/xet-read-token/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd "HTTP/1.1 200 OK"
+2026-03-04 00:52:47,454 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00003-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:56:14,153 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00009-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:56:21,274 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00010-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:56:31,189 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00011-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:56:33,681 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00012-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:56:40,932 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00014-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:56:41,561 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00013-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:56:54,050 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00015-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:57:50,894 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00016-of-00017.safetensors "HTTP/1.1 302 Found"
+2026-03-04 00:57:51,125 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/resolve/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/model-00017-of-00017.safetensors "HTTP/1.1 302 Found"
+Fetching 17 files:   0%|          | 0/17 [05:32<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1822, in _download_to_tmp_and_move
+    xet_get(
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 546, in xet_get
+    download_files(
+RuntimeError: Data processing error: File Reconstruction Error: IO Error: No space left on device (os error 28)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 279, in <module>
+    main()
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 267, in main
+    run_benchmark(
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 99, in run_benchmark
+    model, tokenizer = load_model(model_name, precision)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/llm-energy-framework/src/inference.py", line 75, in load_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 374, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/modeling_utils.

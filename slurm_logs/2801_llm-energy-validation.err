@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'torch'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'pynvml'
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib64/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 19, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'

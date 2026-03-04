@@ -1,0 +1,59 @@
+=== Job 2835: meta-llama/Llama-3.2-1B-Instruct (fp16) ===
+Start: Tue Mar  3 11:58:34 PM GMT 2026
+Node: hpc-wn-103
+Tue Mar  3 23:58:34 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100 80GB PCIe           On | 00000000:21:00.0 Off |                    0 |
+| N/A   39C    P0               42W / 300W|      0MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+===
+Available disk: 35GB
+
+======================================================================
+BENCHMARK REPORT: meta-llama/Llama-3.2-1B-Instruct
+Precision: fp16
+GPU: NVIDIA A100 80GB PCIe
+======================================================================
+Prompt          Batch    J/tok    tok/s    Watts
+----------------------------------------------------------------------
+sum_short           1   0.0000     72.1      0.0
+sum_short           4   0.0000    291.0      0.0
+sum_short           8   0.0000    576.5      0.0
+sum_short          16   0.0000    718.1      0.0
+qa_factual          1   0.4198     83.8     94.6
+qa_factual          4   0.0999    315.1     94.0
+qa_factual          8   0.0531    631.0     95.7
+qa_factual         16   0.0286   1280.0     98.4
+code_simple         1   0.4470     84.2     97.6
+code_simple         4   0.1109    315.8     96.1
+code_simple         8   0.0587    632.7     98.2
+code_simple        16   0.0315   1281.6    100.9
+longform            1   0.4555     84.1     98.3
+longform            4   0.1111    316.4     96.1
+longform            8   0.0596    633.6     98.5
+longform           16   0.0318   1286.5    101.1
+reasoning           1   0.4525     84.3     98.1
+reasoning           4   0.1103    317.6     95.7
+reasoning           8   0.0602    636.4     99.0
+reasoning          16   0.0329   1288.5    102.6
+======================================================================
+Idle baseline: 60.0 W
+
+=== Done: Wed Mar  4 12:07:23 AM GMT 2026 (exit=0) ===
+Cleaning cache: /home/daniel.cregg/hf_cache/hub/models--meta-llama--Llama-3.2-1B-Instruct
+Disk after cleanup: 35G free

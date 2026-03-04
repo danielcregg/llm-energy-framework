@@ -1,0 +1,59 @@
+=== Job 2832: Qwen/Qwen2.5-7B-Instruct (fp16) ===
+Start: Tue Mar  3 08:15:41 PM GMT 2026
+Node: hpc-wn-103
+Tue Mar  3 20:15:41 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100 80GB PCIe           On | 00000000:21:00.0 Off |                    0 |
+| N/A   26C    P0               39W / 300W|      0MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+===
+Available disk: 35GB
+
+======================================================================
+BENCHMARK REPORT: Qwen/Qwen2.5-7B-Instruct
+Precision: fp16
+GPU: NVIDIA A100 80GB PCIe
+======================================================================
+Prompt          Batch    J/tok    tok/s    Watts
+----------------------------------------------------------------------
+sum_short           1   2.3195     46.1    166.9
+sum_short           4   0.5731    183.1    166.7
+sum_short           8   0.3111    362.5    170.6
+sum_short          16   0.1703    708.2    181.8
+qa_factual          1   2.3597     45.8    168.0
+qa_factual          4   0.5954    184.3    168.6
+qa_factual          8   0.3029    368.3    170.8
+qa_factual         16   0.1609    734.4    177.7
+code_simple         1   2.3750     45.7    168.9
+code_simple         4   0.6002    184.0    169.6
+code_simple         8   0.3052    368.3    171.5
+code_simple        16   0.1617    731.3    178.6
+longform            1   2.3772     45.7    168.9
+longform            4   0.6009    184.0    170.2
+longform            8   0.3066    367.6    172.2
+longform           16   0.1635    730.5    179.8
+reasoning           1   2.3865     45.6    169.4
+reasoning           4   0.6025    183.5    170.0
+reasoning           8   0.3075    366.1    172.5
+reasoning          16   0.1672    723.1    179.2
+======================================================================
+Idle baseline: 58.5 W
+
+=== Done: Tue Mar  3 08:36:17 PM GMT 2026 (exit=0) ===
+Cleaning cache: /home/daniel.cregg/hf_cache/hub/models--Qwen--Qwen2.5-7B-Instruct
+Disk after cleanup: 35G free

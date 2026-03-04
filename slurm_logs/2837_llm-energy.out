@@ -1,0 +1,59 @@
+=== Job 2837: microsoft/Phi-3-medium-4k-instruct (fp16) ===
+Start: Wed Mar  4 12:28:01 AM GMT 2026
+Node: hpc-wn-103
+Wed Mar  4 00:28:01 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100 80GB PCIe           On | 00000000:21:00.0 Off |                    0 |
+| N/A   36C    P0               43W / 300W|      0MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+===
+Available disk: 35GB
+
+======================================================================
+BENCHMARK REPORT: microsoft/Phi-3-medium-4k-instruct
+Precision: fp16
+GPU: NVIDIA A100 80GB PCIe
+======================================================================
+Prompt          Batch    J/tok    tok/s    Watts
+----------------------------------------------------------------------
+sum_short           1   4.0533     34.3    203.7
+sum_short           4   1.1006    135.4    208.5
+sum_short           8   0.5966    263.2    220.1
+sum_short          16   0.3499    506.2    241.5
+qa_factual          1   4.3458     34.7    212.1
+qa_factual          4   1.0933    138.0    213.6
+qa_factual          8   0.5777    273.3    215.6
+qa_factual         16   0.3062    544.8    233.6
+code_simple         1   4.4952     34.5    215.9
+code_simple         4   1.1470    137.5    219.1
+code_simple         8   0.6073    272.5    225.6
+code_simple        16   0.3306    546.5    239.8
+longform            1   4.5271     34.5    216.9
+longform            4   1.1572    137.5    220.5
+longform            8   0.6124    272.4    226.9
+longform           16   0.3354    544.8    242.5
+reasoning           1   4.5507     34.4    217.6
+reasoning           4   1.1763    136.8    219.5
+reasoning           8   0.6179    270.4    228.3
+reasoning          16   0.3456    536.8    244.5
+======================================================================
+Idle baseline: 59.1 W
+
+=== Done: Wed Mar  4 12:52:31 AM GMT 2026 (exit=0) ===
+Cleaning cache: /home/daniel.cregg/hf_cache/hub/models--microsoft--Phi-3-medium-4k-instruct
+Disk after cleanup: 35G free

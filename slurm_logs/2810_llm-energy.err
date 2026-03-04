@@ -1,0 +1,59 @@
+/home/daniel.cregg/.local/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-03 19:02:04,392 INFO __main__: Loading model: Qwen/Qwen2.5-7B-Instruct (precision: fp16)
+2026-03-03 19:02:06,859 INFO src.inference: Loading tokenizer: Qwen/Qwen2.5-7B-Instruct
+2026-03-03 19:02:07,059 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-03 19:02:07,175 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/config.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:07,306 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/config.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:07,429 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-03 19:02:07,543 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:07,655 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:07,768 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-03 19:02:07,893 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-03 19:02:08,001 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/vocab.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-03 19:02:08,112 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/vocab.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:08,240 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/vocab.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:08,591 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/merges.txt "HTTP/1.1 307 Temporary Redirect"
+2026-03-03 19:02:08,705 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/merges.txt "HTTP/1.1 200 OK"
+2026-03-03 19:02:08,834 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/merges.txt "HTTP/1.1 200 OK"
+2026-03-03 19:02:09,107 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-03 19:02:09,217 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:09,392 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:09,881 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+2026-03-03 19:02:09,997 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
+2026-03-03 19:02:10,109 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-03-03 19:02:10,783 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct "HTTP/1.1 200 OK"
+2026-03-03 19:02:10,785 INFO src.inference: Loading model: Qwen/Qwen2.5-7B-Instruct (precision=fp16)
+2026-03-03 19:02:10,898 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-03 19:02:10,921 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/config.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:12,170 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/model.safetensors "HTTP/1.1 404 Not Found"
+2026-03-03 19:02:12,289 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/model.safetensors.index.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-03 19:02:12,404 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:12,525 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-03-03 19:02:12,647 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/revision/main "HTTP/1.1 200 OK"
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]2026-03-03 19:02:12,767 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/a09a35458c702b33eeacc393d103063234e8bc28/model-00001-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-03 19:02:12,794 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/a09a35458c702b33eeacc393d103063234e8bc28/model-00002-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-03 19:02:12,804 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/a09a35458c702b33eeacc393d103063234e8bc28/model-00003-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-03 19:02:12,879 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/xet-read-token/a09a35458c702b33eeacc393d103063234e8bc28 "HTTP/1.1 200 OK"
+2026-03-03 19:02:12,906 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/xet-read-token/a09a35458c702b33eeacc393d103063234e8bc28 "HTTP/1.1 200 OK"
+2026-03-03 19:02:12,924 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/xet-read-token/a09a35458c702b33eeacc393d103063234e8bc28 "HTTP/1.1 200 OK"
+2026-03-03 19:02:12,961 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/a09a35458c702b33eeacc393d103063234e8bc28/model-00004-of-00004.safetensors "HTTP/1.1 302 Found"
+Fetching 4 files:   0%|          | 0/4 [01:53<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1822, in _download_to_tmp_and_move
+    xet_get(
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 546, in xet_get
+    download_files(
+RuntimeError: Data processing error: File Reconstruction Error: IO Error: No space left on device (os error 28)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 279, in <module>
+    main()
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 267, in main
+    run_benchmark(
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 99, in run_benchmark
+    model, tokenizer = load_model(model_n

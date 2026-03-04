@@ -1,0 +1,59 @@
+=== Job 2834: google/gemma-2-9b-it (fp16) ===
+Start: Tue Mar  3 11:28:04 PM GMT 2026
+Node: hpc-wn-103
+Tue Mar  3 23:28:04 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100 80GB PCIe           On | 00000000:21:00.0 Off |                    0 |
+| N/A   55C    P0               47W / 300W|      0MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+===
+Available disk: 35GB
+
+======================================================================
+BENCHMARK REPORT: google/gemma-2-9b-it
+Precision: fp16
+GPU: NVIDIA A100 80GB PCIe
+======================================================================
+Prompt          Batch    J/tok    tok/s    Watts
+----------------------------------------------------------------------
+sum_short           1   3.1384     23.8    133.0
+sum_short           4   0.8287     92.4    135.6
+sum_short           8   0.4256    183.6    137.2
+sum_short          16   0.2469    361.8    149.1
+qa_factual          1   2.9955     24.1    132.1
+qa_factual          4   0.7520     93.7    129.7
+qa_factual          8   0.3835    189.0    134.4
+qa_factual         16   0.2049    377.6    139.4
+code_simple         1   3.0951     24.0    133.3
+code_simple         4   0.7816     93.6    132.1
+code_simple         8   0.4066    187.5    135.2
+code_simple        16   0.2241    376.0    143.2
+longform            1   3.1037     24.0    133.4
+longform            4   0.7809     93.3    132.3
+longform            8   0.4094    186.3    135.0
+longform           16   0.2242    372.8    143.0
+reasoning           1   3.1119     23.8    132.7
+reasoning           4   0.7939     92.5    132.5
+reasoning           8   0.4148    185.0    135.8
+reasoning          16   0.2376    369.0    147.0
+======================================================================
+Idle baseline: 58.8 W
+
+=== Done: Tue Mar  3 11:58:31 PM GMT 2026 (exit=0) ===
+Cleaning cache: /home/daniel.cregg/hf_cache/hub/models--google--gemma-2-9b-it
+Disk after cleanup: 35G free
