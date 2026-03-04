@@ -71,8 +71,10 @@ Benchmarked on an NVIDIA A100 80GB PCIe GPU. All measurements use direct NVML po
 | Llama-3.1-8B-Instruct | 8.0 | INT4 | 0.944 | 226.4 | 274.2 |
 | Gemma-2-9b-it | 9.0 | FP16 | 0.228 | 371.4 | 144.3 |
 | Phi-3-medium-4k-instruct | 14.0 | FP16 | 0.334 | 535.8 | 240.4 |
+| Qwen2.5-32B-Instruct-GPTQ-Int4 | 32.0 | GPTQ | 10.3 | 23.2 | 298.0 |
+| Mixtral-8x7B-Instruct-v0.1-GPTQ | 46.7 | GPTQ | 4.15 | 54.8 | 285.6 |
 
-Best J/tok and tok/s are at optimal batch size (bs=16 for all models). 250 individual measurements across 13 benchmark configurations.
+Best J/tok and tok/s are at optimal batch size (bs=16 for all models). 290 individual measurements across 15 benchmark configurations. GPTQ models use pre-quantized weights via auto-gptq. Note: Mixtral-8x7B is a Mixture-of-Experts model (46.7B total params, ~12.9B active per token), explaining its lower J/tok than the dense Qwen-32B.
 
 ### Key Findings
 

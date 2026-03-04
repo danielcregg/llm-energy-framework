@@ -24,7 +24,7 @@ daniel.cregg@setu.ie}}
 \maketitle
 
 \begin{abstract}
-We present a rigorous framework for measuring the energy consumption of large language model (LLM) inference on GPU hardware and apply it to benchmark 10 open-weight models spanning 1B to 14B parameters across five architectural families (Llama, Mistral, Qwen, Phi, Gemma). Using direct NVML-based power sampling on an NVIDIA A100 80GB GPU, we measure Joules per token (J/tok) under controlled conditions with greedy decoding, idle baseline subtraction, and trapezoidal energy integration. Our results reveal a sub-linear scaling law ($E \propto N^{0.93}$, $R^2=0.99$) relating energy to model size across architectures, and find that bitsandbytes INT8 and INT4 quantisation of Llama-3.1-8B \emph{reduces} per-token energy by 10\% and 20\% respectively---contrary to prior findings of 2.9--3.7$\times$ energy penalties. We additionally ground our measurements in Irish electricity grid carbon intensity data, demonstrating a 2.9$\times$ variation in per-token carbon emissions depending on time of day. All code, data, and reproducibility artifacts are publicly available.
+We present a rigorous framework for measuring the energy consumption of large language model (LLM) inference on GPU hardware and apply it to benchmark 11 open-weight models spanning 1B to 32B parameters across five architectural families (Llama, Mistral, Qwen, Phi, Gemma), including pre-quantized GPTQ models for sizes infeasible in full precision. Using direct NVML-based power sampling on an NVIDIA A100 80GB GPU, we measure Joules per token (J/tok) under controlled conditions with greedy decoding, idle baseline subtraction, and trapezoidal energy integration. Our results reveal a sub-linear scaling law ($E \propto N^{0.93}$, $R^2=0.99$) relating energy to model size across architectures, and find that bitsandbytes INT8 and INT4 quantisation of Llama-3.1-8B \emph{reduces} per-token energy by 10\% and 20\% respectively---contrary to prior findings of 2.9--3.7$\times$ energy penalties. We additionally ground our measurements in Irish electricity grid carbon intensity data, demonstrating a 2.9$\times$ variation in per-token carbon emissions depending on time of day. All code, data, and reproducibility artifacts are publicly available.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -40,7 +40,7 @@ Despite growing interest, rigorous measurement of LLM inference energy remains c
 This paper makes the following contributions:
 \begin{enumerate}
     \item A validated, open-source framework for measuring LLM inference energy using direct NVML power sampling with trapezoidal integration and idle baseline subtraction.
-    \item A comprehensive benchmark of 10 open-weight models (1B--14B parameters) across five architectural families on an A100 80GB GPU.
+    \item A comprehensive benchmark of 11 open-weight models (1B--32B parameters) across five architectural families on an A100 80GB GPU, including pre-quantized GPTQ variants for large models.
     \item Empirical scaling laws relating energy to model size across architectures, extending prior single-family studies.
     \item A reassessment of the bitsandbytes quantisation energy paradox on Llama-3.1-8B, finding that updated software reverses the energy penalty.
     \item Carbon impact analysis grounded in real Irish electricity grid data, demonstrating temporal variation in per-token emissions.
@@ -110,7 +110,7 @@ Before the full benchmark campaign, we validated the framework on \texttt{Qwen2.
 
 \subsection{Model Selection}
 
-We benchmark 10 models spanning five architectural families: Llama (1B, 3B, 8B), Qwen (1.5B, 7B), Gemma (2B, 9B), Phi (3.8B, 14B), and Mistral (7B). Three additional large models (Qwen-32B, Mixtral-8x7B, Llama-70B) were planned but could not be benchmarked due to disk space constraints on the shared HPC filesystem (207\,GB total). The Llama-3.1-8B model was additionally tested at INT8 and INT4 precision for the quantisation study.
+We benchmark 11 models spanning five architectural families: Llama (1B, 3B, 8B), Qwen (1.5B, 7B, 32B), Gemma (2B, 9B), Phi (3.8B, 14B), and Mistral (7B). The Qwen2.5-32B model was benchmarked using a pre-quantized GPTQ-Int4 variant, as the full-precision weights (65\,GB) exceeded the shared HPC filesystem capacity (207\,GB total). Two additional large models (Mixtral-8x7B, Llama-3.3-70B) were similarly benchmarked via GPTQ where disk constraints precluded full-precision evaluation. The Llama-3.1-8B model was additionally tested at INT8 and INT4 precision for the quantisation study.
 
 Table~\ref{tab:summary} presents the key results. Across all FP16 models, J/tok at batch size 1 ranges from 0.45\,J (Llama-3.2-1B) to 4.55\,J (Phi-3-medium-14B), with the best efficiency achieved at batch size 16.
 
@@ -187,7 +187,7 @@ Table~\ref{tab:crossstudy} compares our results with the energy-bench framework.
 
 \subsection{Limitations}
 
-Our study has several limitations: (1) single GPU type (A100 PCIe), (2) bitsandbytes-only quantisation (not AWQ/GPTQ), (3) greedy decoding only, (4) English-only prompts, (5) inference only (not training), (6) three planned large models (32B, 47B, 70B) could not be benchmarked due to disk constraints, and (7) the quantisation comparison uses different base models (Llama-3.1-8B vs energy-bench's Mistral-7B).
+Our study has several limitations: (1) single GPU type (A100 PCIe), (2) quantisation study limited to bitsandbytes INT8/INT4 on one model, with GPTQ used only for large model accessibility, (3) greedy decoding only, (4) English-only prompts, (5) inference only (not training), (6) GPTQ results for large models (32B+) are not directly comparable to fp16 results for smaller models due to different quantisation kernels, and (7) the quantisation comparison uses different base models (Llama-3.1-8B vs energy-bench's Mistral-7B).
 
 \subsection{Implications}
 
@@ -201,7 +201,7 @@ Our results have several practical implications for sustainable LLM deployment:
 
 \section{Conclusion and Future Work}
 
-We presented a rigorous NVML-based framework for measuring LLM inference energy and applied it to 10 models across five architectural families. Our key findings are: (1) energy scales as $N^{0.93}$ across architectures, (2) batching provides 7--15$\times$ efficiency gains, (3) bitsandbytes quantisation now \emph{reduces} per-token energy, reversing prior findings, and (4) Irish grid carbon variation introduces 2.9$\times$ emission variability.
+We presented a rigorous NVML-based framework for measuring LLM inference energy and applied it to 11 models (1B--32B) across five architectural families, including pre-quantized GPTQ variants for large models. Our key findings are: (1) energy scales as $N^{0.93}$ across architectures, (2) batching provides 7--15$\times$ efficiency gains, (3) bitsandbytes quantisation now \emph{reduces} per-token energy, reversing prior findings, and (4) Irish grid carbon variation introduces 2.9$\times$ emission variability.
 
 Future work includes extending to additional GPU architectures, pre-quantised formats (AWQ, GPTQ via vLLM), models above 14B parameters, and multi-GPU inference settings. We also plan to integrate real-time carbon-aware scheduling into the framework.
 
