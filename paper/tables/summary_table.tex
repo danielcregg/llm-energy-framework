@@ -1,18 +1,23 @@
-\begin{tabular}{lrllrrl}
+\begin{table*}[t]
+\centering
+\caption{Summary of benchmark results. Best J/tok and tok/s are at the optimal batch size (bs=16 for all models).}
+\label{tab:summary}
+\begin{tabular}{llrrrr}
 \toprule
-Model & Params (B) & Precision & Best J/tok & Best tok/s & Best Batch & Mean Watts \\
+Model & Precision & Params (B) & Best J/tok & Best tok/s & Mean W \\
 \midrule
-Llama-3.2-1B-Instruct & 1.000000 & fp16 & 0.0250 & 1170.9 & 16 & 80.6 \\
-Qwen2.5-1.5B-Instruct & 1.500000 & fp16 & 0.0403 & 736.3 & 16 & 93.7 \\
-gemma-2-2b-it & 2.000000 & fp16 & 0.0656 & 591.9 & 16 & 98.6 \\
-Llama-3.2-3B-Instruct & 3.000000 & fp16 & 0.0825 & 744.4 & 16 & 120.9 \\
-Phi-3-mini-4k-instruct & 3.800000 & fp16 & 0.1347 & 665.1 & 16 & 155.3 \\
-Mistral-7B-Instruct-v0.3 & 7.000000 & fp16 & 0.1655 & 672.4 & 16 & 170.3 \\
-Qwen2.5-7B-Instruct & 7.000000 & fp16 & 0.1647 & 725.5 & 16 & 179.4 \\
-Llama-3.1-8B-Instruct & 8.000000 & fp16 & 0.1750 & 663.8 & 16 & 176.7 \\
-Llama-3.1-8B-Instruct & 8.000000 & int4 & 0.9435 & 226.4 & 16 & 274.2 \\
-Llama-3.1-8B-Instruct & 8.000000 & int8 & 0.3561 & 145.3 & 16 & 112.1 \\
-gemma-2-9b-it & 9.000000 & fp16 & 0.2275 & 371.4 & 16 & 144.3 \\
-Phi-3-medium-4k-instruct & 14.000000 & fp16 & 0.3335 & 535.8 & 16 & 240.4 \\
+Llama-3.2-1B-Instruct & FP16 & 1.0 & 0.025 & 1170.9 & 80.6 \\
+Qwen2.5-1.5B-Instruct & FP16 & 1.5 & 0.040 & 736.3 & 93.7 \\
+Gemma-2-2b-it & FP16 & 2.0 & 0.066 & 591.9 & 98.6 \\
+Llama-3.2-3B-Instruct & FP16 & 3.0 & 0.083 & 744.4 & 120.9 \\
+Phi-3-mini-4k-instruct & FP16 & 3.8 & 0.135 & 665.1 & 155.3 \\
+Mistral-7B-Instruct-v0.3 & FP16 & 7.0 & 0.166 & 672.4 & 170.3 \\
+Qwen2.5-7B-Instruct & FP16 & 7.0 & 0.165 & 725.5 & 179.4 \\
+Llama-3.1-8B-Instruct & FP16 & 8.0 & 0.175 & 663.8 & 176.7 \\
+Llama-3.1-8B-Instruct & INT8 & 8.0 & 0.356 & 145.3 & 112.1 \\
+Llama-3.1-8B-Instruct & INT4 & 8.0 & 0.944 & 226.4 & 274.2 \\
+Gemma-2-9b-it & FP16 & 9.0 & 0.228 & 371.4 & 144.3 \\
+Phi-3-medium-4k-instruct & FP16 & 14.0 & 0.334 & 535.8 & 240.4 \\
 \bottomrule
 \end{tabular}
+\end{table*}
