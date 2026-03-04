@@ -51,6 +51,50 @@ The framework uses 5 fixed prompts covering different task types for reproducibi
 4. **Long-form Generation** — Explain transformer architecture
 5. **Reasoning** — Solve a word problem requiring calculation
 
+## Key Results
+
+Benchmarked on an NVIDIA A100 80GB PCIe GPU. All measurements use direct NVML power sampling with idle baseline subtraction and trapezoidal energy integration.
+
+### Models Benchmarked
+
+| Model | Params (B) | Precision | Best J/tok | Best tok/s | Mean W |
+|---|---|---|---|---|---|
+| Llama-3.2-1B-Instruct | 1.0 | FP16 | 0.025 | 1170.9 | 80.6 |
+| Qwen2.5-1.5B-Instruct | 1.5 | FP16 | 0.040 | 736.3 | 93.7 |
+| Gemma-2-2b-it | 2.0 | FP16 | 0.066 | 591.9 | 98.6 |
+| Llama-3.2-3B-Instruct | 3.0 | FP16 | 0.083 | 744.4 | 120.9 |
+| Phi-3-mini-4k-instruct | 3.8 | FP16 | 0.135 | 665.1 | 155.3 |
+| Mistral-7B-Instruct-v0.3 | 7.0 | FP16 | 0.166 | 672.4 | 170.3 |
+| Qwen2.5-7B-Instruct | 7.0 | FP16 | 0.165 | 725.5 | 179.4 |
+| Llama-3.1-8B-Instruct | 8.0 | FP16 | 0.175 | 663.8 | 176.7 |
+| Llama-3.1-8B-Instruct | 8.0 | INT8 | 0.356 | 145.3 | 112.1 |
+| Llama-3.1-8B-Instruct | 8.0 | INT4 | 0.944 | 226.4 | 274.2 |
+| Gemma-2-9b-it | 9.0 | FP16 | 0.228 | 371.4 | 144.3 |
+| Phi-3-medium-4k-instruct | 14.0 | FP16 | 0.334 | 535.8 | 240.4 |
+
+Best J/tok and tok/s are at optimal batch size (bs=16 for all models). 250 individual measurements across 13 benchmark configurations.
+
+### Key Findings
+
+1. **Scaling law**: Energy scales as N^0.93 across architectures (R²=0.99), steeper than the 0.80 exponent found in single-family (Pythia) studies.
+2. **Batch size**: Increasing from bs=1 to bs=16 reduces J/tok by 7-15x.
+3. **Quantisation reversal**: bitsandbytes INT8 and INT4 on Llama-3.1-8B *reduce* per-token energy by 10% and 20% respectively, reversing the 2.9-3.7x energy penalties reported in prior work on older software versions.
+4. **Carbon variation**: Irish grid carbon intensity (119-348 gCO2/kWh) introduces 2.9x variation in per-token emissions, meaning *when* you run inference matters as much as *which* model you choose.
+
+### Figures
+
+All figures are in `paper/figures/` (PDF and PNG):
+- `fig1_scaling_law` — J/tok vs model parameters with power law fit
+- `fig2_efficiency_frontier` — Efficiency frontier across models
+- `fig3_batch_size` — J/tok vs batch size for all models
+- `fig4_quantisation` — Quantisation impact on Llama-3.1-8B
+- `fig5_prompt_type` — Energy variation by prompt type
+- `fig6_architecture` — Architecture comparison at similar sizes
+- `fig7_carbon_variation` — Carbon emissions under varying grid intensity
+- `prior_scaling_overlay` — Comparison with energy-bench Pythia scaling law
+- `prior_quantisation_comparison` — Quantisation comparison with prior work
+- `prior_batch_saturation` — Batch size saturation comparison
+
 ## Quick Start
 
 ### Prerequisites
@@ -96,24 +140,28 @@ Each benchmark produces a structured JSON report containing:
 - Summary statistics and best-efficiency configuration
 - All raw data needed for independent reproduction
 
-See [docs/output_schema.md](docs/output_schema.md) for the full JSON schema.
-
 ## Project Structure
 
 ```
 llm-energy-framework/
 ├── src/
-│   ├── hardware.py        # Layer 1: NVML power sampling
-│   ├── inference.py       # Layer 2: Model loading and inference
-│   ├── metrics.py         # Layer 3: Metric computation
-│   └── benchmark.py       # Layer 4: Orchestration and reporting
+│   ├── hardware.py        # Layer 1: NVML power sampling with SLURM GPU mapping
+│   ├── inference.py       # Layer 2: Model loading (FP16/INT8/INT4) and inference
+│   ├── metrics.py         # Layer 3: Metric computation (J/tok, tok/s, gCO2eq/tok)
+│   ├── benchmark.py       # Layer 4: Orchestration and reporting
+│   └── analyze.py         # Analysis, figure, and table generation
+├── tests/                 # Unit tests (29 tests)
+├── scripts/               # SLURM job submission scripts
 ├── prompts/
-│   └── benchmark_prompts.json  # Standard prompt set
-├── docs/
-│   ├── output_schema.md   # JSON report schema documentation
-│   └── design_decisions.md # Architecture decisions and rationale
-├── results/               # Benchmark output (gitignored)
-├── paper/                 # LaTeX paper source
+│   └── benchmark_prompts.json  # Standard 5-prompt set
+├── prior_work/            # Reference data from energy-bench (808 measurements)
+├── data/carbon_cache/     # Irish grid carbon intensity data (EirGrid)
+├── results/               # Benchmark JSON reports and combined CSV
+├── paper/
+│   ├── main.tex           # IEEE conference paper
+│   ├── references.bib     # BibTeX references
+│   ├── figures/           # All figures (PDF + PNG)
+│   └── tables/            # Summary and comparison tables (CSV + LaTeX)
 ├── requirements.txt
 ├── .gitignore
 └── README.md
@@ -127,11 +175,10 @@ llm-energy-framework/
 4. What does the landscape of inference energy efficiency look like across a representative set of publicly available open-weight LLMs?
 5. How can measured Joules per Token be combined with grid carbon intensity data to produce a carbon efficiency figure?
 
-## Target Publication
+## Publication
 
-- **Working title:** *llm-energy-framework: A Framework for Reproducible Energy and Carbon Benchmarking of LLM Inference*
-- **Target journals:** IEEE Transactions on Sustainable Computing (TSUSC); Future Generation Computer Systems (FGCS)
-- **Target submission:** Q1 2027
+- **Title:** *Energy Consumption of Large Language Model Inference: A Multi-Architecture Benchmarking Study on GPU Hardware*
+- **Target venues:** IEEE Transactions on Sustainable Computing (TSUSC); Future Generation Computer Systems (FGCS)
 
 ## Related Repositories
 
