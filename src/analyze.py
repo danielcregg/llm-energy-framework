@@ -41,8 +41,11 @@ MODEL_PARAMS = {
     "google/gemma-2-9b-it": 9.0,
     "microsoft/Phi-3-medium-4k-instruct": 14.0,
     "Qwen/Qwen2.5-32B-Instruct": 32.0,
+    "Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4": 32.0,
     "mistralai/Mixtral-8x7B-Instruct-v0.1": 46.7,
+    "TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ": 46.7,
     "meta-llama/Llama-3.3-70B-Instruct": 70.0,
+    "shuyuej/Llama-3.3-70B-Instruct-GPTQ": 70.0,
 }
 
 MODEL_FAMILY = {
@@ -50,11 +53,14 @@ MODEL_FAMILY = {
     "meta-llama/Llama-3.2-3B-Instruct": "Llama",
     "meta-llama/Llama-3.1-8B-Instruct": "Llama",
     "meta-llama/Llama-3.3-70B-Instruct": "Llama",
+    "shuyuej/Llama-3.3-70B-Instruct-GPTQ": "Llama",
     "mistralai/Mistral-7B-Instruct-v0.3": "Mistral",
     "mistralai/Mixtral-8x7B-Instruct-v0.1": "Mixtral",
+    "TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ": "Mixtral",
     "Qwen/Qwen2.5-1.5B-Instruct": "Qwen",
     "Qwen/Qwen2.5-7B-Instruct": "Qwen",
     "Qwen/Qwen2.5-32B-Instruct": "Qwen",
+    "Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4": "Qwen",
     "microsoft/Phi-3-mini-4k-instruct": "Phi",
     "microsoft/Phi-3-medium-4k-instruct": "Phi",
     "google/gemma-2-2b-it": "Gemma",
@@ -134,19 +140,33 @@ def _power_law(x, a, b):
 
 def figure_1_scaling_law(df: pd.DataFrame) -> None:
     """Figure 1: J/tok vs Model Size (log-log scaling law)."""
-    # Use batch_size=1, fp16 only (or lowest precision available)
-    fp16 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
-    if fp16.empty:
-        fp16 = df[df["batch_size"] == 1]
-    if fp16.empty:
+    # Use batch_size=1. Prefer fp16, but include gptq for models only available as GPTQ.
+    bs1 = df[df["batch_size"] == 1]
+    if bs1.empty:
         logger.warning("No bs=1 data for scaling law plot")
         return
 
+    # For each model, prefer fp16 data; fall back to gptq/awq if fp16 unavailable
+    best_rows = []
+    for model in bs1["model"].unique():
+        model_data = bs1[bs1["model"] == model]
+        fp16_data = model_data[model_data["precision"] == "fp16"]
+        if not fp16_data.empty:
+            best_rows.append(fp16_data)
+        else:
+            # Use whatever precision is available (gptq, awq, int8, int4)
+            best_rows.append(model_data)
+    fp16 = pd.concat(best_rows) if best_rows else bs1
+
     # Average across prompts per model
-    grouped = fp16.groupby(["model", "params_b", "family"]).agg(
+    grouped = fp16.groupby(["model", "params_b", "family", "precision"]).agg(
         j_per_tok=("j_per_tok_mean", "mean"),
         j_per_tok_err=("j_per_tok_std", "mean"),
     ).reset_index()
+
+    # Deduplicate: keep only one entry per param count for fitting
+    # (prefer fp16 over gptq for same model size)
+    grouped = grouped.sort_values("precision").drop_duplicates(subset=["params_b"], keep="first")
 
     fig, ax = plt.subplots(figsize=(7, 5))
 
@@ -154,8 +174,17 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
         subset = grouped[grouped["family"] == family]
         if subset.empty:
             continue
-        ax.scatter(subset["params_b"], subset["j_per_tok"],
-                   color=colour, label=family, s=80, zorder=5, edgecolors="black", linewidth=0.5)
+        # Mark GPTQ points with a different marker
+        fp16_pts = subset[subset["precision"] == "fp16"]
+        gptq_pts = subset[subset["precision"].isin(["gptq", "awq"])]
+        if not fp16_pts.empty:
+            ax.scatter(fp16_pts["params_b"], fp16_pts["j_per_tok"],
+                       color=colour, label=family, s=80, zorder=5,
+                       edgecolors="black", linewidth=0.5)
+        if not gptq_pts.empty:
+            ax.scatter(gptq_pts["params_b"], gptq_pts["j_per_tok"],
+                       color=colour, label=f"{family} (GPTQ)", s=80, zorder=5,
+                       marker="D", edgecolors="black", linewidth=0.5)
 
     # Fit power law across all data
     x = grouped["params_b"].values
@@ -187,11 +216,19 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
     logger.info("Figure 1 saved")
 
 
+def _best_precision_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Return data preferring fp16 per model, falling back to gptq/awq."""
+    rows = []
+    for model in df["model"].unique():
+        m = df[df["model"] == model]
+        fp16 = m[m["precision"] == "fp16"]
+        rows.append(fp16 if not fp16.empty else m)
+    return pd.concat(rows) if rows else df
+
+
 def figure_2_efficiency_frontier(df: pd.DataFrame) -> None:
     """Figure 2: J/tok vs Throughput (efficiency frontier)."""
-    fp16 = df[df["precision"] == "fp16"]
-    if fp16.empty:
-        fp16 = df
+    fp16 = _best_precision_data(df)
 
     # Average across prompts per (model, batch_size)
     grouped = fp16.groupby(["model_short", "params_b", "family", "batch_size"]).agg(
@@ -234,9 +271,7 @@ def figure_2_efficiency_frontier(df: pd.DataFrame) -> None:
 
 def figure_3_batch_size(df: pd.DataFrame) -> None:
     """Figure 3: Batch Size Effect on J/tok and throughput."""
-    fp16 = df[df["precision"] == "fp16"]
-    if fp16.empty:
-        fp16 = df
+    fp16 = _best_precision_data(df)
 
     grouped = fp16.groupby(["model_short", "family", "batch_size"]).agg(
         j_per_tok=("j_per_tok_mean", "mean"),
@@ -319,9 +354,9 @@ def figure_4_quantisation(df: pd.DataFrame) -> None:
 
 def figure_5_prompt_type(df: pd.DataFrame) -> None:
     """Figure 5: Prompt Type Effect (heatmap)."""
-    fp16 = df[(df["precision"] == "fp16") & (df["batch_size"] == 1)]
-    if fp16.empty:
-        fp16 = df[df["batch_size"] == 1]
+    bs1 = df[df["batch_size"] == 1]
+    fp16 = _best_precision_data(bs1)
+    fp16 = fp16[fp16["batch_size"] == 1]
     if fp16.empty:
         return
 
@@ -402,10 +437,10 @@ def figure_7_carbon_variation(df: pd.DataFrame) -> None:
     c_mean = carbon["gco2_per_kwh"].mean()
     c_max = carbon["gco2_per_kwh"].max()
 
-    # Use bs=1, fp16 data
-    fp16_bs1 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
-    if fp16_bs1.empty:
-        fp16_bs1 = df[df["batch_size"] == 1]
+    # Use bs=1, prefer fp16 but include gptq for models without fp16
+    bs1 = df[df["batch_size"] == 1]
+    fp16_bs1 = _best_precision_data(bs1)
+    fp16_bs1 = fp16_bs1[fp16_bs1["batch_size"] == 1]
     if fp16_bs1.empty:
         return
 
@@ -456,13 +491,16 @@ def prior_work_scaling_overlay(df: pd.DataFrame) -> None:
     ).reset_index()
     pythia_agg["params_b"] = pythia_agg["model_params_est"] / 1e9
 
-    # New framework data
-    new_bs1 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
-    if new_bs1.empty:
-        new_bs1 = df[df["batch_size"] == 1]
-    new_agg = new_bs1.groupby(["model_short", "params_b", "family"]).agg(
+    # New framework data — prefer fp16, include gptq for large models
+    new_bs1 = _best_precision_data(df[df["batch_size"] == 1])
+    new_bs1 = new_bs1[new_bs1["batch_size"] == 1]
+    new_agg = new_bs1.groupby(["model_short", "params_b", "family", "precision"]).agg(
         j_per_tok=("j_per_tok_mean", "mean"),
     ).reset_index()
+    # Deduplicate by params_b (prefer fp16)
+    new_agg = new_agg.sort_values("precision").drop_duplicates(
+        subset=["params_b"], keep="first"
+    )
 
     fig, ax = plt.subplots(figsize=(7, 5))
 
@@ -586,10 +624,8 @@ def prior_work_batch_saturation_overlay(df: pd.DataFrame) -> None:
         j_per_tok=("joules_per_token", "mean"),
     ).reset_index()
 
-    # New framework — pick one representative model
-    fp16 = df[df["precision"] == "fp16"]
-    if fp16.empty:
-        return
+    # New framework — prefer fp16, include gptq for large models
+    best = _best_precision_data(df)
 
     fig, ax = plt.subplots(figsize=(7, 5))
 
@@ -598,9 +634,9 @@ def prior_work_batch_saturation_overlay(df: pd.DataFrame) -> None:
             color="#999999", label="energy-bench Pythia-6.9B", markersize=8)
 
     # New framework per model
-    models = fp16.groupby("model_short")["params_b"].first().sort_values()
+    models = best.groupby("model_short")["params_b"].first().sort_values()
     for model in models.index:
-        subset = fp16[fp16["model_short"] == model]
+        subset = best[best["model_short"] == model]
         batch_avg = subset.groupby("batch_size")["j_per_tok_mean"].mean().reset_index()
         batch_avg = batch_avg.sort_values("batch_size")
         family = subset["family"].iloc[0]
@@ -701,8 +737,9 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
 
     # Fill in new framework values if available
     if not df.empty:
-        # Scaling fit
-        fp16_bs1 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
+        # Scaling fit — include GPTQ models for wider range
+        best_bs1 = _best_precision_data(df[df["batch_size"] == 1])
+        fp16_bs1 = best_bs1[best_bs1["batch_size"] == 1]
         if not fp16_bs1.empty:
             new_agg = fp16_bs1.groupby("params_b")["j_per_tok_mean"].mean().reset_index()
             if len(new_agg) >= 3:
@@ -717,6 +754,21 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
                     rows[0]["New Framework"] = f"{popt[1]:.2f} (multi-arch, R²={r2:.2f})"
                 except RuntimeError:
                     pass
+
+        # Fill in 7B model J/tok
+        models_7b = fp16_bs1[fp16_bs1["params_b"].between(6.5, 8.5)]
+        if not models_7b.empty:
+            avg_7b = models_7b.groupby("model")["j_per_tok_mean"].mean()
+            # Find the row for 7B metric and update it
+            for i, row in enumerate(rows):
+                if "J/tok ~7B" in row["Metric"]:
+                    models_str = ", ".join(
+                        m.split("/")[-1] for m in avg_7b.index
+                    )
+                    rows[i]["New Framework"] = (
+                        f"{avg_7b.mean():.3f} (avg: {models_str})"
+                    )
+                    break
 
         # Quantisation multipliers
         llama8b = df[df["model"].str.contains("Llama-3.1-8B")]

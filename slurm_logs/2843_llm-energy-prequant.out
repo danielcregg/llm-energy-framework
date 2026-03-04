@@ -1,0 +1,63 @@
+=== Job 2843: Pre-quantized large models ===
+Start: Wed Mar  4 10:29:45 AM GMT 2026
+Node: hpc-wn-103
+Wed Mar  4 10:29:45 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100 80GB PCIe           On | 00000000:21:00.0 Off |                    0 |
+| N/A   26C    P0               39W / 300W|      0MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+===
+
+=== Model 1: Qwen2.5-32B GPTQ-Int4 (Wed Mar  4 10:29:46 AM GMT 2026) ===
+Available disk: 43GB
+
+======================================================================
+BENCHMARK REPORT: Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4
+Precision: gptq
+GPU: NVIDIA A100 80GB PCIe
+======================================================================
+Prompt          Batch    J/tok    tok/s    Watts
+----------------------------------------------------------------------
+sum_short           1 163.6540      1.5    298.5
+sum_short           4  41.0593      5.8    298.3
+sum_short           8  20.6182     11.6    298.5
+sum_short          16  10.3829     23.1    298.3
+qa_factual          1 163.5028      1.5    298.2
+qa_factual          4  41.0107      5.8    298.4
+qa_factual          8  20.5392     11.7    298.3
+qa_factual         16  10.2911     23.3    297.9
+code_simple         1 163.4296      1.5    298.1
+code_simple         4  41.0018      5.8    298.2
+code_simple         8  20.5487     11.7    298.4
+code_simple        16  10.3077     23.3    298.2
+longform            1 163.4511      1.5    298.1
+longform            4  40.9281      5.8    297.8
+longform            8  20.5109     11.7    298.0
+longform           16  10.2922     23.3    297.9
+reasoning           1 163.4954      1.5    298.1
+reasoning           4  40.9405      5.8    297.8
+reasoning           8  20.5293     11.7    298.0
+reasoning          16  10.3070     23.2    297.9
+======================================================================
+Idle baseline: 58.4 W
+
+Cleaning cache: /home/daniel.cregg/hf_cache/hub/models--Qwen--Qwen2.5-32B-Instruct-GPTQ-Int4
+Disk after cleanup: 43G free
+
+=== Model 2: Mixtral-8x7B GPTQ-Int4 (Wed Mar  4 05:43:38 PM GMT 2026) ===
+Available disk: 43GB
