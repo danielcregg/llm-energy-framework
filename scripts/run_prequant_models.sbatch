@@ -11,7 +11,7 @@
 # Runs three pre-quantized large models sequentially:
 #   1. Qwen2.5-32B-Instruct GPTQ-Int4 (~19GB download)
 #   2. Mixtral-8x7B-Instruct GPTQ-Int4 (~24GB download)
-#   3. Llama-3.3-70B-Instruct AWQ-Int4 (~40GB download)
+#   3. Llama-3.3-70B-Instruct GPTQ-Int4 (~40GB download)
 # Each model's cache is cleaned after benchmarking to free disk for the next.
 
 set -uo pipefail
@@ -112,14 +112,14 @@ else
     echo "Disk after cleanup: $(df -h $HOME | tail -1 | awk '{print $4 " free"}')"
 fi
 
-# ---------- Model 3: Llama-3.3-70B AWQ-Int4 ----------
-MODEL="ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4"
-OUTDIR="results/llama-3.3-70b-awq"
-CACHE_DIR="ibnzterrell--Meta-Llama-3.3-70B-Instruct-AWQ-INT4"
+# ---------- Model 3: Llama-3.3-70B GPTQ-Int4 ----------
+MODEL="shuyuej/Llama-3.3-70B-Instruct-GPTQ"
+OUTDIR="results/llama-3.3-70b-gptq"
+CACHE_DIR="shuyuej--Llama-3.3-70B-Instruct-GPTQ"
 
 AVAIL_GB=$(df --output=avail -BG $HOME | tail -1 | tr -d ' G')
 echo ""
-echo "=== Model 3: Llama-3.3-70B AWQ-Int4 ($(date)) ==="
+echo "=== Model 3: Llama-3.3-70B GPTQ-Int4 ($(date)) ==="
 echo "Available disk: ${AVAIL_GB}GB"
 
 if [ "$AVAIL_GB" -lt 42 ]; then
@@ -127,23 +127,23 @@ if [ "$AVAIL_GB" -lt 42 ]; then
     curl -s -H "Tags: warning" -d "Llama-3.3-70B skipped: only ${AVAIL_GB}GB free" \
       https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1
 else
-    curl -s -H "Tags: hourglass" -d "Starting Llama-3.3-70B AWQ-Int4" \
+    curl -s -H "Tags: hourglass" -d "Starting Llama-3.3-70B GPTQ-Int4" \
       https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1
 
     python3 -m src.benchmark \
         --model "$MODEL" \
-        --precision awq \
+        --precision gptq \
         --batch-sizes 1 4 8 16 \
         --n-runs 10 \
         --output-dir "$OUTDIR"
 
     if [ $? -eq 0 ]; then
         curl -s -H "Priority: high" -H "Tags: tada" \
-          -d "Llama-3.3-70B AWQ-Int4 complete!" \
+          -d "Llama-3.3-70B GPTQ-Int4 complete!" \
           https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1
     else
         curl -s -H "Priority: urgent" -H "Tags: warning" \
-          -d "Llama-3.3-70B AWQ-Int4 FAILED" \
+          -d "Llama-3.3-70B GPTQ-Int4 FAILED" \
           https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1
     fi
 
