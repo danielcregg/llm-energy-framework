@@ -3,3 +3,11 @@
 2026-03-03T18:40:00+00:00 Jobs 2804 (Llama-3.2-1B), 2807 (Llama-3.2-3B) failed: 403 gated repo (license pending)
 2026-03-03T18:40:00+00:00 All Llama licenses approved. Re-submitted as jobs 2819, 2820.
 2026-03-03T18:40:00+00:00 Original jobs 2810-2818 still pending in queue (were submitted correctly by run_all_models.sh)
+2026-03-03T20:20:00+00:00 Jobs 2810 (Qwen2.5-7B), 2811 (Llama-3.1-8B) failed: "No space left on device" — disk 100% full at 207GB
+2026-03-03T20:20:00+00:00 Root cause: concurrent HF model downloads. Fixed with dependency chains and cache cleanup.
+2026-03-03T20:20:00+00:00 Re-submitted all remaining models as dependency chain (jobs 2832-2840)
+2026-03-04T00:58:00+00:00 Job 2838 (Qwen2.5-32B int8) failed: disk full during download. FP16 weights are ~65GB, only 35GB free.
+2026-03-04T00:58:00+00:00 Jobs 2839 (Mixtral-8x7B int8), 2840 (Llama-3.3-70B int4) never ran — no log files.
+2026-03-04T00:58:00+00:00 SKIPPED: Qwen2.5-32B, Mixtral-8x7B, Llama-3.3-70B — all too large for 35GB available disk.
+2026-03-04T00:58:00+00:00 HuggingFace downloads full fp16 weights before quantizing, so int8/int4 doesn't reduce download size.
+2026-03-04T00:58:00+00:00 Successfully completed 10 unique models (13 benchmarks including quant study).

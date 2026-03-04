@@ -1,0 +1,5 @@
+Metric,energy-bench,New Framework
+Scaling exponent (alpha),"0.80 (Pythia, R²=0.99)","0.93 (multi-arch, R²=0.99)"
+J/tok ~7B model (bs=1),2.611 (Pythia-6.9B),TBD
+INT8 energy multiplier,2.88x (Mistral-7B),0.90x (Llama-3.1-8B)
+NF4/INT4 energy multiplier,3.72x (Mistral-7B),0.80x (Llama-3.1-8B)
