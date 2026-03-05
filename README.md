@@ -2,7 +2,7 @@
 
 **A Rigorous, Reproducible Framework for Measuring the Energy and Carbon Efficiency of LLM Inference**
 
-Daniel Cregg | University of Galway | Supervisors: Prof. Jim Duggan & Dr. Enda Howley
+Daniel Cregg | South East Technological University | Waterford, Ireland
 
 ## Overview
 
@@ -59,7 +59,7 @@ Benchmarked on an NVIDIA A100 80GB PCIe GPU. All measurements use direct NVML po
 
 | Model | Params (B) | Precision | Best J/tok | Best tok/s | Mean W |
 |---|---|---|---|---|---|
-| Llama-3.2-1B-Instruct | 1.0 | FP16 | 0.025 | 1170.9 | 80.6 |
+| Llama-3.2-1B-Instruct | 1.0 | FP16 | 0.031 | 1284.2 | 100.7 |
 | Qwen2.5-1.5B-Instruct | 1.5 | FP16 | 0.040 | 736.3 | 93.7 |
 | Gemma-2-2b-it | 2.0 | FP16 | 0.066 | 591.9 | 98.6 |
 | Llama-3.2-3B-Instruct | 3.0 | FP16 | 0.083 | 744.4 | 120.9 |
@@ -79,9 +79,9 @@ Best J/tok and tok/s are at optimal batch size (bs=16 unless noted). 295 individ
 
 ### Key Findings
 
-1. **Scaling law**: Energy scales as N^0.93 across architectures (R²=0.99), steeper than the 0.80 exponent found in single-family (Pythia) studies.
-2. **Batch size**: Increasing from bs=1 to bs=16 reduces J/tok by 7-15x.
-3. **Quantisation reversal**: bitsandbytes INT8 and INT4 on Llama-3.1-8B *reduce* per-token energy by 10% and 20% respectively, reversing the 2.9-3.7x energy penalties reported in prior work on older software versions.
+1. **Scaling law**: Energy scales as N^0.91 across architectures (R²=0.99), steeper than the 0.80 exponent found in single-family (Pythia) studies.
+2. **Batch size**: Increasing from bs=1 to bs=16 reduces J/tok by 9-15x.
+3. **Quantisation reversal**: At bs=1, bitsandbytes INT8 and INT4 on Llama-3.1-8B *reduce* per-token energy by 10% and 20% respectively, reversing the 2.9-3.7x energy penalties reported in prior work. At larger batch sizes, the throughput penalty dominates and FP16 remains more efficient.
 4. **Carbon variation**: Irish grid carbon intensity (119-348 gCO2/kWh) introduces 2.9x variation in per-token emissions, meaning *when* you run inference matters as much as *which* model you choose.
 
 ### Figures

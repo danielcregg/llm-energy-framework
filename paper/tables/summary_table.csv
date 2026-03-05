@@ -1,5 +1,5 @@
 Model,Params (B),Precision,Best J/tok,Best tok/s,Best Batch,Mean Watts
-Llama-3.2-1B-Instruct,1.0,fp16,0.0250,1170.9,16,80.6
+Llama-3.2-1B-Instruct,1.0,fp16,0.0312,1284.2,16,100.7
 Qwen2.5-1.5B-Instruct,1.5,fp16,0.0403,736.3,16,93.7
 gemma-2-2b-it,2.0,fp16,0.0656,591.9,16,98.6
 Llama-3.2-3B-Instruct,3.0,fp16,0.0825,744.4,16,120.9

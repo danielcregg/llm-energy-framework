@@ -1,21 +1,26 @@
+\begin{table*}[t]
+\centering
+\caption{Summary of benchmark results across all models. Best J/tok and tok/s are at optimal batch size. GPTQ models use pre-quantized weights. Llama-70B tested at bs=1 only.}
+\label{tab:summary}
 \begin{tabular}{lrllrrl}
 \toprule
 Model & Params (B) & Precision & Best J/tok & Best tok/s & Best Batch & Mean Watts \\
 \midrule
-Llama-3.2-1B-Instruct & 1.000000 & fp16 & 0.0250 & 1170.9 & 16 & 80.6 \\
-Qwen2.5-1.5B-Instruct & 1.500000 & fp16 & 0.0403 & 736.3 & 16 & 93.7 \\
-gemma-2-2b-it & 2.000000 & fp16 & 0.0656 & 591.9 & 16 & 98.6 \\
-Llama-3.2-3B-Instruct & 3.000000 & fp16 & 0.0825 & 744.4 & 16 & 120.9 \\
-Phi-3-mini-4k-instruct & 3.800000 & fp16 & 0.1347 & 665.1 & 16 & 155.3 \\
-Mistral-7B-Instruct-v0.3 & 7.000000 & fp16 & 0.1655 & 672.4 & 16 & 170.3 \\
-Qwen2.5-7B-Instruct & 7.000000 & fp16 & 0.1647 & 725.5 & 16 & 179.4 \\
-Llama-3.1-8B-Instruct & 8.000000 & fp16 & 0.1750 & 663.8 & 16 & 176.7 \\
-Llama-3.1-8B-Instruct & 8.000000 & int4 & 0.9435 & 226.4 & 16 & 274.2 \\
-Llama-3.1-8B-Instruct & 8.000000 & int8 & 0.3561 & 145.3 & 16 & 112.1 \\
-gemma-2-9b-it & 9.000000 & fp16 & 0.2275 & 371.4 & 16 & 144.3 \\
-Phi-3-medium-4k-instruct & 14.000000 & fp16 & 0.3335 & 535.8 & 16 & 240.4 \\
-Qwen2.5-32B-Instruct-GPTQ-Int4 & 32.000000 & gptq & 10.3162 & 23.2 & 16 & 298.0 \\
-Mixtral-8x7B-Instruct-v0.1-GPTQ & 46.700000 & gptq & 4.1481 & 54.8 & 16 & 285.6 \\
-Llama-3.3-70B-Instruct-GPTQ & 70.000000 & gptq & 326.5457 & 0.7 & 1 & 298.6 \\
+Llama-3.2-1B-Instruct & 1.0 & fp16 & 0.0312 & 1284.2 & 16 & 100.7 \\
+Qwen2.5-1.5B-Instruct & 1.5 & fp16 & 0.0403 & 736.3 & 16 & 93.7 \\
+gemma-2-2b-it & 2.0 & fp16 & 0.0656 & 591.9 & 16 & 98.6 \\
+Llama-3.2-3B-Instruct & 3.0 & fp16 & 0.0825 & 744.4 & 16 & 120.9 \\
+Phi-3-mini-4k-instruct & 3.8 & fp16 & 0.1347 & 665.1 & 16 & 155.3 \\
+Mistral-7B-Instruct-v0.3 & 7.0 & fp16 & 0.1655 & 672.4 & 16 & 170.3 \\
+Qwen2.5-7B-Instruct & 7.0 & fp16 & 0.1647 & 725.5 & 16 & 179.4 \\
+Llama-3.1-8B-Instruct & 8.0 & fp16 & 0.1750 & 663.8 & 16 & 176.7 \\
+Llama-3.1-8B-Instruct & 8.0 & int8 & 0.3561 & 145.3 & 16 & 112.1 \\
+Llama-3.1-8B-Instruct & 8.0 & int4 & 0.9435 & 226.4 & 16 & 274.2 \\
+gemma-2-9b-it & 9.0 & fp16 & 0.2275 & 371.4 & 16 & 144.3 \\
+Phi-3-medium-4k-instruct & 14.0 & fp16 & 0.3335 & 535.8 & 16 & 240.4 \\
+Qwen2.5-32B-Instruct-GPTQ-Int4 & 32.0 & gptq & 10.3162 & 23.2 & 16 & 298.0 \\
+Mixtral-8x7B-Instruct-v0.1-GPTQ & 46.7 & gptq & 4.1481 & 54.8 & 16 & 285.6 \\
+Llama-3.3-70B-Instruct-GPTQ & 70.0 & gptq & 326.5457 & 0.7 & 1 & 298.6 \\
 \bottomrule
 \end{tabular}
+\end{table*}

@@ -121,6 +121,11 @@ def load_all_reports() -> pd.DataFrame:
         return pd.DataFrame()
 
     df = pd.DataFrame(records)
+    # Drop rows with zero energy (hardware.py returns 0 when <2 power samples)
+    n_zero = (df["j_per_tok_mean"] == 0).sum()
+    if n_zero > 0:
+        logger.warning("Dropping %d rows with zero J/tok (insufficient power samples)", n_zero)
+        df = df[df["j_per_tok_mean"] > 0]
     df = df.sort_values(["params_b", "precision", "batch_size", "prompt_id"])
     return df
 
@@ -716,7 +721,7 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
     pythia_csv = PRIOR_WORK_DIR / "energy_bench_pythia_combined.csv"
     if pythia_csv.exists():
         pythia = pd.read_csv(pythia_csv)
-        p7b = pythia[pythia["model_params_est"].between(6e9, 8e9)]
+        p7b = pythia[(pythia["model_params_est"].between(6e9, 8e9)) & (pythia["batch_size"] == 1)]
         if not p7b.empty:
             rows.append({
                 "Metric": "J/tok ~7B model (bs=1)",
