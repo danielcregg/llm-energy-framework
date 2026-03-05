@@ -1,0 +1,98 @@
+/home/daniel.cregg/.local/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-05 00:33:24,571 INFO __main__: Loading model: shuyuej/Llama-3.3-70B-Instruct-GPTQ (precision: gptq)
+2026-03-05 00:33:26,833 INFO src.inference: Loading tokenizer: shuyuej/Llama-3.3-70B-Instruct-GPTQ
+2026-03-05 00:33:27,964 INFO src.inference: Loading model: shuyuej/Llama-3.3-70B-Instruct-GPTQ (precision=gptq)
+2026-03-05 00:33:28,839 INFO datasets: JAX version 0.9.0.1 available.
+/home/daniel.cregg/.local/lib/python3.11/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:410: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd
+/home/daniel.cregg/.local/lib/python3.11/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:418: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/daniel.cregg/.local/lib/python3.11/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+2026-03-05 00:33:29,252 WARNING auto_gptq.nn_modules.qlinear.qlinear_cuda: CUDA extension not installed.
+2026-03-05 00:33:29,253 WARNING auto_gptq.nn_modules.qlinear.qlinear_cuda_old: CUDA extension not installed.
+`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+2026-03-05 00:33:33,895 INFO accelerate.utils.modeling: We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:  12%|█▎        | 1/8 [00:00<00:05,  1.25it/s]Loading checkpoint shards:  25%|██▌       | 2/8 [00:01<00:05,  1.14it/s]Loading checkpoint shards:  38%|███▊      | 3/8 [00:02<00:04,  1.11it/s]Loading checkpoint shards:  50%|█████     | 4/8 [00:03<00:03,  1.09it/s]Loading checkpoint shards:  62%|██████▎   | 5/8 [00:04<00:02,  1.07it/s]Loading checkpoint shards:  75%|███████▌  | 6/8 [00:05<00:01,  1.06it/s]Loading checkpoint shards:  88%|████████▊ | 7/8 [00:06<00:00,  1.04it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:06<00:00,  1.26it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:06<00:00,  1.15it/s]
+2026-03-05 00:33:41,497 INFO src.inference: Model loaded successfully on cuda:0
+2026-03-05 00:33:41,497 INFO __main__: Measuring idle baseline (30s)...
+2026-03-05 00:33:41,497 INFO src.hardware: Measuring idle baseline for 30s...
+2026-03-05 00:34:11,561 INFO src.hardware: Idle baseline: 60.0W (std=0.6W, 292 samples)
+2026-03-05 00:34:11,562 INFO __main__: Warmup (3 runs): sum_short/bs=1
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 00:47:52,521 INFO __main__: Measuring (10 runs): sum_short/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 01:33:29,396 INFO __main__: Warmup (3 runs): qa_factual/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 01:47:10,166 INFO __main__: Measuring (10 runs): qa_factual/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 02:32:47,756 INFO __main__: Warmup (3 runs): code_simple/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 02:46:28,566 INFO __main__: Measuring (10 runs): code_simple/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 03:32:05,238 INFO __main__: Warmup (3 runs): longform/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 03:45:46,451 INFO __main__: Measuring (10 runs): longform/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 04:31:23,263 INFO __main__: Warmup (3 runs): reasoning/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 04:45:04,023 INFO __main__: Measuring (10 runs): reasoning/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 05:30:41,316 INFO __main__: Report saved: results/llama-3.3-70b-gptq/benchmark_shuyuej_Llama-3.3-70B-Instruct-GPTQ_gptq.json
