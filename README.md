@@ -1,22 +1,22 @@
-# llm-energy-framework
+# JouleBench
 
-**A Rigorous, Reproducible Framework for Measuring the Energy and Carbon Efficiency of LLM Inference**
+**JouleBench: A Rigorous, Reproducible Framework for Measuring the Energy and Carbon Efficiency of LLM Inference**
 
 Daniel Cregg | South East Technological University | Waterford, Ireland
 
 ## Overview
 
-This framework measures the real energy cost of running large language models at inference time. The primary metric is **Joules per Token (J/tok)** — how much energy a GPU consumes to generate each output token, measured directly from hardware using the Nvidia Management Library (NVML).
+JouleBench measures the real energy cost of running large language models at inference time. The primary metric is **Joules per Token (J/tok)** — how much energy a GPU consumes to generate each output token, measured directly from hardware using the Nvidia Management Library (NVML).
 
-This is **Contribution 1** (C1) of a PhD programme on carbon-aware LLM benchmarking, certification, and scheduling. The framework and its empirical results will form the basis of the first journal paper.
+This is **Contribution 1** (C1) of a PhD programme on carbon-aware LLM benchmarking, certification, and scheduling. JouleBench and its empirical results will form the basis of the first journal paper.
 
 ## Why This Exists
 
-AI energy consumption is growing rapidly, yet public claims about model efficiency are largely self-reported, inconsistent, and unverifiable. There is no independent, standardised benchmark for LLM inference energy efficiency. This framework builds one.
+AI energy consumption is growing rapidly, yet public claims about model efficiency are largely self-reported, inconsistent, and unverifiable. There is no independent, standardised benchmark for LLM inference energy efficiency. JouleBench builds one.
 
 ## Architecture
 
-The framework is structured as four layers, each with a clear scope:
+JouleBench is structured as four layers, each with a clear scope:
 
 ```
 Layer 1: Hardware Instrumentation (src/hardware.py)
@@ -43,7 +43,7 @@ Layer 4: Orchestration & Reporting (src/benchmark.py)
 
 ## Standard Benchmark Prompts
 
-The framework uses 5 fixed prompts covering different task types for reproducibility:
+JouleBench uses 5 fixed prompts covering different task types for reproducibility:
 
 1. **Summarisation** — Condense a passage into 3 sentences
 2. **Question Answering** — Factual recall question
@@ -180,7 +180,7 @@ llm-energy-framework/
 
 ## Publication
 
-- **Title:** *Energy Consumption of Large Language Model Inference: A Multi-Architecture Benchmarking Study on GPU Hardware*
+- **Title:** *JouleBench: Energy Consumption of Large Language Model Inference — A Multi-Architecture Benchmarking Study on GPU Hardware*
 - **Target venues:** IEEE Transactions on Sustainable Computing (TSUSC); Future Generation Computer Systems (FGCS)
 
 ## Related Repositories

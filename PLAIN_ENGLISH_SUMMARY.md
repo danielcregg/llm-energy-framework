@@ -1,4 +1,4 @@
-# What We Did and What We Found (Plain English)
+# JouleBench — What We Did and What We Found (Plain English)
 
 ## The Problem
 
@@ -6,7 +6,7 @@ Every time you ask ChatGPT a question or use an AI assistant, a powerful GPU som
 
 ## What We Built
 
-We built a tool that plugs directly into the GPU's power meter (via Nvidia's NVML library) and measures exactly how many Joules of energy the GPU uses to generate each token (a token is roughly a word or part of a word). Think of it like putting a smart meter on the GPU.
+We built JouleBench, a tool that plugs directly into the GPU's power meter (via Nvidia's NVML library) and measures exactly how many Joules of energy the GPU uses to generate each token (a token is roughly a word or part of a word). Think of it like putting a smart meter on the GPU.
 
 The tool works in four layers:
 
@@ -78,7 +78,7 @@ We used real electricity grid data from Ireland (EirGrid, one week in January 20
 
 ## How to Reproduce This
 
-Everything is open source. Clone the repository, install the requirements, point it at a GPU, and run:
+JouleBench is open source. Clone the repository, install the requirements, point it at a GPU, and run:
 
 ```bash
 python src/benchmark.py \
