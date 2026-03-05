@@ -1,0 +1,49 @@
+/home/daniel.cregg/.local/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-04 22:51:39,366 INFO __main__: Loading model: shuyuej/Llama-3.3-70B-Instruct-GPTQ (precision: gptq)
+2026-03-04 22:51:41,682 INFO src.inference: Loading tokenizer: shuyuej/Llama-3.3-70B-Instruct-GPTQ
+2026-03-04 22:51:45,485 INFO src.inference: Loading model: shuyuej/Llama-3.3-70B-Instruct-GPTQ (precision=gptq)
+2026-03-04 22:51:46,749 INFO datasets: JAX version 0.9.0.1 available.
+/home/daniel.cregg/.local/lib/python3.11/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:410: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd
+/home/daniel.cregg/.local/lib/python3.11/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:418: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/daniel.cregg/.local/lib/python3.11/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+2026-03-04 22:51:47,178 WARNING auto_gptq.nn_modules.qlinear.qlinear_cuda: CUDA extension not installed.
+2026-03-04 22:51:47,179 WARNING auto_gptq.nn_modules.qlinear.qlinear_cuda_old: CUDA extension not installed.
+Fetching 8 files:   0%|          | 0/8 [00:00<?, ?it/s]Fetching 8 files:  12%|█▎        | 1/8 [02:46<19:26, 166.66s/it]Fetching 8 files:  25%|██▌       | 2/8 [06:24<19:41, 196.86s/it]Fetching 8 files:  38%|███▊      | 3/8 [06:26<08:59, 107.97s/it]Fetching 8 files:  75%|███████▌  | 6/8 [06:29<01:14, 37.00s/it] Fetching 8 files:  88%|████████▊ | 7/8 [06:31<00:28, 28.71s/it]Fetching 8 files: 100%|██████████| 8/8 [06:31<00:00, 48.93s/it]
+`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+2026-03-04 22:58:24,066 INFO accelerate.utils.modeling: We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:  12%|█▎        | 1/8 [00:05<00:40,  5.85s/it]Loading checkpoint shards:  25%|██▌       | 2/8 [00:11<00:35,  5.89s/it]Loading checkpoint shards:  38%|███▊      | 3/8 [00:17<00:29,  5.88s/it]Loading checkpoint shards:  50%|█████     | 4/8 [00:23<00:23,  5.82s/it]Loading checkpoint shards:  62%|██████▎   | 5/8 [00:28<00:17,  5.72s/it]Loading checkpoint shards:  75%|███████▌  | 6/8 [00:34<00:11,  5.60s/it]Loading checkpoint shards:  88%|████████▊ | 7/8 [00:39<00:05,  5.53s/it]Loading checkpoint shards: 100%|██████████| 8/8 [00:42<00:00,  4.55s/it]Loading checkpoint shards: 100%|██████████| 8/8 [00:42<00:00,  5.26s/it]
+2026-03-04 22:59:07,168 INFO src.inference: Model loaded successfully on cuda:0
+2026-03-04 22:59:07,168 INFO __main__: Measuring idle baseline (30s)...
+2026-03-04 22:59:07,168 INFO src.hardware: Measuring idle baseline for 30s...
+2026-03-04 22:59:37,253 INFO src.hardware: Idle baseline: 59.0W (std=0.3W, 292 samples)
+2026-03-04 22:59:37,254 INFO __main__: Warmup (3 runs): sum_short/bs=1
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-04 23:13:18,040 INFO __main__: Measuring (10 runs): sum_short/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-04 23:58:53,857 INFO __main__: Warmup (3 runs): sum_short/bs=4
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-05 00:12:35,806 INFO __main__: Measuring (10 runs): sum_short/bs=4
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+slurmstepd: error: *** JOB 2846 ON hpc-wn-103 CANCELLED AT 2026-03-05T00:32:35 ***

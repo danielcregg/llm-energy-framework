@@ -47,10 +47,13 @@ fi
 curl -s -H "Tags: hourglass" -d "Starting Llama-3.3-70B GPTQ-Int4" \
   https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1
 
+# 70B model is slow (~60min per config at bs=1). Only run bs=1 to fit
+# within 8h time limit. Batch size effects are well-characterised from
+# smaller models and the 32B/47B GPTQ results.
 python3 -m src.benchmark \
     --model "$MODEL" \
     --precision gptq \
-    --batch-sizes 1 4 8 16 \
+    --batch-sizes 1 \
     --n-runs 10 \
     --output-dir "$OUTDIR"
 
