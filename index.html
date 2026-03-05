@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Energy Framework - Inference Energy Benchmarking</title>
+<meta name="description" content="A rigorous framework for measuring LLM inference energy on GPU hardware. 13 models, 295 measurements, 5 architectural families.">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --text: #1a1a2e;
+  --text-secondary: #555;
+  --accent: #0077BB;
+  --accent-light: #e8f4fc;
+  --border: #e0e0e0;
+  --radius: 8px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
+
+/* Nav */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.5rem;
+}
+.nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--accent); padding: 0.75rem 0; text-decoration: none; }
+.nav-links { display: flex; gap: 0.25rem; list-style: none; }
+.nav-links a {
+  text-decoration: none; color: var(--text-secondary); font-size: 0.9rem;
+  padding: 0.75rem 0.75rem; display: block; border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+#nav-toggle { display: none; }
+.nav-toggle-label {
+  display: none; cursor: pointer; padding: 0.75rem 0;
+  font-size: 1.5rem; line-height: 1; color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .nav-toggle-label { display: block; }
+  .nav-links {
+    display: none; flex-direction: column; position: absolute;
+    top: 100%; left: 0; right: 0; background: var(--surface);
+    border-bottom: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  #nav-toggle:checked ~ .nav-links { display: flex; }
+  .nav-links a { padding: 0.75rem 1.5rem; border-bottom: none; }
+}
+
+/* Sections */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+section { padding: 3rem 0; }
+section:nth-child(even) { background: var(--surface); }
+.section-title {
+  font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--accent);
+  display: inline-block;
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, #0077BB 0%, #004e7c 100%);
+  color: #fff; padding: 4rem 0; text-align: center;
+}
+.hero h1 { font-size: 2.25rem; margin-bottom: 0.5rem; line-height: 1.2; }
+.hero .subtitle { font-size: 1.15rem; opacity: 0.9; margin-bottom: 0.25rem; }
+.hero .author { font-size: 1rem; opacity: 0.8; margin-bottom: 1.5rem; }
+.hero .abstract {
+  max-width: 800px; margin: 0 auto; text-align: left;
+  font-size: 0.95rem; line-height: 1.7; opacity: 0.92;
+}
+
+/* Stat cards */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+  margin: 2rem 0;
+}
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem; text-align: center;
+  box-shadow: var(--shadow);
+}
+.stat-card .number { font-size: 2.25rem; font-weight: 800; color: var(--accent); }
+.stat-card .label { font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem; }
+
+@media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* Findings cards */
+.findings-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;
+}
+.finding-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 4px solid var(--accent); border-radius: var(--radius);
+  padding: 1.25rem; box-shadow: var(--shadow);
+}
+.finding-card h3 { font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--accent); }
+.finding-card p { font-size: 0.9rem; color: var(--text-secondary); }
+.finding-card .highlight {
+  font-family: var(--mono); font-weight: 700;
+  color: var(--text); background: var(--accent-light);
+  padding: 0.15rem 0.4rem; border-radius: 4px;
+}
+
+@media (max-width: 600px) { .findings-grid { grid-template-columns: 1fr; } }
+
+/* Methodology */
+.method-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+}
+.method-item h3 { font-size: 1rem; margin-bottom: 0.4rem; color: var(--accent); }
+.method-item p { font-size: 0.9rem; color: var(--text-secondary); }
+.specs {
+  margin-top: 1.5rem; padding: 1rem 1.25rem;
+  background: var(--accent-light); border-radius: var(--radius);
+  font-size: 0.9rem;
+}
+.specs strong { color: var(--accent); }
+
+@media (max-width: 600px) { .method-grid { grid-template-columns: 1fr; } }
+
+/* Figure gallery */
+.gallery-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+}
+.gallery-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+}
+.gallery-item img { width: 100%; height: auto; display: block; }
+.gallery-item figcaption {
+  padding: 0.75rem 1rem; font-size: 0.85rem; color: var(--text-secondary);
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 600px) { .gallery-grid { grid-template-columns: 1fr; } }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin: 1rem 0; }
+table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  font-size: 0.88rem; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden;
+}
+th, td { padding: 0.6rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+th {
+  background: var(--accent); color: #fff; font-weight: 600;
+  cursor: pointer; user-select: none; white-space: nowrap;
+  position: relative;
+}
+th:hover { background: #005f99; }
+th::after { content: ' \2195'; font-size: 0.7rem; opacity: 0.7; }
+th.sort-asc::after { content: ' \2191'; opacity: 1; }
+th.sort-desc::after { content: ' \2193'; opacity: 1; }
+tr:hover { background: var(--accent-light); }
+td.num { text-align: right; font-family: var(--mono); font-size: 0.85rem; }
+
+/* Cross-study table */
+.cross-table th { cursor: default; }
+.cross-table th::after { content: ''; }
+.cross-table td:first-child { font-weight: 600; }
+.cross-table .reversed { color: #d63031; font-weight: 600; }
+
+/* Links section */
+.links-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+}
+.link-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem; text-align: center;
+  box-shadow: var(--shadow); text-decoration: none; color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.link-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(0,119,187,0.15); }
+.link-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.link-card h3 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--accent); }
+.link-card p { font-size: 0.85rem; color: var(--text-secondary); }
+
+@media (max-width: 600px) { .links-grid { grid-template-columns: 1fr; } }
+
+/* Footer */
+footer {
+  background: var(--text); color: #ccc; text-align: center;
+  padding: 2rem 0; font-size: 0.85rem;
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">LLM Energy Framework</a>
+    <input type="checkbox" id="nav-toggle" hidden>
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle navigation">&#9776;</label>
+    <ul class="nav-links">
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#methodology">Methodology</a></li>
+      <li><a href="#figures">Figures</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#comparison">Comparison</a></li>
+      <li><a href="#links">Links</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="container">
+    <h1>Energy Consumption of Large Language Model Inference</h1>
+    <p class="subtitle">A Multi-Architecture Benchmarking Study on GPU Hardware</p>
+    <p class="author">Daniel Cregg &middot; South East Technological University, Ireland</p>
+    <p class="abstract">
+      We present a rigorous framework for measuring LLM inference energy using direct NVML-based power
+      sampling on an NVIDIA A100 80GB GPU. We benchmark 13 open-weight models (1B&ndash;70B parameters) across
+      five architectural families&mdash;Llama, Mistral, Qwen, Phi, and Gemma&mdash;including pre-quantized GPTQ
+      variants for large models. Our results reveal a sub-linear scaling law (E &prop; N<sup>0.91</sup>, R&sup2;=0.99),
+      find that bitsandbytes quantisation now <em>reduces</em> per-token energy (reversing prior findings of
+      2.9&ndash;3.7&times; penalties), and demonstrate 2.9&times; variation in per-token carbon emissions depending on
+      Irish grid conditions. All code, data, and reproducibility artifacts are publicly available.
+    </p>
+  </div>
+</header>
+
+<!-- Stats -->
+<section>
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="number">295</div><div class="label">Measurements</div></div>
+      <div class="stat-card"><div class="number">13</div><div class="label">Models</div></div>
+      <div class="stat-card"><div class="number">5</div><div class="label">Arch Families</div></div>
+      <div class="stat-card"><div class="number">4</div><div class="label">Precision Levels</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Findings -->
+<section id="findings">
+  <div class="container">
+    <h2 class="section-title">Key Findings</h2>
+    <div class="findings-grid">
+      <div class="finding-card">
+        <h3>Scaling Law</h3>
+        <p>Energy scales as <span class="highlight">E &prop; N<sup>0.91</sup></span> (R&sup2;=0.99) across
+        architectures&mdash;higher than the single-family exponent of 0.80 found in prior Pythia-only studies,
+        reflecting cross-architecture heterogeneity.</p>
+      </div>
+      <div class="finding-card">
+        <h3>Batch Size Impact</h3>
+        <p>Increasing batch size from 1 to 16 reduces J/tok by
+        <span class="highlight">9&ndash;15&times;</span>, with larger models benefiting more from amortised
+        weight-loading and kernel-launch overhead.</p>
+      </div>
+      <div class="finding-card">
+        <h3>Quantisation Reversal</h3>
+        <p>Bitsandbytes INT8/INT4 on Llama-3.1-8B now <em>reduces</em> energy by
+        <span class="highlight">10&ndash;20%</span> at bs=1&mdash;reversing the 2.9&ndash;3.7&times; penalties found
+        in prior work. Improved kernels eliminated the throughput bottleneck.</p>
+      </div>
+      <div class="finding-card">
+        <h3>Carbon Variation</h3>
+        <p>Using real Irish grid data (119&ndash;348 gCO<sub>2</sub>/kWh), per-token carbon emissions vary by
+        <span class="highlight">2.9&times;</span> depending on time of day&mdash;exceeding the difference between
+        some model choices.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Methodology -->
+<section id="methodology">
+  <div class="container">
+    <h2 class="section-title">Methodology</h2>
+    <div class="method-grid">
+      <div class="method-item">
+        <h3>Layer 1: Hardware Instrumentation</h3>
+        <p>NVML-based power sampling at 10 Hz in a daemon thread, with SLURM GPU index resolution and
+        trapezoidal energy integration. 30-second idle baseline subtraction for net inference energy.</p>
+      </div>
+      <div class="method-item">
+        <h3>Layer 2: Inference Engine</h3>
+        <p>Standardised model loading (FP16, INT8, INT4 via bitsandbytes; GPTQ-Int4 for large models)
+        with <code>torch.cuda.synchronize()</code> for precise timing and greedy decoding.</p>
+      </div>
+      <div class="method-item">
+        <h3>Layer 3: Metric Computation</h3>
+        <p>Computes J/tok, tok/s, mean/peak watts, and gCO<sub>2</sub>eq/tok from energy and inference
+        measurements. 95% confidence intervals over 10 measured runs.</p>
+      </div>
+      <div class="method-item">
+        <h3>Layer 4: Orchestration</h3>
+        <p>Benchmark protocol: 3 warmup + 10 measured runs per configuration with 5 diverse prompts
+        (summarisation, QA, code, long-form, reasoning). Structured JSON output.</p>
+      </div>
+    </div>
+    <div class="specs">
+      <strong>Hardware:</strong> NVIDIA A100 80GB PCIe (TDP 300W, idle ~59.8W) &middot;
+      <strong>Software:</strong> Python 3.11, PyTorch 2.10, Transformers, pynvml &middot;
+      <strong>Protocol:</strong> Greedy decoding, max_new_tokens=200, 10 runs &times; 5 prompts &times; 4 batch sizes
+    </div>
+  </div>
+</section>
+
+<!-- Figures -->
+<section id="figures">
+  <div class="container">
+    <h2 class="section-title">Figures</h2>
+    <div class="gallery-grid">
+      <figure class="gallery-item">
+        <img src="paper/figures/fig1_scaling_law.png" alt="Scaling law: J/tok vs model parameters" loading="lazy">
+        <figcaption><strong>Fig 1.</strong> Scaling law: J/tok vs model parameters (FP16, bs=1). Power law fit yields exponent 0.91 (R&sup2;=0.99).</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="paper/figures/fig2_efficiency_frontier.png" alt="Efficiency frontier: J/tok vs tok/s" loading="lazy">
+        <figcaption><strong>Fig 2.</strong> Efficiency frontier: Pareto trade-off between energy cost (J/tok) and throughput (tok/s) across all models and batch sizes.</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="paper/figures/fig3_batch_size.png" alt="Batch size impact on J/tok" loading="lazy">
+        <figcaption><strong>Fig 3.</strong> J/tok vs batch size for all FP16 models, showing 9&ndash;15&times; reduction from bs=1 to bs=16.</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="paper/figures/fig4_quantisation.png" alt="Quantisation impact" loading="lazy">
+        <figcaption><strong>Fig 4.</strong> Quantisation impact on Llama-3.1-8B: J/tok, tok/s, and watts across FP16, INT8, and INT4 precision.</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="paper/figures/fig5_prompt_type.png" alt="Prompt type effects" loading="lazy">
+        <figcaption><strong>Fig 5.</strong> Prompt type effects on J/tok across FP16 models. CV &lt; 5% for most models, indicating energy is largely prompt-agnostic.</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="paper/figures/fig6_architecture.png" alt="Architecture comparison" loading="lazy">
+        <figcaption><strong>Fig 6.</strong> Architecture comparison: J/tok at bs=1 for 7&ndash;9B models across different families.</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="paper/figures/fig7_carbon_variation.png" alt="Carbon emissions variation" loading="lazy">
+        <figcaption><strong>Fig 7.</strong> Carbon emissions per 1000 tokens under min/mean/max Irish grid intensity (119&ndash;348 gCO<sub>2</sub>/kWh).</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="paper/figures/prior_scaling_overlay.png" alt="Scaling law comparison with prior work" loading="lazy">
+        <figcaption><strong>Fig 8.</strong> Scaling law overlay: new framework results alongside energy-bench Pythia data. Exponent 0.91 vs 0.80.</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="paper/figures/prior_quantisation_comparison.png" alt="Quantisation comparison with prior work" loading="lazy">
+        <figcaption><strong>Fig 9.</strong> Quantisation energy multipliers: prior work (2.88&times;, 3.72&times; penalties) vs new framework (0.90&times;, 0.80&times; reductions).</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="paper/figures/prior_batch_saturation.png" alt="Batch saturation comparison" loading="lazy">
+        <figcaption><strong>Fig 10.</strong> Batch saturation curve comparison with energy-bench Pythia-6.9B data.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- Results Table -->
+<section id="results">
+  <div class="container">
+    <h2 class="section-title">Results Summary</h2>
+    <p style="margin-bottom:1rem; color:var(--text-secondary); font-size:0.9rem;">Click any column header to sort. Best J/tok and tok/s are at batch size 16 (except Llama-70B at bs=1).</p>
+    <div class="table-wrap">
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Params (B)</th>
+            <th>Precision</th>
+            <th>Best J/tok</th>
+            <th>Best tok/s</th>
+            <th>Best Batch</th>
+            <th>Mean Watts</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Llama-3.2-1B</td><td class="num">1.0</td><td>fp16</td><td class="num">0.0312</td><td class="num">1284.2</td><td class="num">16</td><td class="num">100.7</td></tr>
+          <tr><td>Qwen2.5-1.5B</td><td class="num">1.5</td><td>fp16</td><td class="num">0.0403</td><td class="num">736.3</td><td class="num">16</td><td class="num">93.7</td></tr>
+          <tr><td>Gemma-2-2B</td><td class="num">2.0</td><td>fp16</td><td class="num">0.0656</td><td class="num">591.9</td><td class="num">16</td><td class="num">98.6</td></tr>
+          <tr><td>Llama-3.2-3B</td><td class="num">3.0</td><td>fp16</td><td class="num">0.0825</td><td class="num">744.4</td><td class="num">16</td><td class="num">120.9</td></tr>
+          <tr><td>Phi-3-mini (3.8B)</td><td class="num">3.8</td><td>fp16</td><td class="num">0.1347</td><td class="num">665.1</td><td class="num">16</td><td class="num">155.3</td></tr>
+          <tr><td>Mistral-7B</td><td class="num">7.0</td><td>fp16</td><td class="num">0.1655</td><td class="num">672.4</td><td class="num">16</td><td class="num">170.3</td></tr>
+          <tr><td>Qwen2.5-7B</td><td class="num">7.0</td><td>fp16</td><td class="num">0.1647</td><td class="num">725.5</td><td class="num">16</td><td class="num">179.4</td></tr>
+          <tr><td>Llama-3.1-8B</td><td class="num">8.0</td><td>fp16</td><td class="num">0.1750</td><td class="num">663.8</td><td class="num">16</td><td class="num">176.7</td></tr>
+          <tr><td>Llama-3.1-8B</td><td class="num">8.0</td><td>int8</td><td class="num">0.3561</td><td class="num">145.3</td><td class="num">16</td><td class="num">112.1</td></tr>
+          <tr><td>Llama-3.1-8B</td><td class="num">8.0</td><td>int4</td><td class="num">0.9435</td><td class="num">226.4</td><td class="num">16</td><td class="num">274.2</td></tr>
+          <tr><td>Gemma-2-9B</td><td class="num">9.0</td><td>fp16</td><td class="num">0.2275</td><td class="num">371.4</td><td class="num">16</td><td class="num">144.3</td></tr>
+          <tr><td>Phi-3-medium (14B)</td><td class="num">14.0</td><td>fp16</td><td class="num">0.3335</td><td class="num">535.8</td><td class="num">16</td><td class="num">240.4</td></tr>
+          <tr><td>Qwen2.5-32B (GPTQ)</td><td class="num">32.0</td><td>gptq</td><td class="num">10.3162</td><td class="num">23.2</td><td class="num">16</td><td class="num">298.0</td></tr>
+          <tr><td>Mixtral-8x7B (GPTQ)</td><td class="num">46.7</td><td>gptq</td><td class="num">4.1481</td><td class="num">54.8</td><td class="num">16</td><td class="num">285.6</td></tr>
+          <tr><td>Llama-3.3-70B (GPTQ)</td><td class="num">70.0</td><td>gptq</td><td class="num">326.5457</td><td class="num">0.7</td><td class="num">1</td><td class="num">298.6</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Cross-Study Comparison -->
+<section id="comparison">
+  <div class="container">
+    <h2 class="section-title">Cross-Study Comparison</h2>
+    <p style="margin-bottom:1rem; color:var(--text-secondary); font-size:0.9rem;">
+      Comparison with the energy-bench framework (808 measurements on the same A100 hardware).
+    </p>
+    <div class="table-wrap">
+      <table class="cross-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>energy-bench</th>
+            <th>New Framework</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Scaling exponent (&beta;)</td>
+            <td>0.80 (Pythia, R&sup2;=0.99)</td>
+            <td>0.91 (multi-arch, R&sup2;=0.99)</td>
+          </tr>
+          <tr>
+            <td>J/tok ~7B model (bs=1)</td>
+            <td>4.461 (Pythia-6.9B)</td>
+            <td>2.315 (avg: Qwen-7B, Llama-8B, Mistral-7B)</td>
+          </tr>
+          <tr>
+            <td>INT8 energy multiplier</td>
+            <td>2.88&times; (Mistral-7B)</td>
+            <td class="reversed">0.90&times; (Llama-3.1-8B)</td>
+          </tr>
+          <tr>
+            <td>NF4/INT4 energy multiplier</td>
+            <td>3.72&times; (Mistral-7B)</td>
+            <td class="reversed">0.80&times; (Llama-3.1-8B)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Links -->
+<section id="links">
+  <div class="container">
+    <h2 class="section-title">Resources</h2>
+    <div class="links-grid">
+      <a href="https://github.com/danielcregg/llm-energy-framework" class="link-card">
+        <div class="icon">&#128187;</div>
+        <h3>GitHub Repository</h3>
+        <p>Source code, benchmark scripts, and reproducibility artifacts.</p>
+      </a>
+      <a href="https://github.com/danielcregg/llm-energy-framework/blob/main/results/combined_results.csv" class="link-card">
+        <div class="icon">&#128202;</div>
+        <h3>Benchmark Data</h3>
+        <p>Combined CSV with all 295 measurements across 16 configurations.</p>
+      </a>
+      <a href="https://github.com/danielcregg/llm-energy-framework/blob/main/paper/main.tex" class="link-card">
+        <div class="icon">&#128196;</div>
+        <h3>Paper (LaTeX)</h3>
+        <p>Full manuscript in IEEE format with all figures and tables.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>Daniel Cregg &middot; South East Technological University &middot;
+    <a href="mailto:daniel.cregg@setu.ie">daniel.cregg@setu.ie</a></p>
+    <p style="margin-top:0.5rem;">Released under the <a href="https://opensource.org/licenses/MIT">MIT License</a></p>
+  </div>
+</footer>
+
+<!-- Table sorting -->
+<script>
+(function() {
+  const table = document.getElementById('results-table');
+  if (!table) return;
+  const headers = table.querySelectorAll('th');
+  const tbody = table.querySelector('tbody');
+
+  headers.forEach(function(th, colIdx) {
+    let asc = true;
+    th.addEventListener('click', function() {
+      headers.forEach(function(h) { h.classList.remove('sort-asc', 'sort-desc'); });
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.sort(function(a, b) {
+        const aText = a.children[colIdx].textContent.trim();
+        const bText = b.children[colIdx].textContent.trim();
+        const aNum = parseFloat(aText);
+        const bNum = parseFloat(bText);
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+          return asc ? aNum - bNum : bNum - aNum;
+        }
+        return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+      });
+      rows.forEach(function(row) { tbody.appendChild(row); });
+      th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+      asc = !asc;
+    });
+  });
+})();
+</script>
+</body>
+</html>
