@@ -110,27 +110,27 @@ Before the full benchmark campaign, we validated the framework on \texttt{Qwen2.
 
 \subsection{Model Selection}
 
-We benchmark 13 models spanning five architectural families: Llama (1B, 3B, 8B, 70B), Qwen (1.5B, 7B, 32B), Gemma (2B, 9B), Phi (3.8B, 14B), and Mistral (7B, Mixtral-8x7B). Three large models---Qwen2.5-32B, Mixtral-8x7B-Instruct, and Llama-3.3-70B---were benchmarked using pre-quantized GPTQ-Int4 variants, as their full-precision weights (65--140\,GB) exceeded the shared HPC filesystem capacity (207\,GB total). The Llama-70B model was tested only at batch size 1 due to its slow inference speed ($\sim$60\,min per benchmark configuration). The Llama-3.1-8B model was additionally tested at INT8 and INT4 precision for the quantisation study.
+We benchmark 13 models spanning five architectural families: Llama (1B, 3B, 8B, 70B), Qwen (1.5B, 7B, 32B), Gemma (2B, 9B), Phi (3.8B, 14B), and Mistral (7B, Mixtral-8x7B). All 13 models were benchmarked in full FP16 precision, including the three largest---Qwen2.5-32B (64\,GB), Mixtral-8x7B-Instruct (94\,GB), and Llama-3.3-70B (140\,GB)---which were run across two A100 80\,GB GPUs using \texttt{device\_map="auto"} for automatic tensor parallelism. These three models were additionally benchmarked using pre-quantized GPTQ-Int4 variants, enabling direct comparison of FP16 versus INT4 energy efficiency at the 32--70B scale. The Llama-70B FP16 model was tested only at batch size 1 due to its slow inference speed (9.5\,tok/s across two GPUs). The Llama-3.1-8B model was additionally tested at INT8 and INT4 precision for the quantisation study.
 
-Table~\ref{tab:summary} presents the key results. Across all FP16 models, J/tok at batch size 1 ranges from 0.44\,J (Llama-3.2-1B) to 4.39\,J (Phi-3-medium-14B)\footnote{After excluding 4 measurement rows where the power sampling thread collected insufficient samples, yielding zero energy readings.}, with the best efficiency achieved at batch size 16.
+Table~\ref{tab:summary} presents the key results. Across all 13 FP16 models, J/tok at batch size 1 ranges from 0.44\,J (Llama-3.2-1B) to 12.45\,J (Llama-3.3-70B)\footnote{After excluding 4 measurement rows where the power sampling thread collected insufficient samples, yielding zero energy readings.}, with the best efficiency achieved at larger batch sizes. The Mixtral-8x7B MoE model is a notable exception: at 46.7B total parameters, it achieves only 2.14\,J/tok (bs=1), on par with 7B dense models.
 
 \input{tables/summary_table}
 
 
 \subsection{Scaling Law Results}
 
-Figure~\ref{fig:scaling} shows J/tok as a function of model parameters for all FP16 models at batch size 1. Fitting a power law $E = \alpha N^{\beta}$ yields $\beta = 0.91$ ($R^2 = 0.99$), indicating near-linear scaling of energy with model size across architectures. This contrasts with prior work on the Pythia family alone ($\beta = 0.80$), suggesting that cross-architecture heterogeneity introduces additional variance in the energy--size relationship.
+Figure~\ref{fig:scaling} shows J/tok as a function of model parameters for all FP16 models at batch size 1. With the addition of three large FP16 models (32B, 46.7B, 70B), the scaling relationship reveals an important distinction between dense and Mixture-of-Experts (MoE) architectures. Fitting a power law $E = \alpha N^{\beta}$ to dense models only yields $\beta = 0.69$ ($R^2 = 0.90$), a sub-linear relationship indicating that larger dense models are more energy-efficient per parameter. Mixtral-8x7B is a notable outlier: despite 46.7B total parameters, its MoE routing activates only $\sim$12B per token, yielding 2.14\,J/tok---consistent with a 12B dense model and drawing only 98\,W versus 180--290\,W for similarly-sized dense models. This demonstrates that MoE architectures offer a fundamentally different energy--performance trade-off, achieving large-model quality at small-model energy cost.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{fig1_scaling_law}
-    \caption{Scaling law: J/tok vs model parameters (FP16, bs=1). Power law fit yields exponent $\beta = 0.91$ ($R^2 = 0.99$).}
+    \caption{Scaling law: J/tok vs model parameters (FP16, bs=1). Dense models follow $E \propto N^{0.69}$ ($R^2 = 0.90$). Mixtral-8x7B (MoE, 46.7B total, $\sim$12B active) is a clear outlier, consuming energy consistent with a 12B dense model.}
     \label{fig:scaling}
 \end{figure}
 
 \subsection{Efficiency Frontier}
 
-Figure~\ref{fig:frontier} maps the Pareto trade-off between energy cost (J/tok) and throughput (tok/s) across all models, batch sizes, and precision levels. Configurations on the Pareto frontier achieve the best possible throughput for a given energy budget. Small models at large batch sizes dominate the low-energy, high-throughput region, while large GPTQ models occupy the high-energy, low-throughput corner.
+Figure~\ref{fig:frontier} maps the Pareto trade-off between energy cost (J/tok) and throughput (tok/s) across all models, batch sizes, and precision levels. Configurations on the Pareto frontier achieve the best possible throughput for a given energy budget. Small models at large batch sizes dominate the low-energy, high-throughput region. Notably, Mixtral-8x7B FP16 at batch size 4 achieves 0.56\,J/tok at 65\,tok/s---comparable to the 7--9B dense models while providing 47B-parameter quality. The dense 32B and 70B FP16 models occupy the high-energy region (3--12\,J/tok) but with substantially higher throughput than their GPTQ-Int4 counterparts.
 
 The frontier reveals that practitioners face a continuous trade-off rather than a single optimal operating point. For example, Llama-3.2-1B at bs=16 achieves 1284 tok/s at just 0.031 J/tok, while Phi-3-medium at bs=16 delivers 536 tok/s at 0.33 J/tok---offering greater model capability at a 10$\times$ energy premium. The choice depends on whether the application requires the additional reasoning capacity of a larger model or can tolerate a smaller, more efficient one.
 

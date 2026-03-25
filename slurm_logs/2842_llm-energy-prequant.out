@@ -1,0 +1,41 @@
+=== Job 2842: Pre-quantized large models ===
+Start: Wed Mar  4 10:21:08 AM GMT 2026
+Node: hpc-wn-103
+Wed Mar  4 10:21:08 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100 80GB PCIe           On | 00000000:21:00.0 Off |                    0 |
+| N/A   27C    P0               39W / 300W|      0MiB / 81920MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+===
+
+=== Model 1: Qwen2.5-32B GPTQ-Int4 (Wed Mar  4 10:21:08 AM GMT 2026) ===
+Available disk: 43GB
+Cleaning cache: /home/daniel.cregg/hf_cache/hub/models--Qwen--Qwen2.5-32B-Instruct-GPTQ-Int4
+Disk after cleanup: 43G free
+
+=== Model 2: Mixtral-8x7B GPTQ-Int4 (Wed Mar  4 10:21:18 AM GMT 2026) ===
+Available disk: 43GB
+Cleaning cache: /home/daniel.cregg/hf_cache/hub/models--TheBloke--Mixtral-8x7B-Instruct-v0.1-GPTQ
+Disk after cleanup: 43G free
+
+=== Model 3: Llama-3.3-70B GPTQ-Int4 (Wed Mar  4 10:21:29 AM GMT 2026) ===
+Available disk: 43GB
+Cleaning cache: /home/daniel.cregg/hf_cache/hub/models--shuyuej--Llama-3.3-70B-Instruct-GPTQ
+Disk after cleanup: 43G free
+
+=== ALL DONE: Wed Mar  4 10:21:40 AM GMT 2026 ===

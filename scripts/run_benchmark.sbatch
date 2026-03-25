@@ -20,7 +20,7 @@ OUTPUT_DIR=${3:-results/$MODEL}
 shift 3 2>/dev/null
 BATCH_SIZES="${@:-1 4 8 16}"
 
-export HF_HOME=$HOME/hf_cache
+export HF_HOME=/HPC/daniel.cregg/hf_cache
 export HF_TOKEN=$(cat ~/.cache/huggingface/token 2>/dev/null || echo "")
 export NTFY_TOPIC="llm-energy-framework-127"
 mkdir -p slurm_logs
@@ -33,13 +33,13 @@ echo "Node: $(hostname)"
 nvidia-smi
 echo "==="
 
-# Disk space safety check — need at least 20GB free for model download
-AVAIL_GB=$(df --output=avail -BG $HOME | tail -1 | tr -d ' G')
-echo "Available disk: ${AVAIL_GB}GB"
-if [ "$AVAIL_GB" -lt 20 ]; then
-    echo "ERROR: Only ${AVAIL_GB}GB free, need at least 20GB. Aborting."
+# Disk space safety check on HPC storage
+AVAIL_TB=$(df --output=avail -BG /HPC/daniel.cregg | tail -1 | tr -d ' G')
+echo "Available HPC disk: ${AVAIL_TB}GB"
+if [ "$AVAIL_TB" -lt 200 ]; then
+    echo "ERROR: Only ${AVAIL_TB}GB free on /HPC, need at least 200GB. Aborting."
     curl -s -H "Title: DISK FULL" -H "Priority: urgent" -H "Tags: warning" \
-      -d "Job $SLURM_JOB_ID: $MODEL_SHORT only ${AVAIL_GB}GB free, need 20GB" \
+      -d "Job $SLURM_JOB_ID: $MODEL_SHORT only ${AVAIL_TB}GB free on /HPC" \
       https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1
     exit 1
 fi
@@ -63,10 +63,8 @@ echo "=== Done: $(date) (exit=$EXIT_CODE) ==="
 
 # Clean up HF cache to free disk space for next model
 if [ $EXIT_CODE -eq 0 ]; then
-    MODEL_CACHE_DIR=$(echo "$MODEL" | sed 's|/|--|g')
-    echo "Cleaning cache: $HF_HOME/hub/models--${MODEL_CACHE_DIR}"
-    rm -rf "$HF_HOME/hub/models--${MODEL_CACHE_DIR}"
-    echo "Disk after cleanup: $(df -h $HOME | tail -1 | awk '{print $4 " free"}')"
+    # HPC has 98TB — no need to clean model cache
+    echo "Disk after run: $(df -h /HPC/daniel.cregg | tail -1 | awk '{print $4 " free"}')"
 
     curl -s -H "Title: Benchmark Complete" -H "Priority: high" -H "Tags: tada" \
       -d "Job $SLURM_JOB_ID: $MODEL_SHORT ($PRECISION) completed successfully" \

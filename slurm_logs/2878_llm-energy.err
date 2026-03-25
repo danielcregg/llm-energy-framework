@@ -1,0 +1,43 @@
+/home/daniel.cregg/.local/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-25 11:35:07,553 INFO __main__: Loading model: Qwen/Qwen2.5-32B-Instruct (precision: fp16)
+2026-03-25 11:35:13,570 INFO src.inference: Loading tokenizer: Qwen/Qwen2.5-32B-Instruct
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: 16901c74-f1d4-4dd8-9692-50e3672790b8)')' thrown while requesting HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/vocab.json
+2026-03-25 11:35:27,348 WARNING huggingface_hub.utils._http: '(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: 16901c74-f1d4-4dd8-9692-50e3672790b8)')' thrown while requesting HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/vocab.json
+Retrying in 1s [Retry 1/5].
+2026-03-25 11:35:27,348 WARNING huggingface_hub.utils._http: Retrying in 1s [Retry 1/5].
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: 7828fb26-053c-4cd4-8c29-bf1339663741)')' thrown while requesting HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/merges.txt
+2026-03-25 11:35:41,837 WARNING huggingface_hub.utils._http: '(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: 7828fb26-053c-4cd4-8c29-bf1339663741)')' thrown while requesting HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct/5ede1c97bbab6ce5cda5812749b4c0bdf79b18dd/merges.txt
+Retrying in 1s [Retry 1/5].
+2026-03-25 11:35:41,837 WARNING huggingface_hub.utils._http: Retrying in 1s [Retry 1/5].
+2026-03-25 11:35:49,907 INFO src.inference: Loading model: Qwen/Qwen2.5-32B-Instruct (precision=fp16)
+Fetching 17 files:   0%|          | 0/17 [00:00<?, ?it/s]Fetching 17 files:   6%|▌         | 1/17 [09:40<2:34:44, 580.29s/it]Fetching 17 files: 100%|██████████| 17/17 [09:40<00:00, 34.13s/it]  
+2026-03-25 11:45:40,116 INFO accelerate.utils.modeling: We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/17 [00:00<?, ?it/s]Loading checkpoint shards:   6%|▌         | 1/17 [00:04<01:11,  4.47s/it]Loading checkpoint shards:  12%|█▏        | 2/17 [00:08<01:07,  4.48s/it]Loading checkpoint shards:  18%|█▊        | 3/17 [00:13<01:02,  4.46s/it]Loading checkpoint shards:  24%|██▎       | 4/17 [00:17<00:58,  4.47s/it]Loading checkpoint shards:  29%|██▉       | 5/17 [00:22<00:53,  4.45s/it]Loading checkpoint shards:  35%|███▌      | 6/17 [00:26<00:48,  4.45s/it]Loading checkpoint shards:  41%|████      | 7/17 [00:31<00:45,  4.55s/it]Loading checkpoint shards:  47%|████▋     | 8/17 [00:36<00:41,  4.60s/it]Loading checkpoint shards:  53%|█████▎    | 9/17 [00:40<00:36,  4.55s/it]Loading checkpoint shards:  59%|█████▉    | 10/17 [00:45<00:31,  4.51s/it]Loading checkpoint shards:  65%|██████▍   | 11/17 [00:49<00:26,  4.49s/it]Loading checkpoint shards:  71%|███████   | 12/17 [00:54<00:22,  4.50s/it]Loading checkpoint shards:  76%|███████▋  | 13/17 [00:58<00:17,  4.49s/it]Loading checkpoint shards:  82%|████████▏ | 14/17 [01:02<00:13,  4.48s/it]Loading checkpoint shards:  88%|████████▊ | 15/17 [01:07<00:08,  4.45s/it]Loading checkpoint shards:  94%|█████████▍| 16/17 [01:11<00:04,  4.41s/it]Loading checkpoint shards: 100%|██████████| 17/17 [01:15<00:00,  4.14s/it]Loading checkpoint shards: 100%|██████████| 17/17 [01:15<00:00,  4.42s/it]
+2026-03-25 11:46:58,095 INFO src.inference: Model loaded successfully on cuda:0
+2026-03-25 11:46:58,095 INFO __main__: Measuring idle baseline (30s)...
+2026-03-25 11:46:58,095 INFO src.hardware: Measuring idle baseline for 30s...
+2026-03-25 11:47:28,096 INFO src.hardware: Idle baseline: 61.9W (std=0.3W, 292 samples)
+2026-03-25 11:47:28,097 INFO __main__: Warmup (3 runs): sum_short/bs=1
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+2026-03-25 11:47:44,214 INFO __main__: Measuring (10 runs): sum_short/bs=1
+2026-03-25 11:48:26,595 INFO __main__: Warmup (3 runs): sum_short/bs=4
+2026-03-25 11:48:39,768 INFO __main__: Measuring (10 runs): sum_short/bs=4
+2026-03-25 11:49:23,849 INFO __main__: Warmup (3 runs): qa_factual/bs=1
+2026-03-25 11:49:55,278 INFO __main__: Measuring (10 runs): qa_factual/bs=1
+2026-03-25 11:51:40,735 INFO __main__: Warmup (3 runs): qa_factual/bs=4
+2026-03-25 11:52:12,582 INFO __main__: Measuring (10 runs): qa_factual/bs=4
+2026-03-25 11:53:59,174 INFO __main__: Warmup (3 runs): code_simple/bs=1
+2026-03-25 11:54:30,614 INFO __main__: Measuring (10 runs): code_simple/bs=1
+2026-03-25 11:56:16,065 INFO __main__: Warmup (3 runs): code_simple/bs=4
+2026-03-25 11:56:47,955 INFO __main__: Measuring (10 runs): code_simple/bs=4
+2026-03-25 11:58:34,595 INFO __main__: Warmup (3 runs): longform/bs=1
+2026-03-25 11:59:06,044 INFO __main__: Measuring (10 runs): longform/bs=1
+2026-03-25 12:00:51,614 INFO __main__: Warmup (3 runs): longform/bs=4
+2026-03-25 12:01:23,517 INFO __main__: Measuring (10 runs): longform/bs=4
+2026-03-25 12:03:10,215 INFO __main__: Warmup (3 runs): reasoning/bs=1
+2026-03-25 12:03:41,705 INFO __main__: Measuring (10 runs): reasoning/bs=1
+2026-03-25 12:05:27,357 INFO __main__: Warmup (3 runs): reasoning/bs=4
+2026-03-25 12:05:59,409 INFO __main__: Measuring (10 runs): reasoning/bs=4
+2026-03-25 12:07:46,910 INFO __main__: Report saved: results/qwen2.5-32b-fp16/benchmark_Qwen_Qwen2.5-32B-Instruct_fp16.json
+/cm/local/apps/slurm/var/spool/job02878/slurm_script: line 58: 10430 Bus error               (core dumped) python3 -m src.benchmark --model "$MODEL" --precision "$PRECISION" --batch-sizes $BATCH_SIZES --n-runs 10 --output-dir "$OUTPUT_DIR"

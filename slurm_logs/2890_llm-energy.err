@@ -1,0 +1,88 @@
+/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-25 13:16:17,685 INFO __main__: Loading model: meta-llama/Llama-3.3-70B-Instruct (precision: fp16)
+2026-03-25 13:16:22,180 INFO src.inference: Loading tokenizer: meta-llama/Llama-3.3-70B-Instruct
+2026-03-25 13:16:30,786 INFO src.inference: Loading model: meta-llama/Llama-3.3-70B-Instruct (precision=fp16)
+Fetching 30 files:   0%|          | 0/30 [00:00<?, ?it/s]Fetching 30 files:   3%|▎         | 1/30 [11:31<5:34:24, 691.86s/it]Fetching 30 files:  30%|███       | 9/30 [14:51<27:30, 78.62s/it]   Fetching 30 files:  33%|███▎      | 10/30 [16:54<28:18, 84.92s/it]Fetching 30 files:  37%|███▋      | 11/30 [17:27<24:06, 76.15s/it]Fetching 30 files:  40%|████      | 12/30 [17:41<19:14, 64.15s/it]Fetching 30 files:  57%|█████▋    | 17/30 [18:47<07:30, 34.64s/it]Fetching 30 files:  60%|██████    | 18/30 [21:50<11:08, 55.68s/it]Fetching 30 files:  63%|██████▎   | 19/30 [22:30<09:42, 52.96s/it]Fetching 30 files:  77%|███████▋  | 23/30 [22:49<03:25, 29.33s/it]Fetching 30 files:  80%|████████  | 24/30 [22:50<02:30, 25.09s/it]Fetching 30 files:  83%|████████▎ | 25/30 [23:18<02:08, 25.67s/it]Fetching 30 files:  87%|████████▋ | 26/30 [25:15<02:56, 44.01s/it]Fetching 30 files:  90%|█████████ | 27/30 [25:43<02:01, 40.34s/it]Fetching 30 files:  97%|█████████▋| 29/30 [25:44<00:24, 24.82s/it]Fetching 30 files: 100%|██████████| 30/30 [25:44<00:00, 51.47s/it]
+Loading checkpoint shards:   0%|          | 0/30 [00:00<?, ?it/s]Loading checkpoint shards:   3%|▎         | 1/30 [00:09<04:30,  9.31s/it]Loading checkpoint shards:   7%|▋         | 2/30 [00:21<05:01, 10.77s/it]Loading checkpoint shards:  10%|█         | 3/30 [00:34<05:21, 11.90s/it]Loading checkpoint shards:  13%|█▎        | 4/30 [00:47<05:18, 12.25s/it]Loading checkpoint shards:  17%|█▋        | 5/30 [01:00<05:13, 12.53s/it]Loading checkpoint shards:  20%|██        | 6/30 [01:13<05:04, 12.70s/it]Loading checkpoint shards:  23%|██▎       | 7/30 [01:26<04:58, 12.99s/it]Loading checkpoint shards:  27%|██▋       | 8/30 [01:39<04:40, 12.77s/it]Loading checkpoint shards:  30%|███       | 9/30 [01:49<04:15, 12.17s/it]Loading checkpoint shards:  33%|███▎      | 10/30 [01:59<03:48, 11.42s/it]Loading checkpoint shards:  37%|███▋      | 11/30 [02:08<03:22, 10.64s/it]Loading checkpoint shards:  40%|████      | 12/30 [02:16<02:59,  9.96s/it]Loading checkpoint shards:  43%|████▎     | 13/30 [02:25<02:43,  9.64s/it]Loading checkpoint shards:  47%|████▋     | 14/30 [02:35<02:36,  9.78s/it]Loading checkpoint shards:  50%|█████     | 15/30 [02:44<02:23,  9.55s/it]Loading checkpoint shards:  53%|█████▎    | 16/30 [02:53<02:07,  9.11s/it]Loading checkpoint shards:  57%|█████▋    | 17/30 [03:00<01:52,  8.66s/it]Loading checkpoint shards:  60%|██████    | 18/30 [03:08<01:40,  8.39s/it]Loading checkpoint shards:  63%|██████▎   | 19/30 [03:16<01:30,  8.20s/it]Loading checkpoint shards:  67%|██████▋   | 20/30 [03:24<01:21,  8.19s/it]Loading checkpoint shards:  70%|███████   | 21/30 [03:31<01:11,  7.95s/it]Loading checkpoint shards:  73%|███████▎  | 22/30 [03:38<01:01,  7.67s/it]Loading checkpoint shards:  77%|███████▋  | 23/30 [03:45<00:52,  7.53s/it]Loading checkpoint shards:  80%|████████  | 24/30 [03:53<00:45,  7.65s/it]Loading checkpoint shards:  83%|████████▎ | 25/30 [04:01<00:38,  7.75s/it]Loading checkpoint shards:  87%|████████▋ | 26/30 [04:06<00:27,  6.93s/it]Loading checkpoint shards:  90%|█████████ | 27/30 [04:15<00:22,  7.36s/it]Loading checkpoint shards:  93%|█████████▎| 28/30 [04:23<00:15,  7.67s/it]Loading checkpoint shards:  97%|█████████▋| 29/30 [04:30<00:07,  7.37s/it]Loading checkpoint shards: 100%|██████████| 30/30 [04:33<00:00,  6.06s/it]Loading checkpoint shards: 100%|██████████| 30/30 [04:33<00:00,  9.11s/it]
+2026-03-25 13:47:01,193 INFO src.inference: Model loaded successfully on cuda:0
+2026-03-25 13:47:01,193 INFO __main__: Measuring idle baseline (30s)...
+2026-03-25 13:47:01,193 INFO src.hardware: Measuring idle baseline for 30s...
+2026-03-25 13:47:31,291 INFO src.hardware: Idle baseline: 62.2W (std=0.3W, 293 samples)
+2026-03-25 13:47:31,291 INFO __main__: Warmup (3 runs): sum_short/bs=1
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 13:48:36,176 INFO __main__: Measuring (10 runs): sum_short/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 13:52:08,148 INFO __main__: Warmup (3 runs): qa_factual/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 13:53:11,396 INFO __main__: Measuring (10 runs): qa_factual/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 13:56:42,358 INFO __main__: Warmup (3 runs): code_simple/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 13:57:45,598 INFO __main__: Measuring (10 runs): code_simple/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 14:01:16,543 INFO __main__: Warmup (3 runs): longform/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 14:02:19,786 INFO __main__: Measuring (10 runs): longform/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 14:05:50,861 INFO __main__: Warmup (3 runs): reasoning/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 14:06:54,147 INFO __main__: Measuring (10 runs): reasoning/bs=1
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:128001 for open-end generation.
+2026-03-25 14:10:25,668 INFO __main__: Report saved: results/llama-3.3-70b-fp16/benchmark_meta-llama_Llama-3.3-70B-Instruct_fp16.json

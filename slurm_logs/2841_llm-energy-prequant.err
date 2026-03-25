@@ -1,0 +1,196 @@
+/home/daniel.cregg/.local/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-04 10:17:05,261 INFO __main__: Loading model: Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4 (precision: gptq)
+2026-03-04 10:17:07,672 INFO src.inference: Loading tokenizer: Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4
+2026-03-04 10:17:07,863 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:07,984 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:08,111 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:08,228 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:08,337 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:08,453 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:08,574 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:08,692 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-04 10:17:08,802 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/vocab.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:08,912 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/vocab.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:09,034 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/vocab.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:09,646 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/merges.txt "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:09,778 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/merges.txt "HTTP/1.1 200 OK"
+2026-03-04 10:17:09,905 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/merges.txt "HTTP/1.1 200 OK"
+2026-03-04 10:17:10,157 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:10,270 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:10,420 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:10,979 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:11,088 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:11,198 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:11,886 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4 "HTTP/1.1 200 OK"
+2026-03-04 10:17:11,889 INFO src.inference: Loading model: Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4 (precision=gptq)
+2026-03-04 10:17:12,002 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:12,025 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:12,263 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:13,631 INFO httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:13,650 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4/c83e67dfb2664f5039fd4cd99e206799e27dd800/config.json "HTTP/1.1 200 OK"
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 280, in <module>
+    main()
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 268, in main
+    run_benchmark(
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 99, in run_benchmark
+    model, tokenizer = load_model(model_name, precision)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/llm-energy-framework/src/inference.py", line 79, in load_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 374, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/modeling_utils.py", line 3973, in from_pretrained
+    hf_quantizer, config, device_map = get_hf_quantizer(
+                                       ^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/quantizers/auto.py", line 322, in get_hf_quantizer
+    hf_quantizer = AutoHfQuantizer.from_config(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/quantizers/auto.py", line 188, in from_config
+    return target_cls(quantization_config, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/quantizers/quantizer_gptq.py", line 48, in __init__
+    raise ImportError("Loading a GPTQ quantized model requires optimum (`pip install optimum`)")
+ImportError: Loading a GPTQ quantized model requires optimum (`pip install optimum`)
+/home/daniel.cregg/.local/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-04 10:17:16,477 INFO __main__: Loading model: TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ (precision: gptq)
+2026-03-04 10:17:18,647 INFO src.inference: Loading tokenizer: TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ
+2026-03-04 10:17:18,819 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:18,930 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:19,092 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:19,206 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:19,318 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:19,443 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:19,554 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:19,576 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:19,690 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:19,803 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-04 10:17:19,939 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:20,073 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:20,216 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:20,499 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/tokenizer.model "HTTP/1.1 302 Found"
+2026-03-04 10:17:20,612 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/xet-read-token/0f81ba4680ccd2bce163334b93305d40b9e27b09 "HTTP/1.1 200 OK"
+2026-03-04 10:17:21,565 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:21,678 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/special_tokens_map.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:21,789 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/special_tokens_map.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:21,926 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/special_tokens_map.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:22,934 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:23,113 INFO src.inference: Loading model: TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ (precision=gptq)
+2026-03-04 10:17:23,223 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:23,248 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:23,402 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:24,720 INFO httpx: HTTP Request: HEAD https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:24,740 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ/0f81ba4680ccd2bce163334b93305d40b9e27b09/config.json "HTTP/1.1 200 OK"
+`act_group_aware` has been auto-disabled as it is not compatible with `desc_act = True`.
+Traceback (most recent call last):
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/importlib/metadata/__init__.py", line 563, in from_name
+    return next(cls.discover(name=name))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StopIteration
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 280, in <module>
+    main()
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 268, in main
+    run_benchmark(
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 99, in run_benchmark
+    model, tokenizer = load_model(model_name, precision)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/llm-energy-framework/src/inference.py", line 79, in load_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 374, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/modeling_utils.py", line 3973, in from_pretrained
+    hf_quantizer, config, device_map = get_hf_quantizer(
+                                       ^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/quantizers/auto.py", line 316, in get_hf_quantizer
+    config.quantization_config = AutoHfQuantizer.merge_quantization_configs(
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/quantizers/auto.py", line 217, in merge_quantization_configs
+    quantization_config = AutoQuantizationConfig.from_dict(quantization_config)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/quantizers/auto.py", line 143, in from_dict
+    return target_cls.from_dict(quantization_config_dict)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/utils/quantization_config.py", line 116, in from_dict
+    config = cls(**config_dict)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/utils/quantization_config.py", line 726, in __init__
+    self.post_init()
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/utils/quantization_config.py", line 766, in post_init
+    optimum_version = version.parse(importlib.metadata.version("optimum"))
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/importlib/metadata/__init__.py", line 1009, in version
+    return distribution(distribution_name).version
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/importlib/metadata/__init__.py", line 982, in distribution
+    return Distribution.from_name(distribution_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/importlib/metadata/__init__.py", line 565, in from_name
+    raise PackageNotFoundError(name)
+importlib.metadata.PackageNotFoundError: No package metadata was found for optimum
+/home/daniel.cregg/.local/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-04 10:17:27,510 INFO __main__: Loading model: ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4 (precision: awq)
+2026-03-04 10:17:29,594 INFO src.inference: Loading tokenizer: ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4
+2026-03-04 10:17:29,768 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:29,885 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/a3c28ea93c041acfaadb85401ad6493749a5aa04/config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:30,000 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/a3c28ea93c041acfaadb85401ad6493749a5aa04/config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:30,127 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:30,247 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/a3c28ea93c041acfaadb85401ad6493749a5aa04/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:30,369 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/a3c28ea93c041acfaadb85401ad6493749a5aa04/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:30,490 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:30,512 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/a3c28ea93c041acfaadb85401ad6493749a5aa04/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:30,623 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:30,735 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-04 10:17:30,850 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/tokenizer.json "HTTP/1.1 302 Found"
+2026-03-04 10:17:30,960 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/xet-read-token/a3c28ea93c041acfaadb85401ad6493749a5aa04 "HTTP/1.1 200 OK"
+2026-03-04 10:17:32,279 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/tokenizer.model "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:32,387 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:32,498 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/special_tokens_map.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:32,609 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/a3c28ea93c041acfaadb85401ad6493749a5aa04/special_tokens_map.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:32,753 INFO httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/a3c28ea93c041acfaadb85401ad6493749a5aa04/special_tokens_map.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:32,869 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:34,053 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4 "HTTP/1.1 200 OK"
+2026-03-04 10:17:34,072 INFO src.inference: Loading model: ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4 (precision=awq)
+2026-03-04 10:17:34,183 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:34,210 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/a3c28ea93c041acfaadb85401ad6493749a5aa04/config.json "HTTP/1.1 200 OK"
+2026-03-04 10:17:34,347 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-03-04 10:17:35,645 INFO httpx: HTTP Request: HEAD https://huggingface.co/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-04 10:17:35,664 INFO httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/ibnzterrell/Meta-Llama-3.3-70B-Instruct-AWQ-INT4/a3c28ea93c041acfaadb85401ad6493749a5aa04/config.json "HTTP/1.1 200 OK"
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 280, in <module>
+    main()
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 268, in main
+    run_benchmark(
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 99, in run_benchmark
+    model, tokenizer = load_model(model_name, precision)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/llm-energy-framework/src/inference.py", line 79, in load_model
+    model = AutoModelForCausalLM.from_pretrained(model_name, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 374, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/modeling_utils.py", line 3973, in from_pretrained
+    hf_quantizer, config, device_map = get_hf_quantizer(
+                                       ^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/quantizers/auto.py", line 330, in get_hf_quantizer
+    hf_quantizer.validate_environment(
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/quantizers/quantizer_awq.py", line 48, in validate_environment
+    raise ImportError(
+ImportError: Loading an AWQ quantized model requires gptqmodel. Please install it with `pip install gptqmodel`
