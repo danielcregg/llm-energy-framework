@@ -232,7 +232,7 @@ footer a:hover { text-decoration: underline; }
       We present a rigorous framework for measuring LLM inference energy using direct NVML-based power
       sampling on an NVIDIA A100 80GB GPU. We benchmark 13 open-weight models (1B&ndash;70B parameters) across
       five architectural families&mdash;Llama, Mistral, Qwen, Phi, and Gemma&mdash;including pre-quantized GPTQ
-      variants for large models. Our results reveal a sub-linear scaling law (E &prop; N<sup>0.91</sup>, R&sup2;=0.99),
+      variants for large models. Our results reveal a sub-linear scaling law (E &prop; N<sup>0.68</sup>, R&sup2;=0.90) for dense architectures,
       find that bitsandbytes quantisation now <em>reduces</em> per-token energy (reversing prior findings of
       2.9&ndash;3.7&times; penalties), and demonstrate 2.9&times; variation in per-token carbon emissions depending on
       Irish grid conditions. All code, data, and reproducibility artifacts are publicly available.
@@ -259,9 +259,9 @@ footer a:hover { text-decoration: underline; }
     <div class="findings-grid">
       <div class="finding-card">
         <h3>Scaling Law</h3>
-        <p>Energy scales as <span class="highlight">E &prop; N<sup>0.91</sup></span> (R&sup2;=0.99) across
-        architectures&mdash;higher than the single-family exponent of 0.80 found in prior Pythia-only studies,
-        reflecting cross-architecture heterogeneity.</p>
+        <p>Energy scales as <span class="highlight">E &prop; N<sup>0.68</sup></span> (R&sup2;=0.90) across
+        dense architectures&mdash;lower than the single-family exponent of 0.80 found in prior Pythia-only studies,
+        reflecting cross-architecture diversity. Mixtral MoE (46.7B params) is a clear outlier, consuming energy comparable to a 12B dense model.</p>
       </div>
       <div class="finding-card">
         <h3>Batch Size Impact</h3>
@@ -326,7 +326,7 @@ footer a:hover { text-decoration: underline; }
     <div class="gallery-grid">
       <figure class="gallery-item">
         <img src="paper/figures/fig1_scaling_law.png" alt="Scaling law: J/tok vs model parameters" loading="lazy">
-        <figcaption><strong>Fig 1.</strong> Scaling law: J/tok vs model parameters (FP16, bs=1). Power law fit yields exponent 0.91 (R&sup2;=0.99).</figcaption>
+        <figcaption><strong>Fig 1.</strong> Scaling law: J/tok vs model parameters (FP16, bs=1). Dense-only power law fit yields exponent 0.68 (R&sup2;=0.90). Mixtral MoE is a clear outlier.</figcaption>
       </figure>
       <figure class="gallery-item">
         <img src="paper/figures/fig2_efficiency_frontier.png" alt="Efficiency frontier: J/tok vs tok/s" loading="lazy">
@@ -354,7 +354,7 @@ footer a:hover { text-decoration: underline; }
       </figure>
       <figure class="gallery-item">
         <img src="paper/figures/prior_scaling_overlay.png" alt="Scaling law comparison with prior work" loading="lazy">
-        <figcaption><strong>Fig 8.</strong> Scaling law overlay: new framework results alongside energy-bench Pythia data. Exponent 0.91 vs 0.80.</figcaption>
+        <figcaption><strong>Fig 8.</strong> Scaling law overlay: new framework results alongside energy-bench Pythia data. Dense exponent 0.68 vs Pythia 0.80.</figcaption>
       </figure>
       <figure class="gallery-item">
         <img src="paper/figures/prior_quantisation_comparison.png" alt="Quantisation comparison with prior work" loading="lazy">
@@ -428,7 +428,7 @@ footer a:hover { text-decoration: underline; }
           <tr>
             <td>Scaling exponent (&beta;)</td>
             <td>0.80 (Pythia, R&sup2;=0.99)</td>
-            <td>0.91 (multi-arch, R&sup2;=0.99)</td>
+            <td>0.68 (dense multi-arch, R&sup2;=0.90)</td>
           </tr>
           <tr>
             <td>J/tok ~7B model (bs=1)</td>

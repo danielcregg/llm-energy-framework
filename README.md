@@ -79,7 +79,7 @@ Best J/tok and tok/s are at optimal batch size (bs=16 unless noted). 295 individ
 
 ### Key Findings
 
-1. **Scaling law**: Energy scales as N^0.91 across architectures (R²=0.99), steeper than the 0.80 exponent found in single-family (Pythia) studies.
+1. **Scaling law**: Energy scales as N^0.68 across dense architectures (R²=0.90), lower than the 0.80 exponent found in single-family (Pythia) studies, reflecting architectural diversity. Mixtral MoE (46.7B params) is a clear outlier, consuming energy comparable to a 12B dense model.
 2. **Batch size**: Increasing from bs=1 to bs=16 reduces J/tok by 9-15x.
 3. **Quantisation reversal**: At bs=1, bitsandbytes INT8 and INT4 on Llama-3.1-8B *reduce* per-token energy by 10% and 20% respectively, reversing the 2.9-3.7x energy penalties reported in prior work. At larger batch sizes, the throughput penalty dominates and FP16 remains more efficient.
 4. **Carbon variation**: Irish grid carbon intensity (119-348 gCO2/kWh) introduces 2.9x variation in per-token emissions, meaning *when* you run inference matters as much as *which* model you choose.

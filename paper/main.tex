@@ -24,7 +24,7 @@ daniel.cregg@setu.ie}}
 \maketitle
 
 \begin{abstract}
-We present a rigorous framework for measuring the energy consumption of large language model (LLM) inference on GPU hardware and apply it to benchmark 13 open-weight models spanning 1B to 70B parameters across five architectural families (Llama, Mistral, Qwen, Phi, Gemma), including pre-quantized GPTQ models for sizes infeasible in full precision. Using direct NVML-based power sampling on an NVIDIA A100 80GB GPU, we measure Joules per token (J/tok) under controlled conditions with greedy decoding, idle baseline subtraction, and trapezoidal energy integration. Our results reveal a sub-linear scaling law ($E \propto N^{0.91}$, $R^2=0.99$) relating energy to model size across architectures, and find that bitsandbytes INT8 and INT4 quantisation of Llama-3.1-8B \emph{reduces} per-token energy by 10\% and 20\% respectively---contrary to prior findings of 2.9--3.7$\times$ energy penalties. We additionally ground our measurements in Irish electricity grid carbon intensity data, demonstrating a 2.9$\times$ variation in per-token carbon emissions depending on time of day. All code, data, and reproducibility artifacts are publicly available.
+We present a rigorous framework for measuring the energy consumption of large language model (LLM) inference on GPU hardware and apply it to benchmark 13 open-weight models spanning 1B to 70B parameters across five architectural families (Llama, Mistral, Qwen, Phi, Gemma), including pre-quantized GPTQ models for sizes infeasible in full precision. Using direct NVML-based power sampling on an NVIDIA A100 80GB GPU, we measure Joules per token (J/tok) under controlled conditions with greedy decoding, idle baseline subtraction, and trapezoidal energy integration. Our results reveal a sub-linear scaling law ($E \propto N^{0.68}$, $R^2=0.90$) relating energy to model size across dense architectures, and find that bitsandbytes INT8 and INT4 quantisation of Llama-3.1-8B \emph{reduces} per-token energy by 10\% and 20\% respectively---contrary to prior findings of 2.9--3.7$\times$ energy penalties. We additionally ground our measurements in Irish electricity grid carbon intensity data, demonstrating a 2.9$\times$ variation in per-token carbon emissions depending on time of day. All code, data, and reproducibility artifacts are publicly available.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -119,12 +119,12 @@ Table~\ref{tab:summary} presents the key results. Across all 13 FP16 models, J/t
 
 \subsection{Scaling Law Results}
 
-Figure~\ref{fig:scaling} shows J/tok as a function of model parameters for all FP16 models at batch size 1. With the addition of three large FP16 models (32B, 46.7B, 70B), the scaling relationship reveals an important distinction between dense and Mixture-of-Experts (MoE) architectures. Fitting a power law $E = \alpha N^{\beta}$ to dense models only yields $\beta = 0.69$ ($R^2 = 0.90$), a sub-linear relationship indicating that larger dense models are more energy-efficient per parameter. Mixtral-8x7B is a notable outlier: despite 46.7B total parameters, its MoE routing activates only $\sim$12B per token, yielding 2.14\,J/tok---consistent with a 12B dense model and drawing only 98\,W versus 180--290\,W for similarly-sized dense models. This demonstrates that MoE architectures offer a fundamentally different energy--performance trade-off, achieving large-model quality at small-model energy cost.
+Figure~\ref{fig:scaling} shows J/tok as a function of model parameters for all FP16 models at batch size 1. With the addition of three large FP16 models (32B, 46.7B, 70B), the scaling relationship reveals an important distinction between dense and Mixture-of-Experts (MoE) architectures. Fitting a power law $E = \alpha N^{\beta}$ to dense models only yields $\beta = 0.68$ ($R^2 = 0.90$), a sub-linear relationship indicating that larger dense models are more energy-efficient per parameter. Mixtral-8x7B is a notable outlier: despite 46.7B total parameters, its MoE routing activates only $\sim$12B per token, yielding 2.14\,J/tok---consistent with a 12B dense model and drawing only 98\,W versus 180--290\,W for similarly-sized dense models. This demonstrates that MoE architectures offer a fundamentally different energy--performance trade-off, achieving large-model quality at small-model energy cost.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{fig1_scaling_law}
-    \caption{Scaling law: J/tok vs model parameters (FP16, bs=1). Dense models follow $E \propto N^{0.69}$ ($R^2 = 0.90$). Mixtral-8x7B (MoE, 46.7B total, $\sim$12B active) is a clear outlier, consuming energy consistent with a 12B dense model.}
+    \caption{Scaling law: J/tok vs model parameters (FP16, bs=1). Dense models follow $E \propto N^{0.68}$ ($R^2 = 0.90$). Mixtral-8x7B (MoE, 46.7B total, $\sim$12B active) is a clear outlier, consuming energy consistent with a 12B dense model.}
     \label{fig:scaling}
 \end{figure}
 
@@ -209,7 +209,7 @@ Figure~\ref{fig:carbon} shows the gCO$_2$eq per 1000 tokens for each model compu
 
 \subsection{Comparison with Prior Work}
 
-Table~\ref{tab:crossstudy} compares our results with the energy-bench framework. The scaling exponent increases from 0.80 (single Pythia family) to 0.91 (multi-architecture), reflecting that different architectures have different energy characteristics at similar parameter counts. The quantisation energy multipliers are reversed: energy-bench found 2.88$\times$ (INT8) and 3.72$\times$ (NF4) penalties on Mistral-7B, while we find 0.90$\times$ and 0.80$\times$ reductions on Llama-3.1-8B. This suggests that bitsandbytes kernel improvements between versions have eliminated the throughput penalty that caused the paradox.
+Table~\ref{tab:crossstudy} compares our results with the energy-bench framework. The scaling exponent decreases from 0.80 (single Pythia family) to 0.68 (multi-architecture dense models, R²=0.90), reflecting greater architectural diversity in energy efficiency at similar parameter counts. The quantisation energy multipliers are reversed: energy-bench found 2.88$\times$ (INT8) and 3.72$\times$ (NF4) penalties on Mistral-7B, while we find 0.90$\times$ and 0.80$\times$ reductions on Llama-3.1-8B. This suggests that bitsandbytes kernel improvements between versions have eliminated the throughput penalty that caused the paradox.
 
 \input{tables/cross_study_comparison}
 
@@ -229,7 +229,7 @@ Our results have several practical implications for sustainable LLM deployment:
 
 \section{Conclusion and Future Work}
 
-We presented a rigorous NVML-based framework for measuring LLM inference energy and applied it to 13 models (1B--70B) across five architectural families, including pre-quantized GPTQ variants for large models. Our key findings are: (1) energy scales as $N^{0.91}$ across architectures, (2) batching provides 9--15$\times$ efficiency gains, (3) bitsandbytes quantisation at bs=1 now \emph{reduces} per-token energy, reversing prior findings, and (4) Irish grid carbon variation introduces 2.9$\times$ emission variability.
+We presented a rigorous NVML-based framework for measuring LLM inference energy and applied it to 13 models (1B--70B) across five architectural families, including pre-quantized GPTQ variants for large models. Our key findings are: (1) energy scales as $N^{0.68}$ across dense architectures, (2) batching provides 9--15$\times$ efficiency gains, (3) bitsandbytes quantisation at bs=1 now \emph{reduces} per-token energy, reversing prior findings, and (4) Irish grid carbon variation introduces 2.9$\times$ emission variability.
 
 Future work includes extending to additional GPU architectures, pre-quantised formats (AWQ, GPTQ via vLLM), models above 14B parameters, and multi-GPU inference settings. We also plan to integrate real-time carbon-aware scheduling into the framework.
 

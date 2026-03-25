@@ -36,7 +36,7 @@ All testing was done on a single **NVIDIA A100 80GB GPU** on a university HPC cl
 
 ### 1. Bigger models use more energy (but not as much as you'd think)
 
-Energy per token scales with model size following a power law: roughly E = N^0.91, where N is the number of parameters. This means a model with 10x more parameters uses about 8x more energy per token, not 10x. The relationship is very tight (R-squared = 0.99), meaning model size alone predicts energy consumption almost perfectly.
+Energy per token scales with model size following a power law: roughly E = N^0.68, where N is the number of parameters for dense (non-MoE) architectures. This means a model with 10x more parameters uses about 4.8x more energy per token, not 10x. The relationship is strong (R-squared = 0.90) across five different model families. Mixtral-8x7B, a Mixture-of-Experts model with 46.7B total parameters, is a notable outlier---it uses energy comparable to a 12B dense model because only ~12B parameters are active per token.
 
 ### 2. Batching is the single biggest efficiency lever
 

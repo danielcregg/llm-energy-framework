@@ -191,10 +191,12 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
                        color=colour, label=f"{family} (GPTQ)", s=80, zorder=5,
                        marker="D", edgecolors="black", linewidth=0.5)
 
-    # Fit power law on fp16 data only (GPTQ has different perf characteristics)
+    # Fit power law on dense FP16 models only (exclude MoE and GPTQ)
     fp16_only = grouped[grouped["precision"] == "fp16"]
-    x = fp16_only["params_b"].values
-    y = fp16_only["j_per_tok"].values
+    # Exclude Mixtral MoE (46.7B total params but only ~12B active per token)
+    dense_only = fp16_only[~fp16_only["model"].str.contains("Mixtral", case=False)]
+    x = dense_only["params_b"].values
+    y = dense_only["j_per_tok"].values
     if len(x) >= 3:
         try:
             popt, _ = curve_fit(_power_law, x, y, p0=[0.05, 0.5], maxfev=5000)
@@ -204,7 +206,7 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
             ss_tot = np.sum((y - np.mean(y)) ** 2)
             r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0
             ax.plot(x_fit, y_fit, "k--", alpha=0.6,
-                    label=f"Fit: J/tok = {popt[0]:.3f} N^{popt[1]:.2f} (R²={r2:.2f})")
+                    label=f"Dense fit: J/tok = {popt[0]:.3f} N^{popt[1]:.2f} (R²={r2:.2f})")
         except RuntimeError:
             logger.warning("Power law fit failed")
 
@@ -712,7 +714,7 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
 
     # energy-bench key metrics
     rows.append({
-        "Metric": "Scaling exponent (alpha)",
+        "Metric": "Scaling exponent (beta)",
         "energy-bench": "0.80 (Pythia, R²=0.99)",
         "New Framework": "TBD from fit",
     })
@@ -743,10 +745,12 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
 
     # Fill in new framework values if available
     if not df.empty:
-        # Scaling fit — fp16 only (GPTQ has different perf characteristics)
+        # Scaling fit — dense FP16 only (exclude MoE and GPTQ)
         fp16_bs1 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
-        if not fp16_bs1.empty:
-            new_agg = fp16_bs1.groupby("params_b")["j_per_tok_mean"].mean().reset_index()
+        # Exclude Mixtral MoE (46.7B total but ~12B active per token)
+        dense_bs1 = fp16_bs1[~fp16_bs1["model"].str.contains("Mixtral", case=False)]
+        if not dense_bs1.empty:
+            new_agg = dense_bs1.groupby("params_b")["j_per_tok_mean"].mean().reset_index()
             if len(new_agg) >= 3:
                 try:
                     popt, _ = curve_fit(_power_law, new_agg["params_b"].values,
@@ -756,7 +760,7 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
                     ss_tot = np.sum((new_agg["j_per_tok_mean"].values -
                                      new_agg["j_per_tok_mean"].mean()) ** 2)
                     r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0
-                    rows[0]["New Framework"] = f"{popt[1]:.2f} (multi-arch, R²={r2:.2f})"
+                    rows[0]["New Framework"] = f"{popt[1]:.2f} (dense multi-arch, R²={r2:.2f})"
                 except RuntimeError:
                     pass
 
