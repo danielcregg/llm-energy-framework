@@ -74,7 +74,8 @@ def run_benchmark(model_name: str, precision: str = "fp16",
                   n_runs: int = DEFAULT_N_RUNS,
                   max_new_tokens: int = DEFAULT_MAX_NEW_TOKENS,
                   output_dir: str = "results",
-                  grid_carbon_intensity: float | None = None) -> dict:
+                  grid_carbon_intensity: float | None = None,
+                  prompt_filter: list[str] | None = None) -> dict:
     """Run a full benchmark suite for one model.
 
     Args:
@@ -105,6 +106,10 @@ def run_benchmark(model_name: str, precision: str = "fp16",
 
     # Load prompts
     prompts = load_prompts()
+    if prompt_filter:
+        prompts = [p for p in prompts if p["id"] in prompt_filter]
+        logger.info("Filtered to %d prompts: %s", len(prompts),
+                     [p["id"] for p in prompts])
 
     # Run benchmarks
     all_results = []
@@ -307,6 +312,8 @@ def main():
     parser.add_argument("--output-dir", default="results")
     parser.add_argument("--grid-carbon-intensity", type=float, default=None,
                         help="Grid carbon intensity in gCO2/kWh")
+    parser.add_argument("--prompts", nargs="+", default=None,
+                        help="Run only these prompt IDs (e.g. sum_short qa_factual)")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO,
@@ -320,6 +327,7 @@ def main():
         max_new_tokens=args.max_new_tokens,
         output_dir=args.output_dir,
         grid_carbon_intensity=args.grid_carbon_intensity,
+        prompt_filter=args.prompts,
     )
 
 
