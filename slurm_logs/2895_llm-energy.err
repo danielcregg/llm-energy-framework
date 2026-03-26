@@ -1,0 +1,172 @@
+/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-25 14:29:47,829 INFO __main__: Loading model: mistralai/Mixtral-8x7B-Instruct-v0.1 (precision: fp16)
+2026-03-25 14:29:54,236 INFO src.inference: Loading tokenizer: mistralai/Mixtral-8x7B-Instruct-v0.1
+2026-03-25 14:29:56,381 INFO src.inference: Loading model: mistralai/Mixtral-8x7B-Instruct-v0.1 (precision=fp16)
+2026-03-25 14:29:59,922 INFO accelerate.utils.modeling: We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/19 [00:00<?, ?it/s]Loading checkpoint shards:   5%|▌         | 1/19 [00:18<05:38, 18.79s/it]Loading checkpoint shards:  11%|█         | 2/19 [00:38<05:27, 19.25s/it]Loading checkpoint shards:  16%|█▌        | 3/19 [00:49<04:05, 15.33s/it]Loading checkpoint shards:  21%|██        | 4/19 [00:53<02:43, 10.88s/it]Loading checkpoint shards:  26%|██▋       | 5/19 [00:57<01:57,  8.42s/it]Loading checkpoint shards:  32%|███▏      | 6/19 [01:00<01:29,  6.87s/it]Loading checkpoint shards:  37%|███▋      | 7/19 [01:02<01:02,  5.22s/it]Loading checkpoint shards:  42%|████▏     | 8/19 [01:04<00:45,  4.12s/it]Loading checkpoint shards:  47%|████▋     | 9/19 [01:05<00:32,  3.25s/it]Loading checkpoint shards:  53%|█████▎    | 10/19 [01:07<00:24,  2.77s/it]Loading checkpoint shards:  58%|█████▊    | 11/19 [01:09<00:20,  2.54s/it]Loading checkpoint shards:  63%|██████▎   | 12/19 [01:12<00:18,  2.67s/it]Loading checkpoint shards:  68%|██████▊   | 13/19 [01:15<00:16,  2.67s/it]Loading checkpoint shards:  74%|███████▎  | 14/19 [01:17<00:12,  2.59s/it]Loading checkpoint shards:  79%|███████▉  | 15/19 [01:20<00:10,  2.53s/it]Loading checkpoint shards:  84%|████████▍ | 16/19 [01:22<00:07,  2.64s/it]Loading checkpoint shards:  89%|████████▉ | 17/19 [01:26<00:06,  3.01s/it]Loading checkpoint shards:  95%|█████████▍| 18/19 [01:35<00:04,  4.77s/it]Loading checkpoint shards: 100%|██████████| 19/19 [01:36<00:00,  3.62s/it]Loading checkpoint shards: 100%|██████████| 19/19 [01:36<00:00,  5.09s/it]
+2026-03-25 14:31:37,919 WARNING accelerate.big_modeling: Some parameters are on the meta device because they were offloaded to the cpu.
+2026-03-25 14:31:37,923 INFO src.inference: Model loaded successfully on cuda:0
+2026-03-25 14:31:37,923 INFO __main__: Measuring idle baseline (30s)...
+2026-03-25 14:31:37,923 INFO src.hardware: Measuring idle baseline for 30s...
+2026-03-25 14:32:07,945 INFO src.hardware: Idle baseline: 61.6W (std=0.3W, 292 samples)
+2026-03-25 14:32:07,946 INFO __main__: Warmup (3 runs): sum_short/bs=1
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 14:40:57,281 INFO __main__: Measuring (10 runs): sum_short/bs=1
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 15:09:48,688 INFO __main__: Warmup (3 runs): sum_short/bs=2
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 15:18:23,665 INFO __main__: Measuring (10 runs): sum_short/bs=2
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 15:47:05,901 INFO __main__: Warmup (3 runs): sum_short/bs=4
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 15:55:21,446 INFO __main__: Measuring (10 runs): sum_short/bs=4
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 16:23:00,461 INFO __main__: Warmup (3 runs): sum_short/bs=8
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 16:31:34,079 INFO __main__: Measuring (10 runs): sum_short/bs=8
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 17:00:07,856 INFO __main__: Warmup (3 runs): sum_short/bs=16
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 17:08:49,137 INFO __main__: Measuring (10 runs): sum_short/bs=16
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 17:37:59,029 INFO __main__: Warmup (3 runs): sum_short/bs=32
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 17:46:58,004 INFO __main__: Measuring (10 runs): sum_short/bs=32
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 18:17:12,277 INFO __main__: Warmup (3 runs): qa_factual/bs=1
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 18:24:03,875 INFO __main__: Measuring (10 runs): qa_factual/bs=1
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 18:46:56,121 INFO __main__: Warmup (3 runs): qa_factual/bs=2
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 18:53:48,232 INFO __main__: Measuring (10 runs): qa_factual/bs=2
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 19:16:44,165 INFO __main__: Warmup (3 runs): qa_factual/bs=4
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 19:23:30,041 INFO __main__: Measuring (10 runs): qa_factual/bs=4
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 19:46:05,272 INFO __main__: Warmup (3 runs): qa_factual/bs=8
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 19:52:45,404 INFO __main__: Measuring (10 runs): qa_factual/bs=8
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 20:14:51,958 INFO __main__: Warmup (3 runs): qa_factual/bs=16
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-25 20:21:27,735 INFO __main__: Measuring (10 runs): qa_factual/bs=16
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+slurmstepd: error: *** JOB 2895 ON hpc-wn-102 CANCELLED AT 2026-03-25T20:30:04 DUE TO TIME LIMIT ***

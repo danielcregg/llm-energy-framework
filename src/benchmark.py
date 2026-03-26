@@ -12,6 +12,7 @@ import gc
 import json
 import logging
 import platform
+import signal
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -108,6 +109,52 @@ def run_benchmark(model_name: str, precision: str = "fp16",
     # Run benchmarks
     all_results = []
     errors_log = Path(output_dir) / "errors.log"
+    _terminating = False
+
+    def _save_partial(signum, frame):
+        """Save partial results on SIGTERM (SLURM timeout grace period)."""
+        nonlocal _terminating
+        _terminating = True
+        if all_results:
+            # Minimal report — avoid NVML/hardware calls which may hang in signal context
+            report = {
+                "report_id": str(uuid.uuid4()),
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "partial": True,
+                "partial_reason": "SIGTERM (SLURM timeout)",
+                "model": {"name": model_name, "precision": precision},
+                "benchmark_config": {
+                    "n_runs_per_config": n_runs,
+                    "batch_sizes_tested": batch_sizes,
+                    "max_new_tokens": max_new_tokens,
+                },
+                "baseline_watts": baseline_watts,
+                "results": [
+                    {
+                        "prompt_id": r.prompt_id,
+                        "task_type": r.task_type,
+                        "batch_size": r.batch_size,
+                        "runs": r.n_runs,
+                        "metrics": {
+                            "joules_per_token": _stat_dict(r.joules_per_token),
+                            "tokens_per_second": _stat_dict(r.tokens_per_second),
+                            "mean_watts": _stat_dict(r.mean_watts),
+                            "output_tokens": _stat_dict(r.output_tokens),
+                            "input_tokens": _stat_dict(r.input_tokens),
+                        },
+                    }
+                    for r in all_results
+                ],
+            }
+            report_file = output_path / f"benchmark_{model_name.replace('/', '_')}_{precision}.json"
+            with open(report_file, "w") as f:
+                json.dump(report, f, indent=2, default=str)
+            import sys
+            print(f"Partial report saved ({len(all_results)} configs): {report_file}", file=sys.stderr, flush=True)
+        raise SystemExit(0)
+
+    signal.signal(signal.SIGTERM, _save_partial)
+
     for prompt_info in prompts:
         for batch_size in batch_sizes:
             config_label = f"{prompt_info['id']}/bs={batch_size}"
