@@ -151,17 +151,10 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
         logger.warning("No bs=1 data for scaling law plot")
         return
 
-    # For each model, prefer fp16 data; fall back to gptq/awq if fp16 unavailable
-    best_rows = []
-    for model in bs1["model"].unique():
-        model_data = bs1[bs1["model"] == model]
-        fp16_data = model_data[model_data["precision"] == "fp16"]
-        if not fp16_data.empty:
-            best_rows.append(fp16_data)
-        else:
-            # Use whatever precision is available (gptq, awq, int8, int4)
-            best_rows.append(model_data)
-    fp16 = pd.concat(best_rows) if best_rows else bs1
+    # Use _best_precision_data on full df for reliable CPU-offload detection
+    # (bs=1-only averages can be borderline due to mixing campaign/sweep data)
+    best = _best_precision_data(df)
+    fp16 = best[best["batch_size"] == 1]
 
     # Average across prompts per model
     grouped = fp16.groupby(["model", "params_b", "family", "precision"]).agg(
@@ -224,13 +217,53 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
     logger.info("Figure 1 saved")
 
 
+def _is_cpu_offloaded(subset: pd.DataFrame) -> bool:
+    """Detect CPU-offloaded models: active power barely above idle baseline.
+
+    When a model doesn't fit in GPU memory, accelerate offloads layers to CPU.
+    The GPU draws near-idle power while the CPU does unmeasured computation,
+    making GPU-only energy measurements unreliable.
+    """
+    if subset.empty or "mean_watts" not in subset.columns:
+        return False
+    active = subset["mean_watts"].mean()
+    idle = subset["baseline_watts"].mean()
+    # If active power is less than 30% above idle, GPU is barely working.
+    # Threshold chosen so Mixtral FP16 (ratio 1.25) is caught but small
+    # models with legitimately low utilisation (e.g. Qwen-1.5B, ratio 1.45) are not.
+    return active < idle * 1.30
+
+
 def _best_precision_data(df: pd.DataFrame) -> pd.DataFrame:
-    """Return data preferring fp16 per model, falling back to gptq/awq."""
+    """Return data preferring fp16 per model, falling back to gptq/awq.
+
+    Skips fp16 data if the model was CPU-offloaded (active power near idle),
+    since GPU-only energy measurements are unreliable in that case.
+    """
     rows = []
     for model in df["model"].unique():
         m = df[df["model"] == model]
         fp16 = m[m["precision"] == "fp16"]
-        rows.append(fp16 if not fp16.empty else m)
+        if not fp16.empty and not _is_cpu_offloaded(fp16):
+            rows.append(fp16)
+        elif not fp16.empty:
+            # FP16 is CPU-offloaded — check if a GPTQ variant exists
+            # by looking for models with same param count and family
+            params = m["params_b"].iloc[0]
+            family = m["family"].iloc[0]
+            gptq_models = df[
+                (df["params_b"] == params) & (df["family"] == family) &
+                (df["precision"].isin(["gptq", "awq"]))
+            ]
+            if not gptq_models.empty:
+                rows.append(gptq_models)
+                logger.info("Skipping CPU-offloaded FP16 for %s; using GPTQ", model)
+            else:
+                # No alternative — include fp16 with caveat
+                rows.append(fp16)
+                logger.warning("CPU-offloaded FP16 for %s but no GPTQ alternative", model)
+        else:
+            rows.append(m)
     return pd.concat(rows) if rows else df
 
 
