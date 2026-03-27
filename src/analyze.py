@@ -505,10 +505,7 @@ def prior_work_scaling_overlay(df: pd.DataFrame) -> None:
     new_agg = new_bs1.groupby(["model_short", "params_b", "family", "precision"]).agg(
         j_per_tok=("j_per_tok_mean", "mean"),
     ).reset_index()
-    # Deduplicate by params_b (prefer fp16)
-    new_agg = new_agg.sort_values("precision").drop_duplicates(
-        subset=["params_b"], keep="first"
-    )
+    # Show all points (fp16 and gptq) — no dedup; fit uses dense fp16 only
 
     fig, ax = plt.subplots(figsize=(7, 5))
 
@@ -526,19 +523,35 @@ def prior_work_scaling_overlay(df: pd.DataFrame) -> None:
         subset = new_agg[new_agg["family"] == family]
         if subset.empty:
             continue
-        ax.scatter(subset["params_b"], subset["j_per_tok"],
-                   color=colour, label=f"New: {family}", s=80, zorder=5,
-                   edgecolors="black", linewidth=0.5)
+        fp16_pts = subset[subset["precision"] == "fp16"]
+        gptq_pts = subset[subset["precision"].isin(["gptq", "awq"])]
+        if not fp16_pts.empty:
+            ax.scatter(fp16_pts["params_b"], fp16_pts["j_per_tok"],
+                       color=colour, label=f"New: {family}", s=80, zorder=5,
+                       edgecolors="black", linewidth=0.5)
+        if not gptq_pts.empty:
+            ax.scatter(gptq_pts["params_b"], gptq_pts["j_per_tok"],
+                       color=colour, label=f"New: {family} (GPTQ)", s=80, zorder=5,
+                       marker="D", edgecolors="black", linewidth=0.5)
 
-    # Fit new power law if enough points
-    if len(new_agg) >= 3:
+    # Fit new power law on dense FP16 models only (consistent with fig1)
+    dense_fp16 = new_agg[
+        (new_agg["precision"] == "fp16") &
+        (~new_agg["model_short"].str.contains("Mixtral", case=False))
+    ]
+    if len(dense_fp16) >= 3:
         try:
-            popt, _ = curve_fit(_power_law, new_agg["params_b"].values,
-                                new_agg["j_per_tok"].values, p0=[0.05, 0.5])
-            x_fit = np.logspace(np.log10(new_agg["params_b"].min() * 0.8),
-                                np.log10(new_agg["params_b"].max() * 1.2), 100)
+            popt, _ = curve_fit(_power_law, dense_fp16["params_b"].values,
+                                dense_fp16["j_per_tok"].values, p0=[0.05, 0.5])
+            ss_res = np.sum((dense_fp16["j_per_tok"].values -
+                             _power_law(dense_fp16["params_b"].values, *popt)) ** 2)
+            ss_tot = np.sum((dense_fp16["j_per_tok"].values -
+                             dense_fp16["j_per_tok"].mean()) ** 2)
+            r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0
+            x_fit = np.logspace(np.log10(dense_fp16["params_b"].min() * 0.8),
+                                np.log10(dense_fp16["params_b"].max() * 1.2), 100)
             ax.plot(x_fit, _power_law(x_fit, *popt), "r-", alpha=0.6,
-                    label=f"New fit (alpha={popt[1]:.2f})")
+                    label=f"Dense fit (beta={popt[1]:.2f}, R²={r2:.2f})")
         except RuntimeError:
             pass
 

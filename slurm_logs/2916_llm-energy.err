@@ -1,0 +1,47 @@
+/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-26 11:20:41,966 INFO __main__: Loading model: mistralai/Mixtral-8x7B-Instruct-v0.1 (precision: fp16)
+Traceback (most recent call last):
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/sympy/__init__.py", line 23, in <module>
+    import mpmath
+ModuleNotFoundError: No module named 'mpmath'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 335, in <module>
+    main()
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 322, in main
+    run_benchmark(
+  File "/home/daniel.cregg/llm-energy-framework/src/benchmark.py", line 101, in run_benchmark
+    model, tokenizer = load_model(model_name, precision)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/llm-energy-framework/src/inference.py", line 53, in load_model
+    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/__init__.py", line 27, in <module>
+    from . import dependency_versions_check
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/dependency_versions_check.py", line 16, in <module>
+    from .utils.versions import require_version, require_version_core
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/utils/__init__.py", line 24, in <module>
+    from .auto_docstring import (
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/utils/auto_docstring.py", line 30, in <module>
+    from .generic import ModelOutput
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/utils/generic.py", line 53, in <module>
+    from ..model_debugging_utils import model_addition_debugger_context
+  File "/home/daniel.cregg/.local/lib/python3.11/site-packages/transformers/model_debugging_utils.py", line 35, in <module>
+    import torch.distributed.tensor
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/distributed/tensor/__init__.py", line 4, in <module>
+    import torch.distributed.tensor._ops  # force import all built-in dtensor ops
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/distributed/tensor/_ops/__init__.py", line 8, in <module>
+    from ._tensor_ops import *  # noqa: F403
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/distributed/tensor/_ops/_tensor_ops.py", line 41, in <module>
+    from torch.fx.experimental.symbolic_shapes import statically_known_true
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/fx/experimental/symbolic_shapes.py", line 3, in <module>
+    import sympy
+  File "/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/sympy/__init__.py", line 25, in <module>
+    raise ImportError("SymPy now depends on mpmath as an external library. "
+ImportError: SymPy now depends on mpmath as an external library. See https://docs.sympy.org/latest/install.html#mpmath for more information.

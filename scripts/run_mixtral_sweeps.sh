@@ -5,7 +5,7 @@ set -uo pipefail
 cd /home/daniel.cregg/llm-energy-framework
 mkdir -p slurm_logs
 
-PROMPTS=(sum_short qa_factual code_simple creative_open reasoning)
+PROMPTS=(sum_short qa_factual code_simple longform reasoning)
 
 # --- Mixtral FP16: per-prompt jobs (each ~4h) ---
 PREV_JOB=""

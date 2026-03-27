@@ -13,7 +13,7 @@ gemma-2-9b-it,9.0,fp16,0.2275,371.4,16,144.3
 Phi-3-medium-4k-instruct,14.0,fp16,0.3335,535.8,16,240.4
 Qwen2.5-32B-Instruct,32.0,fp16,3.0507,74.9,4,291.4
 Qwen2.5-32B-Instruct-GPTQ-Int4,32.0,gptq,10.3162,23.2,16,298.0
-Mixtral-8x7B-Instruct-v0.1,46.7,fp16,0.5471,65.2,4,98.2
-Mixtral-8x7B-Instruct-v0.1-GPTQ,46.7,gptq,4.1481,54.8,16,285.6
+Mixtral-8x7B-Instruct-v0.1,46.7,fp16,0.1966,46.0,32,70.9
+Mixtral-8x7B-Instruct-v0.1-GPTQ,46.7,gptq,2.1906,107.9,32,297.7
 Llama-3.3-70B-Instruct,70.0,fp16,12.4491,9.5,1,180.6
 Llama-3.3-70B-Instruct-GPTQ,70.0,gptq,326.5457,0.7,1,298.6

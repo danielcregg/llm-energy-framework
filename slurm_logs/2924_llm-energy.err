@@ -1,0 +1,104 @@
+/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-26 20:49:11,898 INFO __main__: Loading model: mistralai/Mixtral-8x7B-Instruct-v0.1 (precision: fp16)
+2026-03-26 20:49:15,172 INFO src.inference: Loading tokenizer: mistralai/Mixtral-8x7B-Instruct-v0.1
+2026-03-26 20:49:15,865 INFO src.inference: Loading model: mistralai/Mixtral-8x7B-Instruct-v0.1 (precision=fp16)
+2026-03-26 20:49:18,621 INFO accelerate.utils.modeling: We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/19 [00:00<?, ?it/s]Loading checkpoint shards:   5%|▌         | 1/19 [00:01<00:18,  1.04s/it]Loading checkpoint shards:  11%|█         | 2/19 [00:01<00:16,  1.01it/s]Loading checkpoint shards:  16%|█▌        | 3/19 [00:03<00:16,  1.04s/it]Loading checkpoint shards:  21%|██        | 4/19 [00:04<00:16,  1.08s/it]Loading checkpoint shards:  26%|██▋       | 5/19 [00:05<00:14,  1.04s/it]Loading checkpoint shards:  32%|███▏      | 6/19 [00:06<00:13,  1.02s/it]Loading checkpoint shards:  37%|███▋      | 7/19 [00:07<00:12,  1.06s/it]Loading checkpoint shards:  42%|████▏     | 8/19 [00:08<00:11,  1.08s/it]Loading checkpoint shards:  47%|████▋     | 9/19 [00:09<00:10,  1.08s/it]Loading checkpoint shards:  53%|█████▎    | 10/19 [00:10<00:09,  1.07s/it]Loading checkpoint shards:  58%|█████▊    | 11/19 [00:11<00:08,  1.06s/it]Loading checkpoint shards:  63%|██████▎   | 12/19 [00:12<00:07,  1.08s/it]Loading checkpoint shards:  68%|██████▊   | 13/19 [00:13<00:06,  1.06s/it]Loading checkpoint shards:  74%|███████▎  | 14/19 [00:14<00:05,  1.06s/it]Loading checkpoint shards:  79%|███████▉  | 15/19 [00:15<00:03,  1.05it/s]Loading checkpoint shards:  84%|████████▍ | 16/19 [00:16<00:02,  1.20it/s]Loading checkpoint shards:  89%|████████▉ | 17/19 [00:17<00:01,  1.06it/s]Loading checkpoint shards:  95%|█████████▍| 18/19 [00:18<00:01,  1.05s/it]Loading checkpoint shards: 100%|██████████| 19/19 [00:19<00:00,  1.13it/s]Loading checkpoint shards: 100%|██████████| 19/19 [00:19<00:00,  1.00s/it]
+2026-03-26 20:49:38,311 WARNING accelerate.big_modeling: Some parameters are on the meta device because they were offloaded to the cpu.
+2026-03-26 20:49:38,315 INFO src.inference: Model loaded successfully on cuda:0
+2026-03-26 20:49:38,315 INFO __main__: Measuring idle baseline (30s)...
+2026-03-26 20:49:38,316 INFO src.hardware: Measuring idle baseline for 30s...
+2026-03-26 20:50:08,327 INFO src.hardware: Idle baseline: 60.5W (std=0.3W, 292 samples)
+2026-03-26 20:50:08,327 INFO __main__: Filtered to 1 prompts: ['reasoning']
+2026-03-26 20:50:08,327 INFO __main__: Warmup (3 runs): reasoning/bs=1
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 20:55:59,579 INFO __main__: Measuring (10 runs): reasoning/bs=1
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 21:15:31,149 INFO __main__: Warmup (3 runs): reasoning/bs=2
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 21:21:21,439 INFO __main__: Measuring (10 runs): reasoning/bs=2
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 21:40:52,450 INFO __main__: Warmup (3 runs): reasoning/bs=4
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 21:46:22,324 INFO __main__: Measuring (10 runs): reasoning/bs=4
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 22:04:51,117 INFO __main__: Warmup (3 runs): reasoning/bs=8
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 22:10:33,735 INFO __main__: Measuring (10 runs): reasoning/bs=8
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 22:29:41,206 INFO __main__: Warmup (3 runs): reasoning/bs=16
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 22:35:31,767 INFO __main__: Measuring (10 runs): reasoning/bs=16
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 22:54:58,909 INFO __main__: Warmup (3 runs): reasoning/bs=32
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 23:01:06,364 INFO __main__: Measuring (10 runs): reasoning/bs=32
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+2026-03-26 23:21:40,204 INFO __main__: Report saved: results/val-mixtral-fp16-batch-sweep/reasoning/benchmark_mistralai_Mixtral-8x7B-Instruct-v0.1_fp16.json
