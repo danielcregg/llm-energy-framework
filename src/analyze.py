@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import json
 import logging
-import math
 from pathlib import Path
 
 import matplotlib
@@ -29,6 +28,7 @@ FIGURES_DIR = PROJECT_ROOT / "paper" / "figures"
 TABLES_DIR = PROJECT_ROOT / "paper" / "tables"
 
 # Model parameter counts (billions)
+# Only models that fit entirely on A100 80GB in FP16
 MODEL_PARAMS = {
     "meta-llama/Llama-3.2-1B-Instruct": 1.0,
     "Qwen/Qwen2.5-1.5B-Instruct": 1.5,
@@ -41,26 +41,16 @@ MODEL_PARAMS = {
     "google/gemma-2-9b-it": 9.0,
     "microsoft/Phi-3-medium-4k-instruct": 14.0,
     "Qwen/Qwen2.5-32B-Instruct": 32.0,
-    "Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4": 32.0,
-    "mistralai/Mixtral-8x7B-Instruct-v0.1": 46.7,
-    "TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ": 46.7,
-    "meta-llama/Llama-3.3-70B-Instruct": 70.0,
-    "shuyuej/Llama-3.3-70B-Instruct-GPTQ": 70.0,
 }
 
 MODEL_FAMILY = {
     "meta-llama/Llama-3.2-1B-Instruct": "Llama",
     "meta-llama/Llama-3.2-3B-Instruct": "Llama",
     "meta-llama/Llama-3.1-8B-Instruct": "Llama",
-    "meta-llama/Llama-3.3-70B-Instruct": "Llama",
-    "shuyuej/Llama-3.3-70B-Instruct-GPTQ": "Llama",
     "mistralai/Mistral-7B-Instruct-v0.3": "Mistral",
-    "mistralai/Mixtral-8x7B-Instruct-v0.1": "Mixtral",
-    "TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ": "Mixtral",
     "Qwen/Qwen2.5-1.5B-Instruct": "Qwen",
     "Qwen/Qwen2.5-7B-Instruct": "Qwen",
     "Qwen/Qwen2.5-32B-Instruct": "Qwen",
-    "Qwen/Qwen2.5-32B-Instruct-GPTQ-Int4": "Qwen",
     "microsoft/Phi-3-mini-4k-instruct": "Phi",
     "microsoft/Phi-3-medium-4k-instruct": "Phi",
     "google/gemma-2-2b-it": "Gemma",
@@ -71,7 +61,6 @@ MODEL_FAMILY = {
 FAMILY_COLOURS = {
     "Llama": "#0077BB",
     "Mistral": "#EE7733",
-    "Mixtral": "#CC3311",
     "Qwen": "#009988",
     "Phi": "#EE3377",
     "Gemma": "#33BBEE",
@@ -82,6 +71,9 @@ def load_all_reports() -> pd.DataFrame:
     """Load all JSON benchmark reports into a single DataFrame."""
     records = []
     for json_file in RESULTS_DIR.rglob("benchmark_*.json"):
+        # Skip excluded results (archived non-fp16/offloaded data)
+        if "_excluded" in str(json_file):
+            continue
         with open(json_file) as f:
             report = json.load(f)
 
@@ -145,26 +137,18 @@ def _power_law(x, a, b):
 
 def figure_1_scaling_law(df: pd.DataFrame) -> None:
     """Figure 1: J/tok vs Model Size (log-log scaling law)."""
-    # Use batch_size=1. Prefer fp16, but include gptq for models only available as GPTQ.
     bs1 = df[df["batch_size"] == 1]
     if bs1.empty:
         logger.warning("No bs=1 data for scaling law plot")
         return
 
-    # Use _best_precision_data on full df for reliable CPU-offload detection
-    # (bs=1-only averages can be borderline due to mixing campaign/sweep data)
-    best = _best_precision_data(df)
-    fp16 = best[best["batch_size"] == 1]
+    fp16 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
 
     # Average across prompts per model
-    grouped = fp16.groupby(["model", "params_b", "family", "precision"]).agg(
+    grouped = fp16.groupby(["model", "params_b", "family"]).agg(
         j_per_tok=("j_per_tok_mean", "mean"),
         j_per_tok_err=("j_per_tok_std", "mean"),
     ).reset_index()
-
-    # Deduplicate: keep only one entry per param count for fitting
-    # (prefer fp16 over gptq for same model size)
-    grouped = grouped.sort_values("precision").drop_duplicates(subset=["params_b"], keep="first")
 
     fig, ax = plt.subplots(figsize=(7, 5))
 
@@ -172,24 +156,13 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
         subset = grouped[grouped["family"] == family]
         if subset.empty:
             continue
-        # Mark GPTQ points with a different marker
-        fp16_pts = subset[subset["precision"] == "fp16"]
-        gptq_pts = subset[subset["precision"].isin(["gptq", "awq"])]
-        if not fp16_pts.empty:
-            ax.scatter(fp16_pts["params_b"], fp16_pts["j_per_tok"],
-                       color=colour, label=family, s=80, zorder=5,
-                       edgecolors="black", linewidth=0.5)
-        if not gptq_pts.empty:
-            ax.scatter(gptq_pts["params_b"], gptq_pts["j_per_tok"],
-                       color=colour, label=f"{family} (GPTQ)", s=80, zorder=5,
-                       marker="D", edgecolors="black", linewidth=0.5)
+        ax.scatter(subset["params_b"], subset["j_per_tok"],
+                   color=colour, label=family, s=80, zorder=5,
+                   edgecolors="black", linewidth=0.5)
 
-    # Fit power law on dense FP16 models only (exclude MoE and GPTQ)
-    fp16_only = grouped[grouped["precision"] == "fp16"]
-    # Exclude Mixtral MoE (46.7B total params but only ~12B active per token)
-    dense_only = fp16_only[~fp16_only["model"].str.contains("Mixtral", case=False)]
-    x = dense_only["params_b"].values
-    y = dense_only["j_per_tok"].values
+    # Fit power law across all models
+    x = grouped["params_b"].values
+    y = grouped["j_per_tok"].values
     if len(x) >= 3:
         try:
             popt, _ = curve_fit(_power_law, x, y, p0=[0.05, 0.5], maxfev=5000)
@@ -199,7 +172,7 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
             ss_tot = np.sum((y - np.mean(y)) ** 2)
             r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0
             ax.plot(x_fit, y_fit, "k--", alpha=0.6,
-                    label=f"Dense fit: J/tok = {popt[0]:.3f} N^{popt[1]:.2f} (R²={r2:.2f})")
+                    label=f"Fit: J/tok = {popt[0]:.3f} N^{popt[1]:.2f} (R²={r2:.2f})")
         except RuntimeError:
             logger.warning("Power law fit failed")
 
@@ -217,59 +190,14 @@ def figure_1_scaling_law(df: pd.DataFrame) -> None:
     logger.info("Figure 1 saved")
 
 
-def _is_cpu_offloaded(subset: pd.DataFrame) -> bool:
-    """Detect CPU-offloaded models: active power barely above idle baseline.
-
-    When a model doesn't fit in GPU memory, accelerate offloads layers to CPU.
-    The GPU draws near-idle power while the CPU does unmeasured computation,
-    making GPU-only energy measurements unreliable.
-    """
-    if subset.empty or "mean_watts" not in subset.columns:
-        return False
-    active = subset["mean_watts"].mean()
-    idle = subset["baseline_watts"].mean()
-    # If active power is less than 30% above idle, GPU is barely working.
-    # Threshold chosen so Mixtral FP16 (ratio 1.25) is caught but small
-    # models with legitimately low utilisation (e.g. Qwen-1.5B, ratio 1.45) are not.
-    return active < idle * 1.30
-
-
-def _best_precision_data(df: pd.DataFrame) -> pd.DataFrame:
-    """Return data preferring fp16 per model, falling back to gptq/awq.
-
-    Skips fp16 data if the model was CPU-offloaded (active power near idle),
-    since GPU-only energy measurements are unreliable in that case.
-    """
-    rows = []
-    for model in df["model"].unique():
-        m = df[df["model"] == model]
-        fp16 = m[m["precision"] == "fp16"]
-        if not fp16.empty and not _is_cpu_offloaded(fp16):
-            rows.append(fp16)
-        elif not fp16.empty:
-            # FP16 is CPU-offloaded — check if a GPTQ variant exists
-            # by looking for models with same param count and family
-            params = m["params_b"].iloc[0]
-            family = m["family"].iloc[0]
-            gptq_models = df[
-                (df["params_b"] == params) & (df["family"] == family) &
-                (df["precision"].isin(["gptq", "awq"]))
-            ]
-            if not gptq_models.empty:
-                rows.append(gptq_models)
-                logger.info("Skipping CPU-offloaded FP16 for %s; using GPTQ", model)
-            else:
-                # No alternative — include fp16 with caveat
-                rows.append(fp16)
-                logger.warning("CPU-offloaded FP16 for %s but no GPTQ alternative", model)
-        else:
-            rows.append(m)
-    return pd.concat(rows) if rows else df
+def _fp16_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Return only fp16 data (all models fit on GPU, no fallback needed)."""
+    return df[df["precision"] == "fp16"]
 
 
 def figure_2_efficiency_frontier(df: pd.DataFrame) -> None:
     """Figure 2: J/tok vs Throughput (efficiency frontier)."""
-    fp16 = _best_precision_data(df)
+    fp16 = _fp16_data(df)
 
     # Average across prompts per (model, batch_size)
     grouped = fp16.groupby(["model_short", "params_b", "family", "batch_size"]).agg(
@@ -312,7 +240,7 @@ def figure_2_efficiency_frontier(df: pd.DataFrame) -> None:
 
 def figure_3_batch_size(df: pd.DataFrame) -> None:
     """Figure 3: Batch Size Effect on J/tok and throughput."""
-    fp16 = _best_precision_data(df)
+    fp16 = _fp16_data(df)
 
     grouped = fp16.groupby(["model_short", "family", "batch_size"]).agg(
         j_per_tok=("j_per_tok_mean", "mean"),
@@ -346,57 +274,10 @@ def figure_3_batch_size(df: pd.DataFrame) -> None:
     logger.info("Figure 3 saved")
 
 
-def figure_4_quantisation(df: pd.DataFrame) -> None:
-    """Figure 4: Quantisation Impact (Llama-3.1-8B fp16 vs int8 vs int4)."""
-    quant = df[df["model"].str.contains("Llama-3.1-8B")]
-    if quant.empty:
-        logger.warning("No Llama-3.1-8B data for quantisation plot")
-        return
-
-    grouped = quant.groupby(["precision", "batch_size"]).agg(
-        j_per_tok=("j_per_tok_mean", "mean"),
-        tok_per_s=("tok_per_s_mean", "mean"),
-        watts=("mean_watts", "mean"),
-    ).reset_index()
-
-    # Use batch_size=1 for bar chart
-    bs1 = grouped[grouped["batch_size"] == 1]
-    if bs1.empty:
-        bs1 = grouped.groupby("precision").first().reset_index()
-
-    precisions = ["fp16", "int8", "int4"]
-    available = [p for p in precisions if p in bs1["precision"].values]
-    if not available:
-        return
-
-    fig, axes = plt.subplots(1, 3, figsize=(10, 4))
-    metrics = [("j_per_tok", "J/tok"), ("tok_per_s", "tok/s"), ("watts", "Mean Watts")]
-    colours = {"fp16": "#0077BB", "int8": "#EE7733", "int4": "#CC3311"}
-
-    for ax, (col, label) in zip(axes, metrics):
-        vals = [bs1[bs1["precision"] == p][col].values[0] if p in available else 0
-                for p in available]
-        bars = ax.bar(available, vals, color=[colours.get(p, "#999") for p in available])
-        ax.set_ylabel(label, fontsize=11)
-        ax.set_title(label, fontsize=12)
-        # Add value labels
-        for bar, val in zip(bars, vals):
-            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height(),
-                    f"{val:.3f}" if val < 10 else f"{val:.1f}",
-                    ha="center", va="bottom", fontsize=9)
-
-    fig.suptitle("Quantisation Impact: Llama-3.1-8B (bs=1)", fontsize=13)
-    fig.tight_layout()
-    fig.savefig(FIGURES_DIR / "fig4_quantisation.pdf", dpi=300)
-    fig.savefig(FIGURES_DIR / "fig4_quantisation.png", dpi=300)
-    plt.close(fig)
-    logger.info("Figure 4 saved")
-
-
-def figure_5_prompt_type(df: pd.DataFrame) -> None:
-    """Figure 5: Prompt Type Effect (heatmap)."""
+def figure_4_prompt_type(df: pd.DataFrame) -> None:
+    """Figure 4: Prompt Type Effect (heatmap)."""
     bs1 = df[df["batch_size"] == 1]
-    fp16 = _best_precision_data(bs1)
+    fp16 = _fp16_data(bs1)
     fp16 = fp16[fp16["batch_size"] == 1]
     if fp16.empty:
         return
@@ -428,14 +309,14 @@ def figure_5_prompt_type(df: pd.DataFrame) -> None:
     fig.colorbar(im, label="J/tok")
     ax.set_title("J/tok by Prompt Type and Model (bs=1, fp16)", fontsize=13)
     fig.tight_layout()
-    fig.savefig(FIGURES_DIR / "fig5_prompt_type.pdf", dpi=300)
-    fig.savefig(FIGURES_DIR / "fig5_prompt_type.png", dpi=300)
+    fig.savefig(FIGURES_DIR / "fig4_prompt_type.pdf", dpi=300)
+    fig.savefig(FIGURES_DIR / "fig4_prompt_type.png", dpi=300)
     plt.close(fig)
-    logger.info("Figure 5 saved")
+    logger.info("Figure 4 saved")
 
 
-def figure_6_architecture_comparison(df: pd.DataFrame) -> None:
-    """Figure 6: Architecture Comparison at similar parameter counts (7-9B)."""
+def figure_5_architecture_comparison(df: pd.DataFrame) -> None:
+    """Figure 5: Architecture Comparison at similar parameter counts (7-9B)."""
     models_7_9b = df[
         (df["params_b"] >= 7) & (df["params_b"] <= 9) &
         (df["precision"] == "fp16") & (df["batch_size"] == 1)
@@ -461,14 +342,14 @@ def figure_6_architecture_comparison(df: pd.DataFrame) -> None:
     ax.tick_params(axis="x", rotation=20)
     ax.grid(True, alpha=0.3, axis="y")
     fig.tight_layout()
-    fig.savefig(FIGURES_DIR / "fig6_architecture.pdf", dpi=300)
-    fig.savefig(FIGURES_DIR / "fig6_architecture.png", dpi=300)
+    fig.savefig(FIGURES_DIR / "fig5_architecture.pdf", dpi=300)
+    fig.savefig(FIGURES_DIR / "fig5_architecture.png", dpi=300)
     plt.close(fig)
-    logger.info("Figure 6 saved")
+    logger.info("Figure 5 saved")
 
 
-def figure_7_carbon_variation(df: pd.DataFrame) -> None:
-    """Figure 7: Carbon Variation using Irish grid data."""
+def figure_6_carbon_variation(df: pd.DataFrame) -> None:
+    """Figure 6: Carbon Variation using Irish grid data."""
     if not CARBON_DATA.exists():
         logger.warning("Carbon data not found: %s", CARBON_DATA)
         return
@@ -478,10 +359,7 @@ def figure_7_carbon_variation(df: pd.DataFrame) -> None:
     c_mean = carbon["gco2_per_kwh"].mean()
     c_max = carbon["gco2_per_kwh"].max()
 
-    # Use bs=1, prefer fp16 but include gptq for models without fp16
-    bs1 = df[df["batch_size"] == 1]
-    fp16_bs1 = _best_precision_data(bs1)
-    fp16_bs1 = fp16_bs1[fp16_bs1["batch_size"] == 1]
+    fp16_bs1 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
     if fp16_bs1.empty:
         return
 
@@ -512,10 +390,10 @@ def figure_7_carbon_variation(df: pd.DataFrame) -> None:
     ax.legend(fontsize=10)
     ax.grid(True, alpha=0.3, axis="y")
     fig.tight_layout()
-    fig.savefig(FIGURES_DIR / "fig7_carbon_variation.pdf", dpi=300)
-    fig.savefig(FIGURES_DIR / "fig7_carbon_variation.png", dpi=300)
+    fig.savefig(FIGURES_DIR / "fig6_carbon_variation.pdf", dpi=300)
+    fig.savefig(FIGURES_DIR / "fig6_carbon_variation.png", dpi=300)
     plt.close(fig)
-    logger.info("Figure 7 saved")
+    logger.info("Figure 6 saved")
 
 
 def prior_work_scaling_overlay(df: pd.DataFrame) -> None:
@@ -532,13 +410,11 @@ def prior_work_scaling_overlay(df: pd.DataFrame) -> None:
     ).reset_index()
     pythia_agg["params_b"] = pythia_agg["model_params_est"] / 1e9
 
-    # New framework data — prefer fp16, include gptq for large models
-    new_bs1 = _best_precision_data(df[df["batch_size"] == 1])
-    new_bs1 = new_bs1[new_bs1["batch_size"] == 1]
-    new_agg = new_bs1.groupby(["model_short", "params_b", "family", "precision"]).agg(
+    # New framework data — all fp16 on-GPU
+    new_bs1 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
+    new_agg = new_bs1.groupby(["model_short", "params_b", "family"]).agg(
         j_per_tok=("j_per_tok_mean", "mean"),
     ).reset_index()
-    # Show all points (fp16 and gptq) — no dedup; fit uses dense fp16 only
 
     fig, ax = plt.subplots(figsize=(7, 5))
 
@@ -556,35 +432,24 @@ def prior_work_scaling_overlay(df: pd.DataFrame) -> None:
         subset = new_agg[new_agg["family"] == family]
         if subset.empty:
             continue
-        fp16_pts = subset[subset["precision"] == "fp16"]
-        gptq_pts = subset[subset["precision"].isin(["gptq", "awq"])]
-        if not fp16_pts.empty:
-            ax.scatter(fp16_pts["params_b"], fp16_pts["j_per_tok"],
-                       color=colour, label=f"New: {family}", s=80, zorder=5,
-                       edgecolors="black", linewidth=0.5)
-        if not gptq_pts.empty:
-            ax.scatter(gptq_pts["params_b"], gptq_pts["j_per_tok"],
-                       color=colour, label=f"New: {family} (GPTQ)", s=80, zorder=5,
-                       marker="D", edgecolors="black", linewidth=0.5)
+        ax.scatter(subset["params_b"], subset["j_per_tok"],
+                   color=colour, label=f"New: {family}", s=80, zorder=5,
+                   edgecolors="black", linewidth=0.5)
 
-    # Fit new power law on dense FP16 models only (consistent with fig1)
-    dense_fp16 = new_agg[
-        (new_agg["precision"] == "fp16") &
-        (~new_agg["model_short"].str.contains("Mixtral", case=False))
-    ]
-    if len(dense_fp16) >= 3:
+    # Fit new power law
+    if len(new_agg) >= 3:
         try:
-            popt, _ = curve_fit(_power_law, dense_fp16["params_b"].values,
-                                dense_fp16["j_per_tok"].values, p0=[0.05, 0.5])
-            ss_res = np.sum((dense_fp16["j_per_tok"].values -
-                             _power_law(dense_fp16["params_b"].values, *popt)) ** 2)
-            ss_tot = np.sum((dense_fp16["j_per_tok"].values -
-                             dense_fp16["j_per_tok"].mean()) ** 2)
+            popt, _ = curve_fit(_power_law, new_agg["params_b"].values,
+                                new_agg["j_per_tok"].values, p0=[0.05, 0.5])
+            ss_res = np.sum((new_agg["j_per_tok"].values -
+                             _power_law(new_agg["params_b"].values, *popt)) ** 2)
+            ss_tot = np.sum((new_agg["j_per_tok"].values -
+                             new_agg["j_per_tok"].mean()) ** 2)
             r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0
-            x_fit = np.logspace(np.log10(dense_fp16["params_b"].min() * 0.8),
-                                np.log10(dense_fp16["params_b"].max() * 1.2), 100)
+            x_fit = np.logspace(np.log10(new_agg["params_b"].min() * 0.8),
+                                np.log10(new_agg["params_b"].max() * 1.2), 100)
             ax.plot(x_fit, _power_law(x_fit, *popt), "r-", alpha=0.6,
-                    label=f"Dense fit (beta={popt[1]:.2f}, R²={r2:.2f})")
+                    label=f"New fit (beta={popt[1]:.2f}, R²={r2:.2f})")
         except RuntimeError:
             pass
 
@@ -602,70 +467,6 @@ def prior_work_scaling_overlay(df: pd.DataFrame) -> None:
     logger.info("Prior work scaling overlay saved")
 
 
-def prior_work_quantisation_comparison(df: pd.DataFrame) -> None:
-    """Compare quantisation multipliers with energy-bench Mistral-7B data."""
-    quant_files = {
-        "fp16": PRIOR_WORK_DIR / "energy_bench_quant_fp16.csv",
-        "int8": PRIOR_WORK_DIR / "energy_bench_quant_int8.csv",
-        "nf4": PRIOR_WORK_DIR / "energy_bench_quant_nf4.csv",
-    }
-
-    prior = {}
-    for prec, path in quant_files.items():
-        if path.exists():
-            data = pd.read_csv(path)
-            prior[prec] = data["joules_per_token"].mean()
-
-    if not prior:
-        logger.warning("No prior quantisation data found")
-        return
-
-    # New framework Llama-3.1-8B data
-    new_quant = df[df["model"].str.contains("Llama-3.1-8B")]
-    if new_quant.empty:
-        logger.warning("No Llama-3.1-8B data for quantisation comparison")
-        return
-
-    new_prec = {}
-    for prec in ["fp16", "int8", "int4"]:
-        subset = new_quant[(new_quant["precision"] == prec) & (new_quant["batch_size"] == 1)]
-        if not subset.empty:
-            new_prec[prec] = subset["j_per_tok_mean"].mean()
-
-    fig, ax = plt.subplots(figsize=(7, 4))
-
-    labels = []
-    prior_vals = []
-    new_vals = []
-
-    mapping = {"fp16": "fp16", "int8": "int8", "nf4": "int4"}
-    for prior_key, new_key in mapping.items():
-        if prior_key in prior and new_key in new_prec:
-            labels.append(new_key.upper())
-            prior_vals.append(prior[prior_key])
-            new_vals.append(new_prec[new_key])
-
-    if not labels:
-        return
-
-    x = np.arange(len(labels))
-    width = 0.35
-    ax.bar(x - width / 2, prior_vals, width, label="energy-bench (Mistral-7B)", color="#999999")
-    ax.bar(x + width / 2, new_vals, width, label="New framework (Llama-3.1-8B)", color="#0077BB")
-
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels)
-    ax.set_ylabel("J/tok", fontsize=12)
-    ax.set_title("Quantisation Impact: energy-bench vs New Framework", fontsize=13)
-    ax.legend()
-    ax.grid(True, alpha=0.3, axis="y")
-    fig.tight_layout()
-    fig.savefig(FIGURES_DIR / "prior_quantisation_comparison.pdf", dpi=300)
-    fig.savefig(FIGURES_DIR / "prior_quantisation_comparison.png", dpi=300)
-    plt.close(fig)
-    logger.info("Prior work quantisation comparison saved")
-
-
 def prior_work_batch_saturation_overlay(df: pd.DataFrame) -> None:
     """Overlay batch size curves with energy-bench Pythia-6.9B data."""
     batch_csv = PRIOR_WORK_DIR / "energy_bench_batch_saturation.csv"
@@ -678,8 +479,8 @@ def prior_work_batch_saturation_overlay(df: pd.DataFrame) -> None:
         j_per_tok=("joules_per_token", "mean"),
     ).reset_index()
 
-    # New framework — prefer fp16, include gptq for large models
-    best = _best_precision_data(df)
+    # New framework — fp16 only
+    best = df[df["precision"] == "fp16"]
 
     fig, ax = plt.subplots(figsize=(7, 5))
 
@@ -777,26 +578,12 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
                 "New Framework": "TBD",
             })
 
-    # Quantisation reference
-    rows.append({
-        "Metric": "INT8 energy multiplier",
-        "energy-bench": "2.88x (Mistral-7B)",
-        "New Framework": "TBD (Llama-3.1-8B)",
-    })
-    rows.append({
-        "Metric": "NF4/INT4 energy multiplier",
-        "energy-bench": "3.72x (Mistral-7B)",
-        "New Framework": "TBD (Llama-3.1-8B)",
-    })
-
     # Fill in new framework values if available
     if not df.empty:
-        # Scaling fit — dense FP16 only (exclude MoE and GPTQ)
+        # Scaling fit — all fp16 models (all on-GPU, no exclusions needed)
         fp16_bs1 = df[(df["batch_size"] == 1) & (df["precision"] == "fp16")]
-        # Exclude Mixtral MoE (46.7B total but ~12B active per token)
-        dense_bs1 = fp16_bs1[~fp16_bs1["model"].str.contains("Mixtral", case=False)]
-        if not dense_bs1.empty:
-            new_agg = dense_bs1.groupby("params_b")["j_per_tok_mean"].mean().reset_index()
+        if not fp16_bs1.empty:
+            new_agg = fp16_bs1.groupby("params_b")["j_per_tok_mean"].mean().reset_index()
             if len(new_agg) >= 3:
                 try:
                     popt, _ = curve_fit(_power_law, new_agg["params_b"].values,
@@ -806,7 +593,7 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
                     ss_tot = np.sum((new_agg["j_per_tok_mean"].values -
                                      new_agg["j_per_tok_mean"].mean()) ** 2)
                     r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0
-                    rows[0]["New Framework"] = f"{popt[1]:.2f} (dense multi-arch, R²={r2:.2f})"
+                    rows[0]["New Framework"] = f"{popt[1]:.2f} (multi-arch, R²={r2:.2f})"
                 except RuntimeError:
                     pass
 
@@ -824,18 +611,6 @@ def generate_cross_study_table(df: pd.DataFrame) -> None:
                         f"{avg_7b.mean():.3f} (avg: {models_str})"
                     )
                     break
-
-        # Quantisation multipliers
-        llama8b = df[df["model"].str.contains("Llama-3.1-8B")]
-        if not llama8b.empty:
-            fp16_val = llama8b[(llama8b["precision"] == "fp16") & (llama8b["batch_size"] == 1)]
-            if not fp16_val.empty:
-                fp16_jtok = fp16_val["j_per_tok_mean"].mean()
-                for prec, idx in [("int8", -2), ("int4", -1)]:
-                    prec_data = llama8b[(llama8b["precision"] == prec) & (llama8b["batch_size"] == 1)]
-                    if not prec_data.empty:
-                        mult = prec_data["j_per_tok_mean"].mean() / fp16_jtok
-                        rows[idx]["New Framework"] = f"{mult:.2f}x (Llama-3.1-8B)"
 
     table = pd.DataFrame(rows)
     table.to_csv(TABLES_DIR / "cross_study_comparison.csv", index=False)
@@ -863,20 +638,18 @@ def run_analysis():
     # Export combined CSV
     export_combined_csv(df)
 
-    # Generate all 7 primary figures
+    # Generate all 6 primary figures (fp16 only, no quantisation figure)
     logger.info("Generating figures...")
     figure_1_scaling_law(df)
     figure_2_efficiency_frontier(df)
     figure_3_batch_size(df)
-    figure_4_quantisation(df)
-    figure_5_prompt_type(df)
-    figure_6_architecture_comparison(df)
-    figure_7_carbon_variation(df)
+    figure_4_prompt_type(df)
+    figure_5_architecture_comparison(df)
+    figure_6_carbon_variation(df)
 
     # Prior work comparisons
     logger.info("Generating prior work comparisons...")
     prior_work_scaling_overlay(df)
-    prior_work_quantisation_comparison(df)
     prior_work_batch_saturation_overlay(df)
 
     # Tables

@@ -24,7 +24,7 @@ daniel.cregg@setu.ie}}
 \maketitle
 
 \begin{abstract}
-We present a rigorous framework for measuring the energy consumption of large language model (LLM) inference on GPU hardware and apply it to benchmark 13 open-weight models spanning 1B to 70B parameters across five architectural families (Llama, Mistral, Qwen, Phi, Gemma), including pre-quantized GPTQ models for sizes infeasible in full precision. Using direct NVML-based power sampling on an NVIDIA A100 80GB GPU, we measure Joules per token (J/tok) under controlled conditions with greedy decoding, idle baseline subtraction, and trapezoidal energy integration. Our results reveal a sub-linear scaling law ($E \propto N^{0.68}$, $R^2=0.90$) relating energy to model size across dense architectures, and find that bitsandbytes INT8 and INT4 quantisation of Llama-3.1-8B \emph{reduces} per-token energy by 10\% and 20\% respectively---contrary to prior findings of 2.9--3.7$\times$ energy penalties. We additionally ground our measurements in Irish electricity grid carbon intensity data, demonstrating a 2.9$\times$ variation in per-token carbon emissions depending on time of day. All code, data, and reproducibility artifacts are publicly available.
+We present a rigorous framework for measuring the energy consumption of large language model (LLM) inference on GPU hardware and apply it to benchmark 11 open-weight models spanning 1B to 32B parameters across five architectural families (Llama, Mistral, Qwen, Phi, Gemma). All models are benchmarked in FP16 precision on a single NVIDIA A100 80GB GPU, ensuring uniform measurement conditions with no CPU offloading or mixed-precision confounds. Using direct NVML-based power sampling with greedy decoding, idle baseline subtraction, and trapezoidal energy integration, our results reveal a super-linear scaling law ($E \propto N^{1.10}$, $R^2=1.00$) relating energy to model size across architectures. Batch size is the dominant efficiency lever, with a 9--15$\times$ reduction in per-token energy from batch size 1 to 16. We additionally ground our measurements in Irish electricity grid carbon intensity data, demonstrating a 2.9$\times$ variation in per-token carbon emissions depending on time of day. All code, data, and reproducibility artifacts are publicly available.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -40,9 +40,8 @@ Despite growing interest, rigorous measurement of LLM inference energy remains c
 This paper makes the following contributions:
 \begin{enumerate}
     \item A validated, open-source framework for measuring LLM inference energy using direct NVML power sampling with trapezoidal integration and idle baseline subtraction.
-    \item A comprehensive benchmark of 13 open-weight models (1B--70B parameters) across five architectural families on an A100 80GB GPU, including pre-quantized GPTQ variants for large models.
+    \item A comprehensive benchmark of 11 open-weight models (1B--32B parameters) across five architectural families on an A100 80GB GPU, all in FP16 precision under uniform conditions.
     \item Empirical scaling laws relating energy to model size across architectures, extending prior single-family studies.
-    \item A reassessment of the bitsandbytes quantisation energy paradox on Llama-3.1-8B, finding that updated software reverses the energy penalty.
     \item Carbon impact analysis grounded in real Irish electricity grid data, demonstrating temporal variation in per-token emissions.
 \end{enumerate}
 
@@ -54,10 +53,6 @@ Prior work on measuring LLM energy falls into three categories: software estimat
 
 Samsi et al.~\cite{samsi2023words} measured inference energy for several LLMs using NVML on an A100 cluster, finding sub-linear scaling with model size. Argerich and Pati\~no-Mart\'inez~\cite{argerich2024measuring} extended this to include quantised models, observing that na\"ive quantisation can increase total energy despite reducing power draw.
 
-\subsection{The Quantisation Energy Paradox}
-
-On-the-fly dequantisation via bitsandbytes incurs a throughput penalty that can dominate the power reduction from lower-precision arithmetic. Prior work on the energy-bench framework found that INT8 quantisation of Mistral-7B via bitsandbytes increased J/tok by 2.88$\times$ despite a 37\% reduction in power draw, because throughput dropped 4.5$\times$. Pre-quantised kernels (AWQ, GPTQ via vLLM) did not exhibit this paradox.
-
 \subsection{Carbon-Aware Computing}
 
 The carbon impact of computation depends on both energy consumed and the carbon intensity of the electricity grid. Dodge et al.~\cite{dodge2022measuring} demonstrated that scheduling ML training to align with low-carbon grid periods can significantly reduce emissions. We extend this concept to inference, using real Irish grid data from EirGrid.
@@ -68,7 +63,7 @@ Our framework follows a four-layer architecture:
 
 \begin{enumerate}
     \item \textbf{Hardware Instrumentation} (Layer 1): NVML-based power sampling in a background thread at 10\,Hz, with SLURM GPU index resolution and trapezoidal energy integration.
-    \item \textbf{Inference Engine} (Layer 2): Standardised model loading (FP16, INT8, INT4 via bitsandbytes) and inference execution with \texttt{torch.cuda.synchronize()} for precise timing.
+    \item \textbf{Inference Engine} (Layer 2): Standardised model loading in FP16 precision and inference execution with \texttt{torch.cuda.synchronize()} for precise timing.
     \item \textbf{Metric Computation} (Layer 3): Computes J/tok, tok/s, mean/peak watts, and optional gCO$_2$eq/tok from energy and inference measurements.
     \item \textbf{Orchestration} (Layer 4): Runs the benchmark protocol (3 warmup + 10 measured runs per configuration) and produces structured JSON reports with full metadata.
 \end{enumerate}
@@ -79,15 +74,15 @@ Key design decisions include: (1) NVML-only power measurement (no software estim
 
 \subsection{Hardware}
 
-All experiments were conducted on an NVIDIA A100 80GB PCIe GPU accessed via SLURM on an HPC cluster. The A100 has a TDP of 300\,W and an observed idle power of 59.8\,W ($\sigma = 1.7$\,W) across all experimental sessions. CUDA driver version 530.30.02 with CUDA 12.8 was used throughout.
+All experiments were conducted on a single NVIDIA A100 80GB PCIe GPU accessed via SLURM on an HPC cluster. The A100 has a TDP of 300\,W and an observed idle power of 59.8\,W ($\sigma = 1.7$\,W) across all experimental sessions. CUDA driver version 530.30.02 with CUDA 12.8 was used throughout. All models fit entirely in GPU memory in FP16 precision, ensuring that power measurements reflect GPU-only computation with no CPU offloading.
 
 \subsection{Software}
 
-The framework is implemented in Python 3.11 using PyTorch 2.10.0+cu128, Hugging Face Transformers, and pynvml for direct GPU power queries. Quantisation uses bitsandbytes 0.44 for INT8 (\texttt{load\_in\_8bit}) and INT4/NF4 (\texttt{load\_in\_4bit}) precision. All models use greedy decoding (\texttt{do\_sample=False}) with \texttt{max\_new\_tokens=200}.
+The framework is implemented in Python 3.11 using PyTorch 2.10.0+cu128, Hugging Face Transformers, and pynvml for direct GPU power queries. All models are loaded in FP16 precision (\texttt{torch.float16}) with \texttt{device\_map="auto"} and use greedy decoding (\texttt{do\_sample=False}) with \texttt{max\_new\_tokens=200}.
 
 \subsection{Experimental Protocol}
 
-For each (model, precision, batch size) configuration, the framework executes:
+For each (model, batch size) configuration, the framework executes:
 \begin{enumerate}
     \item 30-second idle baseline measurement (extended to 60\,s if CV $>$ 10\%)
     \item 3 warmup runs (discarded)
@@ -110,34 +105,34 @@ Before the full benchmark campaign, we validated the framework on \texttt{Qwen2.
 
 \subsection{Model Selection}
 
-We benchmark 13 models spanning five architectural families: Llama (1B, 3B, 8B, 70B), Qwen (1.5B, 7B, 32B), Gemma (2B, 9B), Phi (3.8B, 14B), and Mistral (7B, Mixtral-8x7B). All 13 models were benchmarked in full FP16 precision, including the three largest---Qwen2.5-32B (64\,GB), Mixtral-8x7B-Instruct (94\,GB), and Llama-3.3-70B (140\,GB)---which were run across two A100 80\,GB GPUs using \texttt{device\_map="auto"} for automatic tensor parallelism. These three models were additionally benchmarked using pre-quantized GPTQ-Int4 variants, enabling direct comparison of FP16 versus INT4 energy efficiency at the 32--70B scale. The Llama-70B FP16 model was tested only at batch size 1 due to its slow inference speed (9.5\,tok/s across two GPUs). The Llama-3.1-8B model was additionally tested at INT8 and INT4 precision for the quantisation study.
+We benchmark 11 models spanning five architectural families: Llama (1B, 3B, 8B), Qwen (1.5B, 7B, 32B), Gemma (2B, 9B), Phi (3.8B, 14B), and Mistral (7B). All models are benchmarked in FP16 precision on a single A100 80GB GPU, with every model fitting entirely in GPU memory. This uniform setup eliminates confounds from CPU offloading, mixed-precision kernels, or multi-GPU communication overhead, ensuring that all energy measurements reflect identical hardware and software conditions.
 
-Table~\ref{tab:summary} presents the key results. Across all 13 FP16 models, J/tok at batch size 1 ranges from 0.44\,J (Llama-3.2-1B) to 12.45\,J (Llama-3.3-70B)\footnote{After excluding 4 measurement rows where the power sampling thread collected insufficient samples, yielding zero energy readings.}, with the best efficiency achieved at larger batch sizes. The Mixtral-8x7B MoE model is a notable exception: at 46.7B total parameters, it achieves only 2.14\,J/tok (bs=1), on par with 7B dense models.
+Table~\ref{tab:summary} presents the key results. Across all 11 models, J/tok at batch size 1 ranges from 0.44\,J (Llama-3.2-1B) to 12.06\,J (Qwen2.5-32B)\footnote{After excluding 4 measurement rows where the power sampling thread collected insufficient samples, yielding zero energy readings.}, with the best efficiency achieved at larger batch sizes.
 
 \input{tables/summary_table}
 
 
 \subsection{Scaling Law Results}
 
-Figure~\ref{fig:scaling} shows J/tok as a function of model parameters for all FP16 models at batch size 1. With the addition of three large FP16 models (32B, 46.7B, 70B), the scaling relationship reveals an important distinction between dense and Mixture-of-Experts (MoE) architectures. Fitting a power law $E = \alpha N^{\beta}$ to dense models only yields $\beta = 0.68$ ($R^2 = 0.90$), a sub-linear relationship indicating that larger dense models are more energy-efficient per parameter. Mixtral-8x7B is a notable outlier: despite 46.7B total parameters, its MoE routing activates only $\sim$12B per token, yielding 2.14\,J/tok---consistent with a 12B dense model and drawing only 98\,W versus 180--290\,W for similarly-sized dense models. This demonstrates that MoE architectures offer a fundamentally different energy--performance trade-off, achieving large-model quality at small-model energy cost.
+Figure~\ref{fig:scaling} shows J/tok as a function of model parameters for all models at batch size 1. Fitting a power law $E = \alpha N^{\beta}$ yields $\beta = 1.10$ ($R^2 = 1.00$), indicating that energy scales approximately linearly with model size. This contrasts with the sub-linear exponent of 0.80 found in prior single-family studies on Pythia models, and reflects the broader architectural diversity in our benchmark: different model families have different computational efficiencies at similar parameter counts.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{fig1_scaling_law}
-    \caption{Scaling law: J/tok vs model parameters (FP16, bs=1). Dense models follow $E \propto N^{0.68}$ ($R^2 = 0.90$). Mixtral-8x7B (MoE, 46.7B total, $\sim$12B active) is a clear outlier, consuming energy consistent with a 12B dense model.}
+    \caption{Scaling law: J/tok vs model parameters (FP16, bs=1). Power law fit yields $E \propto N^{1.10}$ ($R^2 = 1.00$) across 11 models from five architectural families.}
     \label{fig:scaling}
 \end{figure}
 
 \subsection{Efficiency Frontier}
 
-Figure~\ref{fig:frontier} maps the Pareto trade-off between energy cost (J/tok) and throughput (tok/s) across all models, batch sizes, and precision levels. Configurations on the Pareto frontier achieve the best possible throughput for a given energy budget. Small models at large batch sizes dominate the low-energy, high-throughput region. Notably, Mixtral-8x7B FP16 at batch size 4 achieves 0.56\,J/tok at 65\,tok/s---comparable to the 7--9B dense models while providing 47B-parameter quality. The dense 32B and 70B FP16 models occupy the high-energy region (3--12\,J/tok) but with substantially higher throughput than their GPTQ-Int4 counterparts.
+Figure~\ref{fig:frontier} maps the Pareto trade-off between energy cost (J/tok) and throughput (tok/s) across all models and batch sizes. Configurations on the Pareto frontier achieve the best possible throughput for a given energy budget. Small models at large batch sizes dominate the low-energy, high-throughput region.
 
 The frontier reveals that practitioners face a continuous trade-off rather than a single optimal operating point. For example, Llama-3.2-1B at bs=16 achieves 1284 tok/s at just 0.031 J/tok, while Phi-3-medium at bs=16 delivers 536 tok/s at 0.33 J/tok---offering greater model capability at a 10$\times$ energy premium. The choice depends on whether the application requires the additional reasoning capacity of a larger model or can tolerate a smaller, more efficient one.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{fig2_efficiency_frontier}
-    \caption{Efficiency frontier: Pareto trade-off between energy cost (J/tok) and throughput (tok/s) across all models and configurations. Points on the frontier represent optimal operating points.}
+    \caption{Efficiency frontier: Pareto trade-off between energy cost (J/tok) and throughput (tok/s) across all models and batch sizes. Points on the frontier represent optimal operating points.}
     \label{fig:frontier}
 \end{figure}
 
@@ -152,34 +147,16 @@ Figure~\ref{fig:batch} shows J/tok as a function of batch size for all models. I
     \label{fig:batch}
 \end{figure}
 
-\subsection{Quantisation Impact}
-
-Figure~\ref{fig:quant} presents the quantisation study on Llama-3.1-8B at batch size 1. Contrary to prior energy-bench findings on Mistral-7B (INT8: 2.88$\times$, NF4: 3.72$\times$ energy penalty), we observe that bitsandbytes quantisation \emph{reduces} per-token energy at bs=1:
-\begin{itemize}
-    \item INT8: 0.90$\times$ energy (10\% reduction), despite 4.2$\times$ throughput penalty
-    \item INT4: 0.80$\times$ energy (20\% reduction), despite 1.7$\times$ throughput penalty
-\end{itemize}
-Note that at larger batch sizes, the throughput penalty dominates and quantised models become less energy-efficient than FP16 (e.g., INT4 at bs=16: 0.94 vs 0.18 J/tok for FP16).
-
-The mechanism differs from prior work: while throughput drops substantially (42.6 tok/s FP16 $\rightarrow$ 10.1 tok/s INT8), power draw also drops dramatically (160\,W $\rightarrow$ 82\,W), yielding a net energy reduction. This reversal likely reflects improvements in bitsandbytes kernels between versions, and demonstrates that the quantisation energy paradox is software-version-dependent rather than fundamental.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\columnwidth]{fig4_quantisation}
-    \caption{Quantisation impact on Llama-3.1-8B: J/tok, tok/s, and watts across FP16, INT8, and INT4.}
-    \label{fig:quant}
-\end{figure}
-
 \subsection{Prompt Type Effects}
 
-Figure~\ref{fig:prompt} examines whether the type of prompt---summarisation, question answering, code generation, long-form explanation, or reasoning---systematically affects per-token energy. Across all FP16 models, the coefficient of variation (CV) in J/tok across prompt types is below 5\% for most models and below 8\% in all cases. This indicates that, under greedy decoding with fixed output length, per-token energy is largely prompt-agnostic.
+Figure~\ref{fig:prompt} examines whether the type of prompt---summarisation, question answering, code generation, long-form explanation, or reasoning---systematically affects per-token energy. Across all models, the coefficient of variation (CV) in J/tok across prompt types is below 5\% for most models and below 8\% in all cases. This indicates that, under greedy decoding with fixed output length, per-token energy is largely prompt-agnostic.
 
 The insensitivity to prompt type simplifies benchmarking: a small, diverse prompt set suffices to characterise a model's energy profile without exhaustive coverage of all possible input distributions. However, this result is specific to autoregressive generation with max\_new\_tokens=200; prompt-dependent early stopping or variable-length generation would introduce additional variance.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\columnwidth]{fig5_prompt_type}
-    \caption{Prompt type effects on J/tok across FP16 models at bs=1. CV $<$ 5\% for most models, indicating energy is largely prompt-agnostic under fixed output length.}
+    \includegraphics[width=\columnwidth]{fig4_prompt_type}
+    \caption{Prompt type effects on J/tok across all models at bs=1. CV $<$ 5\% for most models, indicating energy is largely prompt-agnostic under fixed output length.}
     \label{fig:prompt}
 \end{figure}
 
@@ -189,7 +166,7 @@ Figure~\ref{fig:arch} compares models of similar size across architectures at ba
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\columnwidth]{fig6_architecture}
+    \includegraphics[width=\columnwidth]{fig5_architecture}
     \caption{Architecture comparison: J/tok at bs=1 for 7--9B models.}
     \label{fig:arch}
 \end{figure}
@@ -200,7 +177,7 @@ Figure~\ref{fig:carbon} shows the gCO$_2$eq per 1000 tokens for each model compu
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\columnwidth]{fig7_carbon_variation}
+    \includegraphics[width=\columnwidth]{fig6_carbon_variation}
     \caption{Carbon emissions per 1000 tokens under min/mean/max Irish grid intensity (119--348 gCO$_2$/kWh).}
     \label{fig:carbon}
 \end{figure}
@@ -209,29 +186,29 @@ Figure~\ref{fig:carbon} shows the gCO$_2$eq per 1000 tokens for each model compu
 
 \subsection{Comparison with Prior Work}
 
-Table~\ref{tab:crossstudy} compares our results with the energy-bench framework. The scaling exponent decreases from 0.80 (single Pythia family) to 0.68 (multi-architecture dense models, R²=0.90), reflecting greater architectural diversity in energy efficiency at similar parameter counts. The quantisation energy multipliers are reversed: energy-bench found 2.88$\times$ (INT8) and 3.72$\times$ (NF4) penalties on Mistral-7B, while we find 0.90$\times$ and 0.80$\times$ reductions on Llama-3.1-8B. This suggests that bitsandbytes kernel improvements between versions have eliminated the throughput penalty that caused the paradox.
+Table~\ref{tab:crossstudy} compares our results with the energy-bench framework. The scaling exponent increases from 0.80 (single Pythia family) to 1.10 (multi-architecture, R\textsuperscript{2}=1.00). The prior Pythia-only study found sub-linear scaling within a single model family trained on identical data; our multi-architecture study reveals that cross-family diversity and different training methodologies yield approximately linear scaling, as less-optimised architectures at larger sizes consume proportionally more energy.
 
 \input{tables/cross_study_comparison}
 
 \subsection{Limitations}
 
-Our study has several limitations: (1) single GPU type (A100 PCIe), (2) quantisation study limited to bitsandbytes INT8/INT4 on one model, with GPTQ used only for large model accessibility, (3) greedy decoding only, (4) English-only prompts, (5) inference only (not training), (6) GPTQ results for large models (32B+) are not directly comparable to fp16 results for smaller models due to different quantisation kernels, and (7) the quantisation comparison uses different base models (Llama-3.1-8B vs energy-bench's Mistral-7B).
+Our study has several limitations: (1) single GPU type (A100 PCIe), (2) FP16 precision only (quantisation effects not studied), (3) greedy decoding only, (4) English-only prompts, (5) inference only (not training), (6) largest model is 32B parameters---models above 80GB in FP16 would require multi-GPU setups with different energy characteristics.
 
 \subsection{Implications}
 
 Our results have several practical implications for sustainable LLM deployment:
 \begin{itemize}
     \item \textbf{Batch when possible}: Increasing batch size from 1 to 16 reduces per-token energy by 9--15$\times$.
-    \item \textbf{Quantisation trade-offs}: With current bitsandbytes at bs=1, INT4 quantisation reduces both memory and energy. However, at larger batch sizes the throughput penalty dominates and FP16 remains more energy-efficient.
     \item \textbf{Right-size models}: A 1B model at bs=16 uses $\sim$141$\times$ less energy per token than a 14B model at bs=1 (0.031 vs 4.39 J/tok).
     \item \textbf{Schedule carbon-aware}: Running inference during low-carbon grid periods can reduce emissions by up to 2.9$\times$ without any model changes.
+    \item \textbf{Architecture matters}: At similar parameter counts, architectural choice can account for up to 35\% difference in per-token energy (e.g., Mistral-7B vs Gemma-9B).
 \end{itemize}
 
 \section{Conclusion and Future Work}
 
-We presented a rigorous NVML-based framework for measuring LLM inference energy and applied it to 13 models (1B--70B) across five architectural families, including pre-quantized GPTQ variants for large models. Our key findings are: (1) energy scales as $N^{0.68}$ across dense architectures, (2) batching provides 9--15$\times$ efficiency gains, (3) bitsandbytes quantisation at bs=1 now \emph{reduces} per-token energy, reversing prior findings, and (4) Irish grid carbon variation introduces 2.9$\times$ emission variability.
+We presented a rigorous NVML-based framework for measuring LLM inference energy and applied it to 11 models (1B--32B) across five architectural families, all in FP16 precision on a single A100 80GB GPU. Our key findings are: (1) energy scales as $N^{1.10}$ across architectures, (2) batching provides 9--15$\times$ efficiency gains, (3) architectural choice at similar sizes affects energy by up to 35\%, and (4) Irish grid carbon variation introduces 2.9$\times$ emission variability.
 
-Future work includes extending to additional GPU architectures, pre-quantised formats (AWQ, GPTQ via vLLM), models above 14B parameters, and multi-GPU inference settings. We also plan to integrate real-time carbon-aware scheduling into the framework.
+Future work includes extending to additional GPU architectures, quantisation formats (INT8, INT4, GPTQ, AWQ), multi-GPU inference settings, and real-time carbon-aware scheduling.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

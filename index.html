@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JouleBench - LLM Inference Energy Benchmarking</title>
-<meta name="description" content="JouleBench: LLM inference energy benchmarking on GPU hardware. 13 models, 295 measurements, 5 architectural families.">
+<meta name="description" content="JouleBench: LLM inference energy benchmarking on GPU hardware. 11 models, 246 measurements, 5 architectural families.">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -230,11 +230,11 @@ footer a:hover { text-decoration: underline; }
     <p class="author">Daniel Cregg &middot; South East Technological University, Ireland</p>
     <p class="abstract">
       We present a rigorous framework for measuring LLM inference energy using direct NVML-based power
-      sampling on an NVIDIA A100 80GB GPU. We benchmark 13 open-weight models (1B&ndash;70B parameters) across
-      five architectural families&mdash;Llama, Mistral, Qwen, Phi, and Gemma&mdash;including pre-quantized GPTQ
-      variants for large models. Our results reveal a sub-linear scaling law (E &prop; N<sup>0.68</sup>, R&sup2;=0.90) for dense architectures,
-      find that bitsandbytes quantisation now <em>reduces</em> per-token energy (reversing prior findings of
-      2.9&ndash;3.7&times; penalties), and demonstrate 2.9&times; variation in per-token carbon emissions depending on
+      sampling on an NVIDIA A100 80GB GPU. We benchmark 11 open-weight models (1B&ndash;32B parameters) across
+      five architectural families&mdash;Llama, Mistral, Qwen, Phi, and Gemma&mdash;all in FP16 precision under
+      uniform conditions. Our results reveal a scaling law (E &prop; N<sup>1.10</sup>, R&sup2;=1.00) relating
+      energy to model size across architectures, find that batching reduces per-token energy by
+      9&ndash;15&times;, and demonstrate 2.9&times; variation in per-token carbon emissions depending on
       Irish grid conditions. All code, data, and reproducibility artifacts are publicly available.
     </p>
   </div>
@@ -244,10 +244,10 @@ footer a:hover { text-decoration: underline; }
 <section>
   <div class="container">
     <div class="stats-grid">
-      <div class="stat-card"><div class="number">295</div><div class="label">Measurements</div></div>
-      <div class="stat-card"><div class="number">13</div><div class="label">Models</div></div>
+      <div class="stat-card"><div class="number">246</div><div class="label">Measurements</div></div>
+      <div class="stat-card"><div class="number">11</div><div class="label">Models</div></div>
       <div class="stat-card"><div class="number">5</div><div class="label">Arch Families</div></div>
-      <div class="stat-card"><div class="number">4</div><div class="label">Precision Levels</div></div>
+      <div class="stat-card"><div class="number">1</div><div class="label">Precision (FP16)</div></div>
     </div>
   </div>
 </section>
@@ -259,9 +259,9 @@ footer a:hover { text-decoration: underline; }
     <div class="findings-grid">
       <div class="finding-card">
         <h3>Scaling Law</h3>
-        <p>Energy scales as <span class="highlight">E &prop; N<sup>0.68</sup></span> (R&sup2;=0.90) across
-        dense architectures&mdash;lower than the single-family exponent of 0.80 found in prior Pythia-only studies,
-        reflecting cross-architecture diversity. Mixtral MoE (46.7B params) is a clear outlier, consuming energy comparable to a 12B dense model.</p>
+        <p>Energy scales as <span class="highlight">E &prop; N<sup>1.10</sup></span> (R&sup2;=1.00) across
+        five architectural families&mdash;approximately linear with model size, and higher than the 0.80 exponent
+        found in prior single-family Pythia studies, reflecting cross-architecture diversity.</p>
       </div>
       <div class="finding-card">
         <h3>Batch Size Impact</h3>
@@ -270,10 +270,10 @@ footer a:hover { text-decoration: underline; }
         weight-loading and kernel-launch overhead.</p>
       </div>
       <div class="finding-card">
-        <h3>Quantisation Reversal</h3>
-        <p>Bitsandbytes INT8/INT4 on Llama-3.1-8B now <em>reduces</em> energy by
-        <span class="highlight">10&ndash;20%</span> at bs=1&mdash;reversing the 2.9&ndash;3.7&times; penalties found
-        in prior work. Improved kernels eliminated the throughput bottleneck.</p>
+        <h3>Architecture Matters</h3>
+        <p>At similar parameter counts (7&ndash;9B), architectural choice accounts for up to
+        <span class="highlight">35% difference</span> in per-token energy. Mistral-7B and Qwen-7B are the most
+        efficient; Gemma-9B uses the most energy despite similar size.</p>
       </div>
       <div class="finding-card">
         <h3>Carbon Variation</h3>
@@ -297,7 +297,7 @@ footer a:hover { text-decoration: underline; }
       </div>
       <div class="method-item">
         <h3>Layer 2: Inference Engine</h3>
-        <p>Standardised model loading (FP16, INT8, INT4 via bitsandbytes; GPTQ-Int4 for large models)
+        <p>Standardised model loading in FP16 precision
         with <code>torch.cuda.synchronize()</code> for precise timing and greedy decoding.</p>
       </div>
       <div class="method-item">
@@ -326,7 +326,7 @@ footer a:hover { text-decoration: underline; }
     <div class="gallery-grid">
       <figure class="gallery-item">
         <img src="paper/figures/fig1_scaling_law.png" alt="Scaling law: J/tok vs model parameters" loading="lazy">
-        <figcaption><strong>Fig 1.</strong> Scaling law: J/tok vs model parameters (FP16, bs=1). Dense-only power law fit yields exponent 0.68 (R&sup2;=0.90). Mixtral MoE is a clear outlier.</figcaption>
+        <figcaption><strong>Fig 1.</strong> Scaling law: J/tok vs model parameters (FP16, bs=1). Power law fit yields exponent 1.10 (R&sup2;=1.00) across 11 models.</figcaption>
       </figure>
       <figure class="gallery-item">
         <img src="paper/figures/fig2_efficiency_frontier.png" alt="Efficiency frontier: J/tok vs tok/s" loading="lazy">
@@ -337,32 +337,24 @@ footer a:hover { text-decoration: underline; }
         <figcaption><strong>Fig 3.</strong> J/tok vs batch size for all FP16 models, showing 9&ndash;15&times; reduction from bs=1 to bs=16.</figcaption>
       </figure>
       <figure class="gallery-item">
-        <img src="paper/figures/fig4_quantisation.png" alt="Quantisation impact" loading="lazy">
-        <figcaption><strong>Fig 4.</strong> Quantisation impact on Llama-3.1-8B: J/tok, tok/s, and watts across FP16, INT8, and INT4 precision.</figcaption>
+        <img src="paper/figures/fig4_prompt_type.png" alt="Prompt type effects" loading="lazy">
+        <figcaption><strong>Fig 4.</strong> Prompt type effects on J/tok across all models. CV &lt; 5% for most models, indicating energy is largely prompt-agnostic.</figcaption>
       </figure>
       <figure class="gallery-item">
-        <img src="paper/figures/fig5_prompt_type.png" alt="Prompt type effects" loading="lazy">
-        <figcaption><strong>Fig 5.</strong> Prompt type effects on J/tok across FP16 models. CV &lt; 5% for most models, indicating energy is largely prompt-agnostic.</figcaption>
+        <img src="paper/figures/fig5_architecture.png" alt="Architecture comparison" loading="lazy">
+        <figcaption><strong>Fig 5.</strong> Architecture comparison: J/tok at bs=1 for 7&ndash;9B models across different families.</figcaption>
       </figure>
       <figure class="gallery-item">
-        <img src="paper/figures/fig6_architecture.png" alt="Architecture comparison" loading="lazy">
-        <figcaption><strong>Fig 6.</strong> Architecture comparison: J/tok at bs=1 for 7&ndash;9B models across different families.</figcaption>
-      </figure>
-      <figure class="gallery-item">
-        <img src="paper/figures/fig7_carbon_variation.png" alt="Carbon emissions variation" loading="lazy">
-        <figcaption><strong>Fig 7.</strong> Carbon emissions per 1000 tokens under min/mean/max Irish grid intensity (119&ndash;348 gCO<sub>2</sub>/kWh).</figcaption>
+        <img src="paper/figures/fig6_carbon_variation.png" alt="Carbon emissions variation" loading="lazy">
+        <figcaption><strong>Fig 6.</strong> Carbon emissions per 1000 tokens under min/mean/max Irish grid intensity (119&ndash;348 gCO<sub>2</sub>/kWh).</figcaption>
       </figure>
       <figure class="gallery-item">
         <img src="paper/figures/prior_scaling_overlay.png" alt="Scaling law comparison with prior work" loading="lazy">
-        <figcaption><strong>Fig 8.</strong> Scaling law overlay: new framework results alongside energy-bench Pythia data. Dense exponent 0.68 vs Pythia 0.80.</figcaption>
-      </figure>
-      <figure class="gallery-item">
-        <img src="paper/figures/prior_quantisation_comparison.png" alt="Quantisation comparison with prior work" loading="lazy">
-        <figcaption><strong>Fig 9.</strong> Quantisation energy multipliers: prior work (2.88&times;, 3.72&times; penalties) vs new framework (0.90&times;, 0.80&times; reductions).</figcaption>
+        <figcaption><strong>Fig 7.</strong> Scaling law overlay: new framework results alongside energy-bench Pythia data. Multi-arch exponent 1.10 vs Pythia 0.80.</figcaption>
       </figure>
       <figure class="gallery-item">
         <img src="paper/figures/prior_batch_saturation.png" alt="Batch saturation comparison" loading="lazy">
-        <figcaption><strong>Fig 10.</strong> Batch saturation curve comparison with energy-bench Pythia-6.9B data.</figcaption>
+        <figcaption><strong>Fig 8.</strong> Batch saturation curve comparison with energy-bench Pythia-6.9B data.</figcaption>
       </figure>
     </div>
   </div>
@@ -372,7 +364,7 @@ footer a:hover { text-decoration: underline; }
 <section id="results">
   <div class="container">
     <h2 class="section-title">Results Summary</h2>
-    <p style="margin-bottom:1rem; color:var(--text-secondary); font-size:0.9rem;">Click any column header to sort. Best J/tok and tok/s are at batch size 16 (except Llama-70B at bs=1).</p>
+    <p style="margin-bottom:1rem; color:var(--text-secondary); font-size:0.9rem;">Click any column header to sort. All models in FP16 precision on a single A100 80GB GPU. Best J/tok at optimal batch size.</p>
     <div class="table-wrap">
       <table id="results-table">
         <thead>
@@ -394,14 +386,10 @@ footer a:hover { text-decoration: underline; }
           <tr><td>Phi-3-mini (3.8B)</td><td class="num">3.8</td><td>fp16</td><td class="num">0.1347</td><td class="num">665.1</td><td class="num">16</td><td class="num">155.3</td></tr>
           <tr><td>Mistral-7B</td><td class="num">7.0</td><td>fp16</td><td class="num">0.1655</td><td class="num">672.4</td><td class="num">16</td><td class="num">170.3</td></tr>
           <tr><td>Qwen2.5-7B</td><td class="num">7.0</td><td>fp16</td><td class="num">0.1647</td><td class="num">725.5</td><td class="num">16</td><td class="num">179.4</td></tr>
-          <tr><td>Llama-3.1-8B</td><td class="num">8.0</td><td>fp16</td><td class="num">0.1750</td><td class="num">663.8</td><td class="num">16</td><td class="num">176.7</td></tr>
-          <tr><td>Llama-3.1-8B</td><td class="num">8.0</td><td>int8</td><td class="num">0.3561</td><td class="num">145.3</td><td class="num">16</td><td class="num">112.1</td></tr>
-          <tr><td>Llama-3.1-8B</td><td class="num">8.0</td><td>int4</td><td class="num">0.9435</td><td class="num">226.4</td><td class="num">16</td><td class="num">274.2</td></tr>
+          <tr><td>Llama-3.1-8B</td><td class="num">8.0</td><td>fp16</td><td class="num">0.1137</td><td class="num">1284.7</td><td class="num">32</td><td class="num">208.0</td></tr>
           <tr><td>Gemma-2-9B</td><td class="num">9.0</td><td>fp16</td><td class="num">0.2275</td><td class="num">371.4</td><td class="num">16</td><td class="num">144.3</td></tr>
           <tr><td>Phi-3-medium (14B)</td><td class="num">14.0</td><td>fp16</td><td class="num">0.3335</td><td class="num">535.8</td><td class="num">16</td><td class="num">240.4</td></tr>
-          <tr><td>Qwen2.5-32B (GPTQ)</td><td class="num">32.0</td><td>gptq</td><td class="num">10.3162</td><td class="num">23.2</td><td class="num">16</td><td class="num">298.0</td></tr>
-          <tr><td>Mixtral-8x7B (GPTQ)</td><td class="num">46.7</td><td>gptq</td><td class="num">4.1481</td><td class="num">54.8</td><td class="num">16</td><td class="num">285.6</td></tr>
-          <tr><td>Llama-3.3-70B (GPTQ)</td><td class="num">70.0</td><td>gptq</td><td class="num">326.5457</td><td class="num">0.7</td><td class="num">1</td><td class="num">298.6</td></tr>
+          <tr><td>Qwen2.5-32B</td><td class="num">32.0</td><td>fp16</td><td class="num">3.0507</td><td class="num">74.9</td><td class="num">4</td><td class="num">291.4</td></tr>
         </tbody>
       </table>
     </div>
@@ -428,22 +416,12 @@ footer a:hover { text-decoration: underline; }
           <tr>
             <td>Scaling exponent (&beta;)</td>
             <td>0.80 (Pythia, R&sup2;=0.99)</td>
-            <td>0.68 (dense multi-arch, R&sup2;=0.90)</td>
+            <td>1.10 (multi-arch, R&sup2;=1.00)</td>
           </tr>
           <tr>
             <td>J/tok ~7B model (bs=1)</td>
             <td>4.461 (Pythia-6.9B)</td>
-            <td>2.315 (avg: Qwen-7B, Llama-8B, Mistral-7B)</td>
-          </tr>
-          <tr>
-            <td>INT8 energy multiplier</td>
-            <td>2.88&times; (Mistral-7B)</td>
-            <td class="reversed">0.90&times; (Llama-3.1-8B)</td>
-          </tr>
-          <tr>
-            <td>NF4/INT4 energy multiplier</td>
-            <td>3.72&times; (Mistral-7B)</td>
-            <td class="reversed">0.80&times; (Llama-3.1-8B)</td>
+            <td>2.37 (avg: Qwen-7B, Llama-8B, Mistral-7B)</td>
           </tr>
         </tbody>
       </table>
@@ -464,7 +442,7 @@ footer a:hover { text-decoration: underline; }
       <a href="https://github.com/danielcregg/llm-energy-framework/blob/main/results/combined_results.csv" class="link-card">
         <div class="icon">&#128202;</div>
         <h3>Benchmark Data</h3>
-        <p>Combined CSV with all 295 measurements across 16 configurations.</p>
+        <p>Combined CSV with all 246 measurements across 11 FP16 model configurations.</p>
       </a>
       <a href="https://github.com/danielcregg/llm-energy-framework/blob/main/paper/main.tex" class="link-card">
         <div class="icon">&#128196;</div>

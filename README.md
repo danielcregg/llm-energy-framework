@@ -66,22 +66,18 @@ Benchmarked on an NVIDIA A100 80GB PCIe GPU. All measurements use direct NVML po
 | Phi-3-mini-4k-instruct | 3.8 | FP16 | 0.135 | 665.1 | 155.3 |
 | Mistral-7B-Instruct-v0.3 | 7.0 | FP16 | 0.166 | 672.4 | 170.3 |
 | Qwen2.5-7B-Instruct | 7.0 | FP16 | 0.165 | 725.5 | 179.4 |
-| Llama-3.1-8B-Instruct | 8.0 | FP16 | 0.175 | 663.8 | 176.7 |
-| Llama-3.1-8B-Instruct | 8.0 | INT8 | 0.356 | 145.3 | 112.1 |
-| Llama-3.1-8B-Instruct | 8.0 | INT4 | 0.944 | 226.4 | 274.2 |
+| Llama-3.1-8B-Instruct | 8.0 | FP16 | 0.114 | 1284.7 | 208.0 |
 | Gemma-2-9b-it | 9.0 | FP16 | 0.228 | 371.4 | 144.3 |
 | Phi-3-medium-4k-instruct | 14.0 | FP16 | 0.334 | 535.8 | 240.4 |
-| Qwen2.5-32B-Instruct-GPTQ-Int4 | 32.0 | GPTQ | 10.3 | 23.2 | 298.0 |
-| Mixtral-8x7B-Instruct-v0.1-GPTQ | 46.7 | GPTQ | 4.15 | 54.8 | 285.6 |
-| Llama-3.3-70B-Instruct-GPTQ | 70.0 | GPTQ | 326.5* | 0.7* | 298.6 |
+| Qwen2.5-32B-Instruct | 32.0 | FP16 | 3.051 | 74.9 | 291.4 |
 
-Best J/tok and tok/s are at optimal batch size (bs=16 unless noted). 295 individual measurements across 16 benchmark configurations. GPTQ models use pre-quantized weights via auto-gptq. *Llama-70B tested at bs=1 only (~60min per config). Mixtral-8x7B is a Mixture-of-Experts model (46.7B total params, ~12.9B active per token), explaining its lower J/tok than the dense Qwen-32B.
+All models in FP16 precision on a single A100 80GB GPU. Best J/tok at optimal batch size. 246 individual measurements across 11 model configurations.
 
 ### Key Findings
 
-1. **Scaling law**: Energy scales as N^0.68 across dense architectures (R²=0.90), lower than the 0.80 exponent found in single-family (Pythia) studies, reflecting architectural diversity. Mixtral MoE (46.7B params) is a clear outlier, consuming energy comparable to a 12B dense model.
-2. **Batch size**: Increasing from bs=1 to bs=16 reduces J/tok by 9-15x.
-3. **Quantisation reversal**: At bs=1, bitsandbytes INT8 and INT4 on Llama-3.1-8B *reduce* per-token energy by 10% and 20% respectively, reversing the 2.9-3.7x energy penalties reported in prior work. At larger batch sizes, the throughput penalty dominates and FP16 remains more efficient.
+1. **Scaling law**: Energy scales as N^1.10 across five architectural families (R²=1.00), approximately linear with model size and higher than the 0.80 exponent found in single-family (Pythia) studies, reflecting cross-architecture diversity.
+2. **Batch size**: Increasing from bs=1 to bs=16 reduces J/tok by 9-15x — the single largest efficiency lever.
+3. **Architecture matters**: At similar parameter counts (7-9B), architectural choice accounts for up to 35% difference in per-token energy.
 4. **Carbon variation**: Irish grid carbon intensity (119-348 gCO2/kWh) introduces 2.9x variation in per-token emissions, meaning *when* you run inference matters as much as *which* model you choose.
 
 ### Figures
@@ -90,12 +86,10 @@ All figures are in `paper/figures/` (PDF and PNG):
 - `fig1_scaling_law` — J/tok vs model parameters with power law fit
 - `fig2_efficiency_frontier` — Efficiency frontier across models
 - `fig3_batch_size` — J/tok vs batch size for all models
-- `fig4_quantisation` — Quantisation impact on Llama-3.1-8B
-- `fig5_prompt_type` — Energy variation by prompt type
-- `fig6_architecture` — Architecture comparison at similar sizes
-- `fig7_carbon_variation` — Carbon emissions under varying grid intensity
+- `fig4_prompt_type` — Energy variation by prompt type
+- `fig5_architecture` — Architecture comparison at similar sizes
+- `fig6_carbon_variation` — Carbon emissions under varying grid intensity
 - `prior_scaling_overlay` — Comparison with energy-bench Pythia scaling law
-- `prior_quantisation_comparison` — Quantisation comparison with prior work
 - `prior_batch_saturation` — Batch size saturation comparison
 
 ## Quick Start
@@ -149,7 +143,7 @@ Each benchmark produces a structured JSON report containing:
 llm-energy-framework/
 ├── src/
 │   ├── hardware.py        # Layer 1: NVML power sampling with SLURM GPU mapping
-│   ├── inference.py       # Layer 2: Model loading (FP16/INT8/INT4) and inference
+│   ├── inference.py       # Layer 2: Model loading (FP16) and inference
 │   ├── metrics.py         # Layer 3: Metric computation (J/tok, tok/s, gCO2eq/tok)
 │   ├── benchmark.py       # Layer 4: Orchestration and reporting
 │   └── analyze.py         # Analysis, figure, and table generation
@@ -174,7 +168,7 @@ llm-energy-framework/
 
 1. How can LLM inference energy be measured accurately, reproducibly and independently on real GPU hardware?
 2. What is the correct unit of measurement, and how should it be normalised across different model sizes and architectures?
-3. How do model size, architecture, quantisation level, context length and batch size each affect Joules per Token?
+3. How do model size, architecture, and batch size each affect Joules per Token?
 4. What does the landscape of inference energy efficiency look like across a representative set of publicly available open-weight LLMs?
 5. How can measured Joules per Token be combined with grid carbon intensity data to produce a carbon efficiency figure?
 
