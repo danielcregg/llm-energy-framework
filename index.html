@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JouleBench - LLM Inference Energy Benchmarking</title>
-<meta name="description" content="JouleBench: LLM inference energy benchmarking on GPU hardware. 11 models, 246 measurements, 5 architectural families.">
+<meta name="description" content="JouleBench: LLM inference energy benchmarking on GPU hardware. 14 models, 306 measurements, 5 architectural families.">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -230,9 +230,9 @@ footer a:hover { text-decoration: underline; }
     <p class="author">Daniel Cregg &middot; South East Technological University, Ireland</p>
     <p class="abstract">
       We present a rigorous framework for measuring LLM inference energy using direct NVML-based power
-      sampling on an NVIDIA A100 80GB GPU. We benchmark 11 open-weight models (1B&ndash;32B parameters) across
+      sampling on an NVIDIA A100 80GB GPU. We benchmark 14 open-weight models (1B&ndash;32B parameters) across
       five architectural families&mdash;Llama, Mistral, Qwen, Phi, and Gemma&mdash;all in FP16 precision under
-      uniform conditions. Our results reveal a scaling law (E &prop; N<sup>1.10</sup>, R&sup2;=1.00) relating
+      uniform conditions. Our results reveal a near-linear scaling law (E &prop; N<sup>0.96</sup>, R&sup2;=0.99) relating
       energy to model size across architectures, find that batching reduces per-token energy by
       9&ndash;15&times;, and demonstrate 2.9&times; variation in per-token carbon emissions depending on
       Irish grid conditions. All code, data, and reproducibility artifacts are publicly available.
@@ -244,8 +244,8 @@ footer a:hover { text-decoration: underline; }
 <section>
   <div class="container">
     <div class="stats-grid">
-      <div class="stat-card"><div class="number">246</div><div class="label">Measurements</div></div>
-      <div class="stat-card"><div class="number">11</div><div class="label">Models</div></div>
+      <div class="stat-card"><div class="number">306</div><div class="label">Measurements</div></div>
+      <div class="stat-card"><div class="number">14</div><div class="label">Models</div></div>
       <div class="stat-card"><div class="number">5</div><div class="label">Arch Families</div></div>
       <div class="stat-card"><div class="number">1</div><div class="label">Precision (FP16)</div></div>
     </div>
@@ -259,8 +259,8 @@ footer a:hover { text-decoration: underline; }
     <div class="findings-grid">
       <div class="finding-card">
         <h3>Scaling Law</h3>
-        <p>Energy scales as <span class="highlight">E &prop; N<sup>1.10</sup></span> (R&sup2;=1.00) across
-        five architectural families&mdash;approximately linear with model size, and higher than the 0.80 exponent
+        <p>Energy scales as <span class="highlight">E &prop; N<sup>0.96</sup></span> (R&sup2;=0.99) across
+        five architectural families&mdash;near-linear with model size, and higher than the 0.80 exponent
         found in prior single-family Pythia studies, reflecting cross-architecture diversity.</p>
       </div>
       <div class="finding-card">
@@ -326,7 +326,7 @@ footer a:hover { text-decoration: underline; }
     <div class="gallery-grid">
       <figure class="gallery-item">
         <img src="paper/figures/fig1_scaling_law.png" alt="Scaling law: J/tok vs model parameters" loading="lazy">
-        <figcaption><strong>Fig 1.</strong> Scaling law: J/tok vs model parameters (FP16, bs=1). Power law fit yields exponent 1.10 (R&sup2;=1.00) across 11 models.</figcaption>
+        <figcaption><strong>Fig 1.</strong> Scaling law: J/tok vs model parameters (FP16, bs=1). Power law fit yields exponent 0.96 (R&sup2;=0.99) across 14 models.</figcaption>
       </figure>
       <figure class="gallery-item">
         <img src="paper/figures/fig2_efficiency_frontier.png" alt="Efficiency frontier: J/tok vs tok/s" loading="lazy">
@@ -350,7 +350,7 @@ footer a:hover { text-decoration: underline; }
       </figure>
       <figure class="gallery-item">
         <img src="paper/figures/prior_scaling_overlay.png" alt="Scaling law comparison with prior work" loading="lazy">
-        <figcaption><strong>Fig 7.</strong> Scaling law overlay: new framework results alongside energy-bench Pythia data. Multi-arch exponent 1.10 vs Pythia 0.80.</figcaption>
+        <figcaption><strong>Fig 7.</strong> Scaling law overlay: new framework results alongside energy-bench Pythia data. Multi-arch exponent 0.96 vs Pythia 0.80.</figcaption>
       </figure>
       <figure class="gallery-item">
         <img src="paper/figures/prior_batch_saturation.png" alt="Batch saturation comparison" loading="lazy">
@@ -389,6 +389,9 @@ footer a:hover { text-decoration: underline; }
           <tr><td>Llama-3.1-8B</td><td class="num">8.0</td><td>fp16</td><td class="num">0.1137</td><td class="num">1284.7</td><td class="num">32</td><td class="num">208.0</td></tr>
           <tr><td>Gemma-2-9B</td><td class="num">9.0</td><td>fp16</td><td class="num">0.2275</td><td class="num">371.4</td><td class="num">16</td><td class="num">144.3</td></tr>
           <tr><td>Phi-3-medium (14B)</td><td class="num">14.0</td><td>fp16</td><td class="num">0.3335</td><td class="num">535.8</td><td class="num">16</td><td class="num">240.4</td></tr>
+          <tr><td>Qwen2.5-14B</td><td class="num">14.0</td><td>fp16</td><td class="num">0.3708</td><td class="num">434.1</td><td class="num">16</td><td class="num">222.7</td></tr>
+          <tr><td>Mistral-Small (22B)</td><td class="num">22.0</td><td>fp16</td><td class="num">0.5895</td><td class="num">360.2</td><td class="num">16</td><td class="num">274.8</td></tr>
+          <tr><td>Gemma-2-27B</td><td class="num">27.0</td><td>fp16</td><td class="num">0.7651</td><td class="num">244.7</td><td class="num">16</td><td class="num">249.6</td></tr>
           <tr><td>Qwen2.5-32B</td><td class="num">32.0</td><td>fp16</td><td class="num">3.0507</td><td class="num">74.9</td><td class="num">4</td><td class="num">291.4</td></tr>
         </tbody>
       </table>
@@ -416,7 +419,7 @@ footer a:hover { text-decoration: underline; }
           <tr>
             <td>Scaling exponent (&beta;)</td>
             <td>0.80 (Pythia, R&sup2;=0.99)</td>
-            <td>1.10 (multi-arch, R&sup2;=1.00)</td>
+            <td>0.96 (multi-arch, R&sup2;=0.99)</td>
           </tr>
           <tr>
             <td>J/tok ~7B model (bs=1)</td>
@@ -442,7 +445,7 @@ footer a:hover { text-decoration: underline; }
       <a href="https://github.com/danielcregg/llm-energy-framework/blob/main/results/combined_results.csv" class="link-card">
         <div class="icon">&#128202;</div>
         <h3>Benchmark Data</h3>
-        <p>Combined CSV with all 246 measurements across 11 FP16 model configurations.</p>
+        <p>Combined CSV with all 306 measurements across 14 FP16 model configurations.</p>
       </a>
       <a href="https://github.com/danielcregg/llm-energy-framework/blob/main/paper/main.tex" class="link-card">
         <div class="icon">&#128196;</div>

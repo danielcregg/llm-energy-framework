@@ -24,7 +24,7 @@ daniel.cregg@setu.ie}}
 \maketitle
 
 \begin{abstract}
-We present a rigorous framework for measuring the energy consumption of large language model (LLM) inference on GPU hardware and apply it to benchmark 11 open-weight models spanning 1B to 32B parameters across five architectural families (Llama, Mistral, Qwen, Phi, Gemma). All models are benchmarked in FP16 precision on a single NVIDIA A100 80GB GPU, ensuring uniform measurement conditions with no CPU offloading or mixed-precision confounds. Using direct NVML-based power sampling with greedy decoding, idle baseline subtraction, and trapezoidal energy integration, our results reveal a super-linear scaling law ($E \propto N^{1.10}$, $R^2=1.00$) relating energy to model size across architectures. Batch size is the dominant efficiency lever, with a 9--15$\times$ reduction in per-token energy from batch size 1 to 16. We additionally ground our measurements in Irish electricity grid carbon intensity data, demonstrating a 2.9$\times$ variation in per-token carbon emissions depending on time of day. All code, data, and reproducibility artifacts are publicly available.
+We present a rigorous framework for measuring the energy consumption of large language model (LLM) inference on GPU hardware and apply it to benchmark 14 open-weight models spanning 1B to 32B parameters across five architectural families (Llama, Mistral, Qwen, Phi, Gemma). All models are benchmarked in FP16 precision on a single NVIDIA A100 80GB GPU, ensuring uniform measurement conditions with no CPU offloading or mixed-precision confounds. Using direct NVML-based power sampling with greedy decoding, idle baseline subtraction, and trapezoidal energy integration, our results reveal a near-linear scaling law ($E \propto N^{0.96}$, $R^2=0.99$) relating energy to model size across architectures. Batch size is the dominant efficiency lever, with a 9--15$\times$ reduction in per-token energy from batch size 1 to 16. We additionally ground our measurements in Irish electricity grid carbon intensity data, demonstrating a 2.9$\times$ variation in per-token carbon emissions depending on time of day. All code, data, and reproducibility artifacts are publicly available.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -40,7 +40,7 @@ Despite growing interest, rigorous measurement of LLM inference energy remains c
 This paper makes the following contributions:
 \begin{enumerate}
     \item A validated, open-source framework for measuring LLM inference energy using direct NVML power sampling with trapezoidal integration and idle baseline subtraction.
-    \item A comprehensive benchmark of 11 open-weight models (1B--32B parameters) across five architectural families on an A100 80GB GPU, all in FP16 precision under uniform conditions.
+    \item A comprehensive benchmark of 14 open-weight models (1B--32B parameters) across five architectural families on an A100 80GB GPU, all in FP16 precision under uniform conditions.
     \item Empirical scaling laws relating energy to model size across architectures, extending prior single-family studies.
     \item Carbon impact analysis grounded in real Irish electricity grid data, demonstrating temporal variation in per-token emissions.
 \end{enumerate}
@@ -105,21 +105,21 @@ Before the full benchmark campaign, we validated the framework on \texttt{Qwen2.
 
 \subsection{Model Selection}
 
-We benchmark 11 models spanning five architectural families: Llama (1B, 3B, 8B), Qwen (1.5B, 7B, 32B), Gemma (2B, 9B), Phi (3.8B, 14B), and Mistral (7B). All models are benchmarked in FP16 precision on a single A100 80GB GPU, with every model fitting entirely in GPU memory. This uniform setup eliminates confounds from CPU offloading, mixed-precision kernels, or multi-GPU communication overhead, ensuring that all energy measurements reflect identical hardware and software conditions.
+We benchmark 14 models spanning five architectural families: Llama (1B, 3B, 8B), Qwen (1.5B, 7B, 14B, 32B), Gemma (2B, 9B, 27B), Phi (3.8B, 14B), and Mistral (7B, 22B). All models are benchmarked in FP16 precision on a single A100 80GB GPU, with every model fitting entirely in GPU memory. This uniform setup eliminates confounds from CPU offloading, mixed-precision kernels, or multi-GPU communication overhead, ensuring that all energy measurements reflect identical hardware and software conditions. The three additional models at 14B, 22B, and 27B provide dense coverage in the previously sparse 14--32B range, strengthening the scaling law fit.
 
-Table~\ref{tab:summary} presents the key results. Across all 11 models, J/tok at batch size 1 ranges from 0.44\,J (Llama-3.2-1B) to 12.06\,J (Qwen2.5-32B)\footnote{After excluding 4 measurement rows where the power sampling thread collected insufficient samples, yielding zero energy readings.}, with the best efficiency achieved at larger batch sizes.
+Table~\ref{tab:summary} presents the key results. Across all 14 models, J/tok at batch size 1 ranges from 0.44\,J (Llama-3.2-1B) to 12.06\,J (Qwen2.5-32B)\footnote{After excluding 4 measurement rows where the power sampling thread collected insufficient samples, yielding zero energy readings.}, with the best efficiency achieved at larger batch sizes.
 
 \input{tables/summary_table}
 
 
 \subsection{Scaling Law Results}
 
-Figure~\ref{fig:scaling} shows J/tok as a function of model parameters for all models at batch size 1. Fitting a power law $E = \alpha N^{\beta}$ yields $\beta = 1.10$ ($R^2 = 1.00$), indicating that energy scales approximately linearly with model size. This contrasts with the sub-linear exponent of 0.80 found in prior single-family studies on Pythia models, and reflects the broader architectural diversity in our benchmark: different model families have different computational efficiencies at similar parameter counts.
+Figure~\ref{fig:scaling} shows J/tok as a function of model parameters for all models at batch size 1. Fitting a power law $E = \alpha N^{\beta}$ across all 14 models yields $\beta = 0.96$ ($R^2 = 0.99$), indicating that energy scales approximately linearly with model size. This contrasts with the sub-linear exponent of 0.80 found in prior single-family studies on Pythia models, and reflects the broader architectural diversity in our benchmark: different model families have different computational efficiencies at similar parameter counts. The addition of three models in the 14--27B range (Qwen2.5-14B, Mistral-Small-22B, Gemma-2-27b) tightens the fit in a region that was previously spanned only by Phi-3-medium-14B and Qwen2.5-32B.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{fig1_scaling_law}
-    \caption{Scaling law: J/tok vs model parameters (FP16, bs=1). Power law fit yields $E \propto N^{1.10}$ ($R^2 = 1.00$) across 11 models from five architectural families.}
+    \caption{Scaling law: J/tok vs model parameters (FP16, bs=1). Power law fit yields $E \propto N^{0.96}$ ($R^2 = 0.99$) across 14 models from five architectural families.}
     \label{fig:scaling}
 \end{figure}
 
@@ -186,7 +186,7 @@ Figure~\ref{fig:carbon} shows the gCO$_2$eq per 1000 tokens for each model compu
 
 \subsection{Comparison with Prior Work}
 
-Table~\ref{tab:crossstudy} compares our results with the energy-bench framework. The scaling exponent increases from 0.80 (single Pythia family) to 1.10 (multi-architecture, R\textsuperscript{2}=1.00). The prior Pythia-only study found sub-linear scaling within a single model family trained on identical data; our multi-architecture study reveals that cross-family diversity and different training methodologies yield approximately linear scaling, as less-optimised architectures at larger sizes consume proportionally more energy.
+Table~\ref{tab:crossstudy} compares our results with the energy-bench framework. The scaling exponent increases from 0.80 (single Pythia family) to 0.96 (multi-architecture, R\textsuperscript{2}=0.99). The prior Pythia-only study found sub-linear scaling within a single model family trained on identical data; our multi-architecture study reveals that cross-family diversity and different training methodologies yield approximately linear scaling, as less-optimised architectures at larger sizes consume proportionally more energy. With 14 models providing dense coverage from 1B to 32B---including three models in the 14--27B range---the near-linear exponent is well-constrained.
 
 \input{tables/cross_study_comparison}
 
@@ -199,14 +199,14 @@ Our study has several limitations: (1) single GPU type (A100 PCIe), (2) FP16 pre
 Our results have several practical implications for sustainable LLM deployment:
 \begin{itemize}
     \item \textbf{Batch when possible}: Increasing batch size from 1 to 16 reduces per-token energy by 9--15$\times$.
-    \item \textbf{Right-size models}: A 1B model at bs=16 uses $\sim$141$\times$ less energy per token than a 14B model at bs=1 (0.031 vs 4.39 J/tok).
+    \item \textbf{Right-size models}: A 1B model at bs=16 uses $\sim$266$\times$ less energy per token than a 22B model at bs=1 (0.031 vs 8.24 J/tok).
     \item \textbf{Schedule carbon-aware}: Running inference during low-carbon grid periods can reduce emissions by up to 2.9$\times$ without any model changes.
     \item \textbf{Architecture matters}: At similar parameter counts, architectural choice can account for up to 35\% difference in per-token energy (e.g., Mistral-7B vs Gemma-9B).
 \end{itemize}
 
 \section{Conclusion and Future Work}
 
-We presented a rigorous NVML-based framework for measuring LLM inference energy and applied it to 11 models (1B--32B) across five architectural families, all in FP16 precision on a single A100 80GB GPU. Our key findings are: (1) energy scales as $N^{1.10}$ across architectures, (2) batching provides 9--15$\times$ efficiency gains, (3) architectural choice at similar sizes affects energy by up to 35\%, and (4) Irish grid carbon variation introduces 2.9$\times$ emission variability.
+We presented a rigorous NVML-based framework for measuring LLM inference energy and applied it to 14 models (1B--32B) across five architectural families, all in FP16 precision on a single A100 80GB GPU. Our key findings are: (1) energy scales as $N^{0.96}$ across architectures, (2) batching provides 9--15$\times$ efficiency gains, (3) architectural choice at similar sizes affects energy by up to 35\%, and (4) Irish grid carbon variation introduces 2.9$\times$ emission variability.
 
 Future work includes extending to additional GPU architectures, quantisation formats (INT8, INT4, GPTQ, AWQ), multi-GPU inference settings, and real-time carbon-aware scheduling.
 

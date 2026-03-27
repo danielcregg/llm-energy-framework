@@ -39,7 +39,10 @@ MODEL_PARAMS = {
     "Qwen/Qwen2.5-7B-Instruct": 7.0,
     "meta-llama/Llama-3.1-8B-Instruct": 8.0,
     "google/gemma-2-9b-it": 9.0,
+    "Qwen/Qwen2.5-14B-Instruct": 14.0,
     "microsoft/Phi-3-medium-4k-instruct": 14.0,
+    "mistralai/Mistral-Small-Instruct-2409": 22.0,
+    "google/gemma-2-27b-it": 27.0,
     "Qwen/Qwen2.5-32B-Instruct": 32.0,
 }
 
@@ -48,13 +51,16 @@ MODEL_FAMILY = {
     "meta-llama/Llama-3.2-3B-Instruct": "Llama",
     "meta-llama/Llama-3.1-8B-Instruct": "Llama",
     "mistralai/Mistral-7B-Instruct-v0.3": "Mistral",
+    "mistralai/Mistral-Small-Instruct-2409": "Mistral",
     "Qwen/Qwen2.5-1.5B-Instruct": "Qwen",
     "Qwen/Qwen2.5-7B-Instruct": "Qwen",
+    "Qwen/Qwen2.5-14B-Instruct": "Qwen",
     "Qwen/Qwen2.5-32B-Instruct": "Qwen",
     "microsoft/Phi-3-mini-4k-instruct": "Phi",
     "microsoft/Phi-3-medium-4k-instruct": "Phi",
     "google/gemma-2-2b-it": "Gemma",
     "google/gemma-2-9b-it": "Gemma",
+    "google/gemma-2-27b-it": "Gemma",
 }
 
 # Colourblind-friendly palette

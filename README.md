@@ -69,13 +69,16 @@ Benchmarked on an NVIDIA A100 80GB PCIe GPU. All measurements use direct NVML po
 | Llama-3.1-8B-Instruct | 8.0 | FP16 | 0.114 | 1284.7 | 208.0 |
 | Gemma-2-9b-it | 9.0 | FP16 | 0.228 | 371.4 | 144.3 |
 | Phi-3-medium-4k-instruct | 14.0 | FP16 | 0.334 | 535.8 | 240.4 |
+| Qwen2.5-14B-Instruct | 14.0 | FP16 | 0.371 | 434.1 | 222.7 |
+| Mistral-Small-Instruct-2409 | 22.0 | FP16 | 0.590 | 360.2 | 274.8 |
+| Gemma-2-27b-it | 27.0 | FP16 | 0.765 | 244.7 | 249.6 |
 | Qwen2.5-32B-Instruct | 32.0 | FP16 | 3.051 | 74.9 | 291.4 |
 
-All models in FP16 precision on a single A100 80GB GPU. Best J/tok at optimal batch size. 246 individual measurements across 11 model configurations.
+All models in FP16 precision on a single A100 80GB GPU. Best J/tok at optimal batch size. 306 individual measurements across 14 model configurations.
 
 ### Key Findings
 
-1. **Scaling law**: Energy scales as N^1.10 across five architectural families (R²=1.00), approximately linear with model size and higher than the 0.80 exponent found in single-family (Pythia) studies, reflecting cross-architecture diversity.
+1. **Scaling law**: Energy scales as N^0.96 across five architectural families (R²=0.99), near-linear with model size and higher than the 0.80 exponent found in single-family (Pythia) studies, reflecting cross-architecture diversity.
 2. **Batch size**: Increasing from bs=1 to bs=16 reduces J/tok by 9-15x — the single largest efficiency lever.
 3. **Architecture matters**: At similar parameter counts (7-9B), architectural choice accounts for up to 35% difference in per-token energy.
 4. **Carbon variation**: Irish grid carbon intensity (119-348 gCO2/kWh) introduces 2.9x variation in per-token emissions, meaning *when* you run inference matters as much as *which* model you choose.

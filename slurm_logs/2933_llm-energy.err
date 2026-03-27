@@ -1,0 +1,53 @@
+/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-27 16:27:31,934 INFO __main__: Loading model: google/gemma-2-27b-it (precision: fp16)
+2026-03-27 16:27:34,846 INFO src.inference: Loading tokenizer: google/gemma-2-27b-it
+2026-03-27 16:27:46,529 INFO src.inference: Loading model: google/gemma-2-27b-it (precision=fp16)
+Fetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]Fetching 12 files:   8%|▊         | 1/12 [06:02<1:06:28, 362.59s/it]Fetching 12 files:  75%|███████▌  | 9/12 [08:32<02:19, 46.43s/it]   Fetching 12 files: 100%|██████████| 12/12 [08:32<00:00, 42.73s/it]
+2026-03-27 16:36:24,959 INFO accelerate.utils.modeling: We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:05<01:00,  5.47s/it]Loading checkpoint shards:  17%|█▋        | 2/12 [00:11<00:56,  5.61s/it]Loading checkpoint shards:  25%|██▌       | 3/12 [00:17<00:52,  5.87s/it]Loading checkpoint shards:  33%|███▎      | 4/12 [00:23<00:48,  6.07s/it]Loading checkpoint shards:  42%|████▏     | 5/12 [00:29<00:42,  6.12s/it]Loading checkpoint shards:  50%|█████     | 6/12 [00:36<00:36,  6.15s/it]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:42<00:31,  6.20s/it]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:49<00:26,  6.61s/it]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:57<00:20,  6.77s/it]Loading checkpoint shards:  83%|████████▎ | 10/12 [01:03<00:13,  6.69s/it]Loading checkpoint shards:  92%|█████████▏| 11/12 [01:09<00:06,  6.58s/it]Loading checkpoint shards: 100%|██████████| 12/12 [01:10<00:00,  4.82s/it]Loading checkpoint shards: 100%|██████████| 12/12 [01:10<00:00,  5.89s/it]
+2026-03-27 16:37:37,466 INFO src.inference: Model loaded successfully on cuda:0
+2026-03-27 16:37:37,466 INFO __main__: Measuring idle baseline (30s)...
+2026-03-27 16:37:37,466 INFO src.hardware: Measuring idle baseline for 30s...
+2026-03-27 16:38:07,473 INFO src.hardware: Idle baseline: 61.8W (std=0.3W, 292 samples)
+2026-03-27 16:38:07,474 INFO __main__: Warmup (3 runs): sum_short/bs=1
+2026-03-27 16:38:45,960 INFO __main__: Measuring (10 runs): sum_short/bs=1
+2026-03-27 16:40:51,413 INFO __main__: Warmup (3 runs): sum_short/bs=4
+2026-03-27 16:41:29,567 INFO __main__: Measuring (10 runs): sum_short/bs=4
+2026-03-27 16:43:36,778 INFO __main__: Warmup (3 runs): sum_short/bs=8
+2026-03-27 16:44:15,207 INFO __main__: Measuring (10 runs): sum_short/bs=8
+2026-03-27 16:46:23,800 INFO __main__: Warmup (3 runs): sum_short/bs=16
+2026-03-27 16:47:04,350 INFO __main__: Measuring (10 runs): sum_short/bs=16
+2026-03-27 16:49:19,972 INFO __main__: Warmup (3 runs): qa_factual/bs=1
+2026-03-27 16:49:57,521 INFO __main__: Measuring (10 runs): qa_factual/bs=1
+2026-03-27 16:52:02,978 INFO __main__: Warmup (3 runs): qa_factual/bs=4
+2026-03-27 16:52:40,781 INFO __main__: Measuring (10 runs): qa_factual/bs=4
+2026-03-27 16:54:47,262 INFO __main__: Warmup (3 runs): qa_factual/bs=8
+2026-03-27 16:55:25,001 INFO __main__: Measuring (10 runs): qa_factual/bs=8
+2026-03-27 16:57:31,478 INFO __main__: Warmup (3 runs): qa_factual/bs=16
+2026-03-27 16:58:09,968 INFO __main__: Measuring (10 runs): qa_factual/bs=16
+2026-03-27 17:00:18,456 INFO __main__: Warmup (3 runs): code_simple/bs=1
+2026-03-27 17:00:56,004 INFO __main__: Measuring (10 runs): code_simple/bs=1
+2026-03-27 17:03:01,460 INFO __main__: Warmup (3 runs): code_simple/bs=4
+2026-03-27 17:03:39,351 INFO __main__: Measuring (10 runs): code_simple/bs=4
+2026-03-27 17:05:46,087 INFO __main__: Warmup (3 runs): code_simple/bs=8
+2026-03-27 17:06:24,048 INFO __main__: Measuring (10 runs): code_simple/bs=8
+2026-03-27 17:08:31,410 INFO __main__: Warmup (3 runs): code_simple/bs=16
+2026-03-27 17:09:10,235 INFO __main__: Measuring (10 runs): code_simple/bs=16
+2026-03-27 17:11:19,986 INFO __main__: Warmup (3 runs): longform/bs=1
+2026-03-27 17:11:57,509 INFO __main__: Measuring (10 runs): longform/bs=1
+2026-03-27 17:14:02,880 INFO __main__: Warmup (3 runs): longform/bs=4
+2026-03-27 17:14:40,744 INFO __main__: Measuring (10 runs): longform/bs=4
+2026-03-27 17:16:47,326 INFO __main__: Warmup (3 runs): longform/bs=8
+2026-03-27 17:17:25,281 INFO __main__: Measuring (10 runs): longform/bs=8
+2026-03-27 17:19:32,673 INFO __main__: Warmup (3 runs): longform/bs=16
+2026-03-27 17:20:11,520 INFO __main__: Measuring (10 runs): longform/bs=16
+2026-03-27 17:22:21,316 INFO __main__: Warmup (3 runs): reasoning/bs=1
+2026-03-27 17:22:58,889 INFO __main__: Measuring (10 runs): reasoning/bs=1
+2026-03-27 17:25:04,414 INFO __main__: Warmup (3 runs): reasoning/bs=4
+2026-03-27 17:25:42,346 INFO __main__: Measuring (10 runs): reasoning/bs=4
+2026-03-27 17:27:49,197 INFO __main__: Warmup (3 runs): reasoning/bs=8
+2026-03-27 17:28:27,344 INFO __main__: Measuring (10 runs): reasoning/bs=8
+2026-03-27 17:30:35,442 INFO __main__: Warmup (3 runs): reasoning/bs=16
+2026-03-27 17:31:15,206 INFO __main__: Measuring (10 runs): reasoning/bs=16
+2026-03-27 17:33:28,101 INFO __main__: Report saved: results/gemma-2-27b-fp16/benchmark_google_gemma-2-27b-it_fp16.json

@@ -1,0 +1,54 @@
+/home/daniel.cregg/miniconda3/envs/camorl/lib/python3.11/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+2026-03-27 15:19:49,970 INFO __main__: Loading model: Qwen/Qwen2.5-14B-Instruct (precision: fp16)
+2026-03-27 15:19:54,395 INFO src.inference: Loading tokenizer: Qwen/Qwen2.5-14B-Instruct
+2026-03-27 15:20:05,769 INFO src.inference: Loading model: Qwen/Qwen2.5-14B-Instruct (precision=fp16)
+Fetching 8 files:   0%|          | 0/8 [00:00<?, ?it/s]Fetching 8 files:  12%|█▎        | 1/8 [03:53<27:11, 233.04s/it]Fetching 8 files:  25%|██▌       | 2/8 [04:21<11:15, 112.56s/it]Fetching 8 files:  75%|███████▌  | 6/8 [04:22<00:51, 25.95s/it] Fetching 8 files: 100%|██████████| 8/8 [04:22<00:00, 32.75s/it]
+2026-03-27 15:24:35,146 INFO accelerate.utils.modeling: We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:  12%|█▎        | 1/8 [00:04<00:31,  4.47s/it]Loading checkpoint shards:  25%|██▌       | 2/8 [00:08<00:26,  4.46s/it]Loading checkpoint shards:  38%|███▊      | 3/8 [00:13<00:22,  4.55s/it]Loading checkpoint shards:  50%|█████     | 4/8 [00:18<00:18,  4.57s/it]Loading checkpoint shards:  62%|██████▎   | 5/8 [00:22<00:13,  4.58s/it]Loading checkpoint shards:  75%|███████▌  | 6/8 [00:27<00:09,  4.63s/it]Loading checkpoint shards:  88%|████████▊ | 7/8 [00:32<00:04,  4.61s/it]Loading checkpoint shards: 100%|██████████| 8/8 [00:34<00:00,  3.78s/it]Loading checkpoint shards: 100%|██████████| 8/8 [00:34<00:00,  4.26s/it]
+2026-03-27 15:25:11,898 INFO src.inference: Model loaded successfully on cuda:0
+2026-03-27 15:25:11,898 INFO __main__: Measuring idle baseline (30s)...
+2026-03-27 15:25:11,898 INFO src.hardware: Measuring idle baseline for 30s...
+2026-03-27 15:25:41,969 INFO src.hardware: Idle baseline: 61.4W (std=0.3W, 292 samples)
+2026-03-27 15:25:41,970 INFO __main__: Warmup (3 runs): sum_short/bs=1
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+2026-03-27 15:25:50,148 INFO __main__: Measuring (10 runs): sum_short/bs=1
+2026-03-27 15:26:14,955 INFO __main__: Warmup (3 runs): sum_short/bs=4
+2026-03-27 15:26:22,155 INFO __main__: Measuring (10 runs): sum_short/bs=4
+2026-03-27 15:26:46,803 INFO __main__: Warmup (3 runs): sum_short/bs=8
+2026-03-27 15:26:55,001 INFO __main__: Measuring (10 runs): sum_short/bs=8
+2026-03-27 15:27:22,619 INFO __main__: Warmup (3 runs): sum_short/bs=16
+2026-03-27 15:27:30,338 INFO __main__: Measuring (10 runs): sum_short/bs=16
+2026-03-27 15:27:56,737 INFO __main__: Warmup (3 runs): qa_factual/bs=1
+2026-03-27 15:28:08,779 INFO __main__: Measuring (10 runs): qa_factual/bs=1
+2026-03-27 15:28:49,652 INFO __main__: Warmup (3 runs): qa_factual/bs=4
+2026-03-27 15:29:06,024 INFO __main__: Measuring (10 runs): qa_factual/bs=4
+2026-03-27 15:30:01,312 INFO __main__: Warmup (3 runs): qa_factual/bs=8
+2026-03-27 15:30:17,688 INFO __main__: Measuring (10 runs): qa_factual/bs=8
+2026-03-27 15:31:12,999 INFO __main__: Warmup (3 runs): qa_factual/bs=16
+2026-03-27 15:31:29,586 INFO __main__: Measuring (10 runs): qa_factual/bs=16
+2026-03-27 15:32:25,907 INFO __main__: Warmup (3 runs): code_simple/bs=1
+2026-03-27 15:32:48,303 INFO __main__: Measuring (10 runs): code_simple/bs=1
+2026-03-27 15:34:03,377 INFO __main__: Warmup (3 runs): code_simple/bs=4
+2026-03-27 15:34:25,051 INFO __main__: Measuring (10 runs): code_simple/bs=4
+2026-03-27 15:35:37,781 INFO __main__: Warmup (3 runs): code_simple/bs=8
+2026-03-27 15:35:59,395 INFO __main__: Measuring (10 runs): code_simple/bs=8
+2026-03-27 15:37:12,080 INFO __main__: Warmup (3 runs): code_simple/bs=16
+2026-03-27 15:37:33,916 INFO __main__: Measuring (10 runs): code_simple/bs=16
+2026-03-27 15:38:47,605 INFO __main__: Warmup (3 runs): longform/bs=1
+2026-03-27 15:39:10,064 INFO __main__: Measuring (10 runs): longform/bs=1
+2026-03-27 15:40:24,868 INFO __main__: Warmup (3 runs): longform/bs=4
+2026-03-27 15:40:46,503 INFO __main__: Measuring (10 runs): longform/bs=4
+2026-03-27 15:41:59,183 INFO __main__: Warmup (3 runs): longform/bs=8
+2026-03-27 15:42:20,690 INFO __main__: Measuring (10 runs): longform/bs=8
+2026-03-27 15:43:32,970 INFO __main__: Warmup (3 runs): longform/bs=16
+2026-03-27 15:43:54,689 INFO __main__: Measuring (10 runs): longform/bs=16
+2026-03-27 15:45:07,472 INFO __main__: Warmup (3 runs): reasoning/bs=1
+2026-03-27 15:45:29,810 INFO __main__: Measuring (10 runs): reasoning/bs=1
+2026-03-27 15:46:44,536 INFO __main__: Warmup (3 runs): reasoning/bs=4
+2026-03-27 15:47:06,026 INFO __main__: Measuring (10 runs): reasoning/bs=4
+2026-03-27 15:48:18,422 INFO __main__: Warmup (3 runs): reasoning/bs=8
+2026-03-27 15:48:40,041 INFO __main__: Measuring (10 runs): reasoning/bs=8
+2026-03-27 15:49:52,724 INFO __main__: Warmup (3 runs): reasoning/bs=16
+2026-03-27 15:50:14,559 INFO __main__: Measuring (10 runs): reasoning/bs=16
+2026-03-27 15:51:28,292 INFO __main__: Report saved: results/qwen2.5-14b-fp16/benchmark_Qwen_Qwen2.5-14B-Instruct_fp16.json

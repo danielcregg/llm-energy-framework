@@ -20,29 +20,29 @@ The tool works in four layers:
 
 ## What We Tested
 
-We tested **11 AI models** ranging from 1 billion to 32 billion parameters across five model families:
+We tested **14 AI models** ranging from 1 billion to 32 billion parameters across five model families:
 
 - **Llama** (Meta) — 1B, 3B, and 8B versions
-- **Qwen** (Alibaba) — 1.5B, 7B, and 32B versions
-- **Gemma** (Google) — 2B and 9B versions
+- **Qwen** (Alibaba) — 1.5B, 7B, 14B, and 32B versions
+- **Gemma** (Google) — 2B, 9B, and 27B versions
 - **Phi** (Microsoft) — 3.8B and 14B versions
-- **Mistral** (Mistral AI) — 7B
+- **Mistral** (Mistral AI) — 7B and 22B versions
 
 All models ran in full precision (FP16 — every number stored as a 16-bit floating point) on a single **NVIDIA A100 80GB GPU**. Every model fits entirely in GPU memory, so the measurements are uniform and directly comparable — no compression tricks, no CPU offloading, no hidden variables.
 
-We collected **246 individual measurements** across 11 model configurations.
+We collected **306 individual measurements** across 14 model configurations.
 
 ## What We Found
 
 ### 1. Bigger models use more energy (roughly proportionally)
 
-Energy per token scales approximately linearly with model size: roughly E = N^1.10, where N is the number of parameters. This means a model with 10x more parameters uses about 12.6x more energy per token. The relationship is very strong (R-squared = 1.00) across five different model families. This is higher than the 0.80 exponent found in prior single-family (Pythia) studies, reflecting the broader architectural diversity in our benchmark.
+Energy per token scales near-linearly with model size: roughly E = N^0.96, where N is the number of parameters. This means a model with 10x more parameters uses about 9.1x more energy per token. The relationship is very strong (R-squared = 0.99) across five different model families and 14 models. This is higher than the 0.80 exponent found in prior single-family (Pythia) studies, reflecting the broader architectural diversity in our benchmark.
 
 ### 2. Batching is the single biggest efficiency lever
 
 When the GPU processes just one request at a time (batch size 1), most of its capacity is wasted loading model weights. When you batch 16 requests together, the GPU shares that overhead across all of them. The result: **9 to 15 times less energy per token** at batch size 16 compared to batch size 1. This was the single largest efficiency factor we found.
 
-To put this in perspective: a 1B model processing 16 requests at once uses 0.031 J/tok, while a 14B model processing one request at a time uses 4.39 J/tok — that's a **141x difference**.
+To put this in perspective: a 1B model processing 16 requests at once uses 0.031 J/tok, while a 22B model processing one request at a time uses about 7.5 J/tok — that's a **240x difference**.
 
 ### 3. Architecture matters at similar sizes
 
@@ -59,7 +59,9 @@ We used real electricity grid data from Ireland (EirGrid, one week in January 20
 | Llama-3.2-1B | 1B params | 0.031 J/tok | 1,284 tok/s | 101W |
 | Qwen2.5-7B | 7B params | 0.165 J/tok | 726 tok/s | 179W |
 | Llama-3.1-8B | 8B params | 0.114 J/tok | 1,285 tok/s | 208W |
-| Phi-3-medium | 14B params | 0.334 J/tok | 536 tok/s | 240W |
+| Qwen2.5-14B | 14B params | 0.371 J/tok | 434 tok/s | 223W |
+| Mistral-Small-22B | 22B params | 0.590 J/tok | 360 tok/s | 275W |
+| Gemma-2-27B | 27B params | 0.765 J/tok | 245 tok/s | 250W |
 | Qwen2.5-32B | 32B params | 3.051 J/tok | 74.9 tok/s | 291W |
 
 (All numbers at the best batch size tested.)
@@ -87,4 +89,4 @@ The tool will measure idle power, run warmup iterations, take 10 measured runs w
 
 ## Project Status
 
-The benchmarking campaign is complete. All 11 models have been tested in FP16 precision, all figures generated, and the results have been written up as an IEEE-format academic paper. The paper is currently being prepared for journal submission.
+The benchmarking campaign is complete. All 14 models have been tested in FP16 precision, all figures generated, and the results have been written up as an IEEE-format academic paper. The paper is currently being prepared for journal submission.
