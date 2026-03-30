@@ -1,6 +1,6 @@
 # Claude Code Autonomous Execution Guide
 
-You are working on the **llm-energy-framework** project — a rigorous framework for measuring LLM inference energy on GPU hardware. Your job is to complete the implementation, run all benchmarks, analyse the results, and produce everything needed for a journal paper.
+You are working on the **joulebench** project — a rigorous framework for measuring LLM inference energy on GPU hardware. Your job is to complete the implementation, run all benchmarks, analyse the results, and produce everything needed for a journal paper.
 
 **Read `RESEARCH_PLAN.md` for the full research plan. This file tells you HOW to execute it.**
 

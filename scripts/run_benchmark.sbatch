@@ -48,7 +48,7 @@ curl -s -H "Title: Benchmark Started" -H "Tags: hourglass" \
   -d "Job $SLURM_JOB_ID: $MODEL_SHORT ($PRECISION) on $(hostname)" \
   https://ntfy.sh/$NTFY_TOPIC > /dev/null 2>&1 &
 
-cd /home/daniel.cregg/llm-energy-framework
+cd /home/daniel.cregg/joulebench
 
 python3 -m src.benchmark \
     --model "$MODEL" \

@@ -106,8 +106,8 @@ All figures are in `paper/figures/` (PDF and PNG):
 ### Install
 
 ```bash
-git clone https://github.com/danielcregg/llm-energy-framework.git
-cd llm-energy-framework
+git clone https://github.com/danielcregg/joulebench.git
+cd joulebench
 pip install -r requirements.txt
 ```
 
@@ -143,7 +143,7 @@ Each benchmark produces a structured JSON report containing:
 ## Project Structure
 
 ```
-llm-energy-framework/
+joulebench/
 ├── src/
 │   ├── hardware.py        # Layer 1: NVML power sampling with SLURM GPU mapping
 │   ├── inference.py       # Layer 2: Model loading (FP16) and inference
